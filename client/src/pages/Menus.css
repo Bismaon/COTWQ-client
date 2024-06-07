@@ -1,0 +1,26 @@
+/* Main container */
+#menu-container {
+    position: absolute;
+    top: 150px;
+    left: 100px;
+    display: block;
+}
+
+/* Main button container */
+.main-buttons {
+    width: 400px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Game controls visibility */
+#controls-main {
+    height: 100%;
+}
+
+#controls-game {
+    height: 0;
+}

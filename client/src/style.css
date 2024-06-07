@@ -1,0 +1,55 @@
+* {
+    font-family: Arial, Helvetica, monospace;
+    text-rendering: optimizeLegibility;
+    box-sizing: border-box;
+    text-decoration-skip-ink: none;
+
+}
+/* Reset default styles */
+html, body {
+	margin: 0;
+	padding: 0;
+	height:100%;
+    font-weight: 500;
+    color: #363d44;
+}
+
+
+/* Global styles for specific elements */
+
+/* Title section */
+#title {
+    position: absolute;
+    top: 50px;
+    left: 30%;
+    display: flex;
+}
+
+/* Heading styles */
+h1,
+h2 {
+    color: #fff;
+}
+
+/* Back button */
+#back {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+/* Button styling */
+.button {
+    width: 100%;
+    min-width: 100px;
+    height: 80px;
+    padding: 5px;
+    margin-bottom: 40px;
+    background-color: transparent;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    pointer-events: auto;
+}

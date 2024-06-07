@@ -1,0 +1,101 @@
+/* Country container */
+/* Ensure the country-container is a flex container */
+#country-container {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 80%;
+    z-index: 3;
+    display: flex; /*flex*/
+    justify-content: space-between; /* Align items with maximum space between them */
+    align-items: center; /* Center items vertically */
+}
+
+/* Style for checkbox-container */
+#checkbox-container {
+    display: flex; /* Use flexbox */
+    align-items: center; /* Center items vertically */
+    justify-content: flex-start; /* Align items to the start (left) */
+    width: auto; /* Allow container to grow as needed */
+}
+
+/* Style for country-name-container */
+#country-name-container {
+    display: flex; /* Use flexbox */
+    align-items: center; /* Center items vertically */
+    justify-content: flex-end; /* Align items to the end (right) */
+    flex-grow: 1; /* Allow container to grow and take up remaining space */
+}
+
+/* Styling for the label inside checkbox-container */
+#checkbox-container label {
+    color: #fff;
+    text-align: left; /* Align text to the left */
+}
+
+/* Styling for the country name */
+#country-name {
+    color: #fff;
+    text-align: right; /* Align text to the right */
+}
+
+#country-continent-name-container {
+    display: none; /* When not playing */
+    font-size: 14px;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#country-continent-name-container td td{
+    border: 1px solid rgb(204, 204, 204);
+    padding: 5px 10px;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.3em;
+    margin: 0 10px;
+}
+#country-continent-name-container .continent-table{
+    display:table-cell;
+    vertical-align: top;
+    padding-top: 10px;
+}
+
+#country-continent-name-container .africa{
+    background-color: #068806;
+    color: #fff;
+    border-color: #068806 !important;
+}
+#country-continent-name-container .america{
+    background-color: blue;
+    color: #fff;
+    border-color: blue !important;
+}
+#country-continent-name-container .asia{
+    background-color: #e00000;
+    color: #fff;
+    border-color: #e00000 !important;
+}
+#country-continent-name-container .oceania{
+    background-color: #846705;
+    color: #fff;
+    border-color: #846705 !important;
+}
+#country-continent-name-container .europe{
+    background-color: #800080;
+    color: #fff;
+    border-color: #800080 !important;
+}
+
+#country-continent-name-container .cell{
+    background-color: transparent;
+    color:white;
+}
+#country-continent-name-container .cell-found{
+    color:#66FF66;
+}
+#country-continent-name-container .cell-missed{
+    color: #FF6666;
+}
+#country-continent-name-container .cell-invisible{
+    display:none;
+}

@@ -1,0 +1,19 @@
+/* Entry box styling */
+#entry-box {
+    position: absolute;
+    top: 50px;
+    left: 30%;
+    width: 100%;
+    display: none;
+}
+
+/* Timer display */
+#timer {
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #f0f0f0;
+    background-color: transparent;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
