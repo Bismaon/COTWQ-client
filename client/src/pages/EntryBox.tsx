@@ -1,8 +1,8 @@
 // EntryBox.tsx
 
 import React from 'react';
-import './EntryBox.css'
-import '../style.css';
+import '../stylesheet/EntryBox.css'
+import '../stylesheet/style.css';
 import { handleTextboxChange } from '../components/ThreeScene';
 
 interface EntryBoxProps {

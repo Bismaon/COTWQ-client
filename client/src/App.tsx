@@ -1,7 +1,7 @@
 // App.tsx
 
-import './App.css';
-import './style.css';
+import './stylesheet/App.css';
+import './stylesheet/style.css';
 import Model from './pages/Model';
 import Menus from './pages/Menus';
 

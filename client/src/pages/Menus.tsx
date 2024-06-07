@@ -1,8 +1,8 @@
 // Menus.tsx
 
 import React, { useState } from 'react';
-import './Menus.css';
-import '../style.css';
+import '../stylesheet/Menus.css';
+import '../stylesheet/style.css';
 import EntryBox from './EntryBox';
 import CountryInfo from './CountryInfo';
 

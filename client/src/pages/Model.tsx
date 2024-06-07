@@ -1,8 +1,8 @@
 // Model.tsx
 
 import { useEffect, useRef } from 'react';
-import '../style.css';
-import './Model.css';
+import '../stylesheet/style.css';
+import '../stylesheet/Model.css';
 import { handleMouseDown, handleMouseUp, onMouseMove, setupModel } from '../components/ThreeScene';
 
 function Model() {

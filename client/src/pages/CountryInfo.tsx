@@ -1,8 +1,8 @@
 // CountryInfo.tsx
 
 import React from 'react';
-import '../style.css';
-import './CountryInfo.css';
+import '../stylesheet/style.css';
+import '../stylesheet/CountryInfo.css';
 import { followCountry } from '../components/ThreeScene';
 const CountryInfo: React.FC<{ showEntryPoint: boolean }> = ({ showEntryPoint }) => (
 		<><div id="country-container" style={{ display: showEntryPoint ? 'flex' : 'none' }}>
