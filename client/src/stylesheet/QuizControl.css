@@ -1,0 +1,90 @@
+/* Quiz Control styling */
+#quiz-controls {
+    height: 140px;
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    width:900px;
+    transform: translateX(-50%);
+    max-width: 90%; 
+    display: grid;
+    grid-template-columns: 530px 1fr;
+}
+
+#quiz-controls-table {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#timer-cell {
+    min-width: 100px;
+    display: none;
+    flex-direction: column;
+}
+
+#timer {
+    font-size: 30px;
+    color: #53b324;
+    height: 42px;
+    margin: auto;
+}
+
+#give-up-btn {
+    height:auto;
+    padding: 3px 5px;
+    font-size: 14px;
+    background-color: #dc3545;
+    border: 1px dashed #fff;
+    color: #f0f0f0;
+    margin: auto;
+}
+
+#quiz-actions {
+    display: flex;
+    flex-direction: column;
+    font-size: 22px;
+    color: #666;
+
+}
+
+.quiz-actions  button{
+    height: auto;
+    display: block;
+    margin: auto;
+    cursor: pointer;
+    color: #f0f0f0;
+}   
+
+#answer-box-container {
+    display: none;
+}
+
+#answer-box-text {
+    color: #f0f0f0;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 5px 0 2px 0;
+}
+
+#answer-box-input{
+    display: flex;
+    width:300px;
+    line-height: 1.5em;
+    border-radius: 4px;
+    border: 1px solid #c7ccd1;
+    padding: 4px 5px;
+    font-size: 16px;
+    transition: background-color .15s ease-in-out, border-color .15s ease-in-out;
+    color: #363d44;
+}
+
+#guessed-line {
+    padding: 5px 0 0;
+    display: flex;
+    color: #f0f0f0;
+}
+#country-counter{
+    color: #f0f0f0;
+}
+

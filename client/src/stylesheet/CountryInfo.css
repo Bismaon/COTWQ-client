@@ -1,0 +1,91 @@
+/* Country container */
+/* Ensure the country-container is a flex container */
+#country-container {
+    border: 2px solid rgb(204, 204, 204);
+    border-radius: 5px;
+}
+
+/* Style for checkbox-container */
+#checkbox-container {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    width: auto; 
+    margin: 4px 4px 0 4px;
+}
+
+/* Style for country-name-container */
+#country-name-container {
+    color: #fff;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    margin: 4px 4px 0 4px;
+}
+
+/* Styling for the label inside checkbox-container */
+#checkbox-container label {
+    color: #fff;
+    text-align: left; /* Align text to the left */
+}
+
+#country-continent-name-container {
+    display: none; /* When not playing */
+    font-size: 14px;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#country-continent-name-container td td{
+    border: 1px solid rgb(204, 204, 204);
+    padding: 5px 10px;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.3em;
+    margin: 0 10px;
+}
+#country-continent-name-container .continent-table{
+    display:table-cell;
+    vertical-align: top;
+    padding-top: 10px;
+}
+
+#country-continent-name-container .africa{
+    background-color: #068806;
+    color: #fff;
+    border-color: #068806 !important;
+}
+#country-continent-name-container .america{
+    background-color: blue;
+    color: #fff;
+    border-color: blue !important;
+}
+#country-continent-name-container .asia{
+    background-color: #e00000;
+    color: #fff;
+    border-color: #e00000 !important;
+}
+#country-continent-name-container .oceania{
+    background-color: #846705;
+    color: #fff;
+    border-color: #846705 !important;
+}
+#country-continent-name-container .europe{
+    background-color: #800080;
+    color: #fff;
+    border-color: #800080 !important;
+}
+
+#country-continent-name-container .cell{
+    background-color: transparent;
+    color:white;
+}
+#country-continent-name-container .cell-found{
+    color:#66FF66;
+}
+#country-continent-name-container .cell-missed{
+    color: #FF6666;
+}
+#country-continent-name-container .cell-invisible{
+    display:none;
+}

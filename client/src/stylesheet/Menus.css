@@ -1,0 +1,43 @@
+/* Game controls visibility */
+#main-menu {
+  left: 100px;
+  height: 100%;
+}
+
+#games-menu {
+  left: 100px;
+  /* temp */
+}
+
+#profile-menu {
+  left: 100px;
+  /* temp */
+}
+
+  /* Main container */
+#menu-container {
+  position: absolute;
+  top: 150px;
+  display: flex; /* Use flexbox */
+  align-items: flex-start; /* Align items at the start of the container */
+  width: 100%; /* Ensure it takes full width */
+}
+  
+/* Main button container */
+.main-buttons {
+  left: 100px;
+  width: 400px;
+  z-index: 2;
+  pointer-events: none;
+}
+  
+/* Profile box */
+#profile-box {
+  flex: 1; /* Take remaining space */
+  height: 50%; /* Adjust height as needed */
+  margin-left: 20px; /* Space between buttons and profile box */
+  margin-right: 20px;
+  padding: 20px;
+  pointer-events: auto; /* Ensure buttons inside are clickable */
+}
+  

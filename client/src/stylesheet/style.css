@@ -1,0 +1,64 @@
+* {
+    font-family: Arial, Helvetica, monospace;
+    text-rendering: optimizeLegibility;
+    box-sizing: border-box;
+    text-decoration-skip-ink: none;
+
+}
+/* Reset default styles */
+html, body {
+	margin: 0;
+	padding: 0;
+	height:100%;
+    font-weight: 500;
+    color: #363d44;
+}
+
+
+/* Global styles for specific elements */
+
+/* Title section */
+#title {
+    position: absolute;
+    top: 50px;
+    left: 30%;
+    display: flex;
+}
+
+/* Heading styles */
+h1,
+h2 {
+    color: #fff;
+}
+
+/* Back button */
+#back {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+/* Button styling */
+.button{
+    white-space: nowrap;
+    background-color: transparent;
+    border: 2px solid #f0f0f0;
+    padding: 5px 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    width: 100%;
+    height: 80px;
+    margin-bottom: 40px;
+    border-radius: 4px;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    cursor: pointer;
+    pointer-events: auto;
+    color: #fff;
+}
+
+.transparent-box{
+    background-color: rgba(39, 39, 39, 0.2); /* Transparent background */
+    border: 2px solid white; /* Combine border color, style, and width */
+    color: white;
+    border-radius: 10px; /* Rounded corners */
+}
