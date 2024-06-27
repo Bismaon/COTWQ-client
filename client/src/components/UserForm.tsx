@@ -1,45 +1,13 @@
 // UserForm.tsx
 import React, { useState } from 'react';
 import { UserModel } from '../models/UserModel';
+import CreateAccountForm from './CreateAccountForm';
 
 
 const UserForm: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [userID, setLocalUserID] = useState('');
+  const [userID, setUserID] = useState<number>();
   const [userData, setUserData] = useState<UserModel|null>(null);
   const [error, setError] = useState<string>('');
-
-  
-  const handleSubmitCreateUser = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    try {
-      const response = await fetch('/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (response.ok) {
-        const newUser = await response.json();
-        console.log('New user created:', newUser);
-        // Clear form fields after successful submission
-        setUsername('');
-        setPassword('');
-        // Optionally display success message
-        alert('User created successfully!');
-      } else {
-        const errorText = await response.text();
-        setError(`Failed to create user: ${errorText}`);
-      }
-    } catch (error) {
-      console.error('Error creating user:', error);
-      // Handle error
-    }
-  };
 
   const handleSubmitFetchUser = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -69,27 +37,7 @@ const UserForm: React.FC = () => {
 
   return (
     <div style={{display:'none'}}>
-      <form onSubmit={handleSubmitCreateUser}>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        <button type="submit">Create User</button>
-      </form>
+      <CreateAccountForm setUserID={setUserID}/>
 
       <hr />
 
@@ -97,9 +45,9 @@ const UserForm: React.FC = () => {
         <label>
           Enter User ID to Fetch:
           <input
-            type="text"
+            type="number"
             value={userID}
-            onChange={(e) => setLocalUserID(e.target.value)}
+            onChange={(e) => setUserID(Number(e.target.value))}
             required
           />
         </label>

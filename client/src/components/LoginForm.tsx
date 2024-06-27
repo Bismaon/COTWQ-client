@@ -19,11 +19,10 @@ const LoginForm: React.FC<{setUserID: (userID: number) => void}> = ({ setUserID 
       console.log('Raw response:', response);
 
       if (response.ok) {
-        const data = await response.json();
-        const { id } = data[0];
-        console.log('Parsed response:', data);
+        const { id } = await response.json();
+        console.log('Parsed response: ', id);
         setUserID(id);
-        console.log('User logged in:', id);
+        console.log('User logged in: ', id);
         alert('LOGGED SUCCESSFULL!');
       } else {
         const errorText = await response.text();

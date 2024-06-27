@@ -45,7 +45,7 @@ const CreateAccountForm: React.FC<{ setUserID: (userID: number) => void }> = ({
       <label>
         Email address:
         <input
-          type="text"
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
