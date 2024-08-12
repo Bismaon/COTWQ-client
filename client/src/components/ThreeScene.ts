@@ -23,15 +23,16 @@ const colorDict: { [key: string]: number } = {
 	selected: 4
 };
 const countries: Countries = new Countries();
+countries.initialize("static/xml/countries_data.xml");
+
 let renderer:THREE.WebGLRenderer;
 let scene:THREE.Scene;
-//!!!!!! CREATE A SETUP FUNCTION FOR EVERYTHING IN THIS FILE, SO CAN CALL FROM MODEL.TSX
-//!? Dunno if necessary anymore
-export function setupModel():void{
+
+export async function setupModel():Promise<void>{
 	[renderer, scene] = setupScene(); // Destructure the result of setupScene()
 	
 	// Load and initialize the model
-	loadAndInitializeModel().then((result) => {
+	await loadAndInitializeModel().then((result) => {
 		console.log("Loaded model successfully");
 		// Additional actions to execute after successful resolution
 	}).catch((error) => {
@@ -153,7 +154,7 @@ function setCountryIsFoundTo(wantedCountry: Country, found: boolean): void {
 	countries.incrementFound(); // Increment the count of found countries
 
 	// Set found status for all territories associated with the country
-	wantedCountry.getTerritoriesLocation().forEach((location: number[]) => {
+	wantedCountry.getTerritories().forEach((location: number[]) => {
 		if (location !== null) {
 			const country: Country = countries.getCountriesArray()[getIndexFromLocation(location[0], location[1])];
 			country.setFound(true); // Mark territory as found
@@ -265,9 +266,9 @@ function changeColorTo(continent: number, index: number, colorIndex: string): vo
 	const ownerLocation: number[] | null = country.getOwnerLocation();
 	if (ownerLocation) {
 		const owner: Country = countries.getCountriesArray()[getIndexFromLocation(ownerLocation[0], ownerLocation[1])];
-		connectedLocations.push(owner.getCountryLocation(), ...owner.getTerritoriesLocation());
+		connectedLocations.push(owner.getCountryLocation(), ...owner.getTerritories());
 	} else {
-		connectedLocations.push(country.getCountryLocation(), ...country.getTerritoriesLocation());
+		connectedLocations.push(country.getCountryLocation(), ...country.getTerritories());
 	}
 	
 
