@@ -1,3 +1,4 @@
+/* style.css */
 * {
     font-family: Arial, Helvetica, monospace;
     text-rendering: optimizeLegibility;
@@ -12,17 +13,51 @@ html, body {
 	height:100%;
     font-weight: 500;
     color: #363d44;
+    background-color: #000;
 }
 
+/* Debug Outlines */
+.debug-outline * {
+    outline: 1px solid white;
+}
+
+.debug-outline button {
+    outline: 2px solid red;
+}
+.debug-outline div {
+    outline: 1px solid blue;
+}
+
+.debug-outline p {
+    outline: 1px solid green;
+}
+
+.debug-outline h1, .debug-outline h2, .debug-outline h3 {
+    outline: 1px solid orange;
+}
 
 /* Global styles for specific elements */
 
+/* Grid Parameters */
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr); /* Adjust rows as needed */
+    grid-gap: 10px;
+    padding: 10px;
+}
+
+.grid-item {
+    text-align:center;
+    padding: 20px;
+    background: rgba(39, 39, 39, 0.2); /* Add background for visibility */
+    /* border: 2px solid white; Border for visibility */
+}
 /* Title section */
 #title {
-    position: absolute;
-    top: 50px;
-    left: 30%;
-    display: flex;
+    grid-row: 1; 
+    grid-column:3/6;
 }
 
 /* Heading styles */
@@ -31,24 +66,17 @@ h2 {
     color: #fff;
 }
 
-/* Back button */
-#back {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-}
-
 /* Button styling */
 .button{
     white-space: nowrap;
-    background-color: transparent;
+    background-color: rgba(39, 39, 39, 0.32);
     border: 2px solid #f0f0f0;
     padding: 5px 10px;
     font-size: 16px;
     line-height: 1.5;
     width: 100%;
     height: 80px;
-    margin-bottom: 40px;
+    margin:10px 0;
     border-radius: 4px;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     cursor: pointer;

@@ -1,5 +1,4 @@
 // Model.tsx
-//!!! CHANGE COLOR OF MODEL
 import { useEffect, useRef } from 'react';
 import '../stylesheet/style.css';
 import '../stylesheet/Model.css';
@@ -15,10 +14,10 @@ function Model() {
       document.addEventListener("mouseup", handleMouseUp);
       document.addEventListener("mousemove", onMouseMove);
     }
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+  }, []); 
 
   return ( 
-    <canvas id="modelCanvas"></canvas>
+    <canvas className="grid-item" id="modelCanvas"></canvas>
   );
 }
 

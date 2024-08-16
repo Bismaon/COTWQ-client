@@ -23,22 +23,28 @@ export function setupScene(): [THREE.WebGLRenderer, THREE.Scene] {
 	// Get a reference to the canvas element
 	const canvas: HTMLCanvasElement = document.getElementById("modelCanvas") as HTMLCanvasElement;
 
+	const mainContainer:HTMLDivElement = document.getElementById("main-container") as HTMLDivElement;
+
 	// Ensure the canvas element exists
 	if (!canvas) {
 		console.error("Canvas element 'modelCanvas' not found.");
 		// Handle the error or provide a fallback
+		throw new Error("Canvas element not found");
 	}
+	
+	const width = canvas.offsetWidth;
+    const height = canvas.offsetHeight;
 
 	// Create a WebGL renderer and set its size to match the canvas
 	const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({ canvas });
-	renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-	document.body.appendChild(renderer.domElement);
+	renderer.setSize(width, height);
+	mainContainer.appendChild(renderer.domElement);
 
 	// Create the scene
 	scene = new THREE.Scene();
 
 	// Create the camera
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+	camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
 	camera.position.set(0, 0, 140);
 
 	// Create the controls
@@ -109,14 +115,14 @@ function updateControls(): void {
  */
 export function toggleIsPlaying(): void {
 	isPlaying = !isPlaying;
-	if (isPlaying) {
-		moveModelTo(myModel, 0, null, null);
-		if (isRotating) toggleIsRotating();
-	} else {
-		moveModelTo(myModel, 90, null, null);
-		if (!isRotating) toggleIsRotating();
+	// if (isPlaying) {
+	// 	moveModelTo(myModel, 0, null, null);
+	// 	if (isRotating) toggleIsRotating();
+	// } else {
+	// 	moveModelTo(myModel, 90, null, null);
+	// 	if (!isRotating) toggleIsRotating();
 
-	}
+	// }
 
 	updateControls(); // Call updateControls to ensure controls are updated
 }
@@ -142,9 +148,34 @@ export function getIntersect(mouseX: number, mouseY: number): THREE.Intersection
 	const mouseVector: THREE.Vector2 = new THREE.Vector2(mouseX, mouseY);
 	raycaster.setFromCamera(mouseVector, camera);
 
+	// visualizeRay(raycaster);
+	
 	// Perform raycasting
 	return raycaster.intersectObjects(scene.children, true);
 }
+
+// function visualizeRay(raycaster: THREE.Raycaster, length: number = 100) {
+//     const rayDirection = raycaster.ray.direction.clone().normalize().multiplyScalar(length);
+//     const rayOrigin = raycaster.ray.origin.clone();
+
+//     // Create a geometry for the ray
+//     const geometry = new THREE.BufferGeometry().setFromPoints([rayOrigin, rayOrigin.clone().add(rayDirection)]);
+    
+//     // Create a line material
+//     const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+    
+//     // Create the line
+//     const line = new THREE.Line(geometry, material);
+    
+//     // Add the line to the scene
+//     scene.add(line);
+    
+//     // Optionally, remove the line after a short delay
+//     setTimeout(() => {
+//         scene.remove(line);
+//     }, 2000); // Remove after 2 seconds
+// }
+
 
 /**
  * Moves the model to the specified position.

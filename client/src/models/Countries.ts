@@ -119,8 +119,7 @@ export class Countries {
         let ownedLocation = country.ownedLocation
           ? (country.ownedLocation.split(",").map(Number) as [number, number])
           : null;
-
-        console.log(ownedLocation);
+		  
         return new Country(
           country.name,
           acceptedNames,

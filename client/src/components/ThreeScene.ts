@@ -5,7 +5,7 @@ import { Countries } from "../models/Countries";
 import { Country } from "../models/Country";
 import { createTable, getIndexFromLocation } from "../typescripts/countriesTable";
 import { loadModel } from "../utils/loader";
-import { setupScene, animate, moveModelTo, getIsPlaying, getIsRotating, toggleIsRotating, setCameraPosition, getIntersect } from "../utils/scene";
+import { setupScene, animate, getIsPlaying, getIsRotating, toggleIsRotating, setCameraPosition, getIntersect } from "../utils/scene";
 import { Timer } from "../utils/Timer";
 
 // Create variables
@@ -56,7 +56,7 @@ async function loadAndInitializeModel(): Promise<void> {
 		}
 
 		animate(renderer, modelParent); // Start animation
-		moveModelTo(modelParent, 90, null, null); // Move model to the right side of the screen
+		//moveModelTo(modelParent, 90, null, null); // Move model to the right side of the screen
 		globe = modelParent.children[0];
 		
 		allCountriesCaps = globe.children[1];
@@ -195,17 +195,19 @@ export function followCountry(event: React.ChangeEvent<HTMLInputElement>): void{
  * @param {MouseEvent} event - The MouseEvent object.
  */
 export function onMouseMove(event: MouseEvent): void {
-	const mouseX: number = (event.clientX / window.innerWidth) * 2 - 1;
-	const mouseY: number = -(event.clientY / window.innerHeight) * 2 + 1;
+	const canvas: HTMLCanvasElement = document.getElementById("modelCanvas") as HTMLCanvasElement;
+
+	const mouseX: number = (event.offsetX /canvas.width ) * 2 - 1;
+	const mouseY: number = -(event.offsetY / canvas.height) * 2 + 1;
 	const intersects: THREE.Intersection[] = getIntersect(mouseX, mouseY);
 
 	if (intersects.length > 0) {
 		const intersectedObject: THREE.Object3D = intersects[0].object;
-		if (isValidObject(intersectedObject)) {
-			updateCountryName(intersectedObject);
-		} else{
-			updateCountryName(null);
-		}
+		// if (isValidObject(intersectedObject)) {
+		// 	updateCountryName(intersectedObject);
+		// } else{
+		// 	updateCountryName(null);
+		// }
 	} else {
 		updateCountryName(null);
 	}
