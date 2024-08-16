@@ -23,10 +23,13 @@ const SizeMode: React.FC = () => {
           <div className="grid-item" id="title">
             <h1>Countries Of The World Quizzes</h1>
           </div>
+          <div className="grid-item" id="back">
+            <i
+              className="fa-solid fa-arrow-left grid-item"
+              onClick={() => navigate(-1)}
+            ></i>
+          </div>
           <div className="grid-item" id="menu">
-            <button className="button" onClick={() => navigate(-1)}>
-              Back
-            </button>
             <button className="button" onClick={() => navigate("classic")}>
               Classic
             </button>

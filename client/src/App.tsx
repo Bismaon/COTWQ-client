@@ -4,7 +4,6 @@ import "./stylesheet/App.css";
 import "./stylesheet/style.css";
 import Model from "./pages/Model";
 import Menus from "./pages/MainMenu";
-import UserForm from "./components/UserForm";
 import Profile from "./pages/Profile";
 import Games from "./pages/Games";
 import HardMode from "./pages/gameModes/HardMode";
