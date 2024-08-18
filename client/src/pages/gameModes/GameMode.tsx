@@ -16,7 +16,7 @@ const GameMode: React.FC = () => {
     navigate(`${location.pathname}/${mode}`);
   };
 
-  console.log("Rendering Game Mode Menu");
+  console.debug("Rendering Game Mode Menu");
   return (
     <>
       {/* Render initial Games Menu only if in a game mode */}

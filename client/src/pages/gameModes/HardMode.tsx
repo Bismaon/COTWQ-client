@@ -13,7 +13,7 @@ const HardMode: React.FC = () => {
     navigate(`${location.pathname}/${mode}`);
   };
 
-  console.log("Rendering Hard Mode Menu");
+  console.debug("Rendering Hard Mode Menu");
   return (
     <>
       {/* Render initial Games Menu only if not in a game mode */}

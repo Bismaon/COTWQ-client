@@ -1,44 +1,96 @@
 // GameSetter.tsx
 import React from "react";
-import { useNavigate } from "react-router-dom";
-
-import "../stylesheet/QuizControl.css";
+import { useNavigate, useLocation } from "react-router-dom";
+import "../stylesheet/Quiz.css";
 import "../stylesheet/style.css";
-import QuizControl from "./QuizControl";
-import { followCountry } from "../components/ThreeScene";
+import Names from "./quiz/Names";
+import Currencies from "./quiz/Currencies";
+import Flags from "./quiz/Flags";
+import Languages from "./quiz/Languages";
+import Capitals from "./quiz/Capitals";
+import { resetModel } from "../scene/sceneManager";
 
 const GameSetter: React.FC = () => {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
+	const location = useLocation();
+	const continentNames: string[] = [
+		"africa",
+		"america",
+		"antarctic",
+		"asia",
+		"oceania",
+		"europe",
+	];
 
-  console.log("Rendering Game Setter");
-  return (
-    <>
-      <div className="grid-item" id="back">
-        <i
-          className="fa-solid fa-arrow-left grid-item"
-          onClick={() => navigate(-1)}
-        ></i>
-      </div>
-      <QuizControl gameMode={""} />
-      <div className="grid-item" id="quiz-options">
-        <h2>Game Options - Not ready yet, need to implement game creation</h2>
-        <div id="checkbox-container">
-          <label htmlFor="follow">Follow countries:</label>
-          <input
-            type="checkbox"
-            id="follow"
-            name="follow"
-            onChange={followCountry}
-          ></input>
-        </div>
-      </div>
-      <div className="grid-item" id="quiz-items">
-        <h2>Country Items - Not ready yet, need to implement game creation</h2>
-      </div>
-      <div className="grid-item" id="empty">
-        <h2>Not ready yet, need to implement game creation</h2>
-      </div>
-    </>
-  );
+	function getGameMode() {
+		const pathSegments: string[] = location.pathname.split("/");
+		const hasContinents: number = pathSegments.indexOf("continents");
+		const continentIndex: number =
+			hasContinents !== -1
+				? continentNames.indexOf(pathSegments[hasContinents + 1])
+				: -1;
+		const isHardMode: boolean = pathSegments.includes("hard");
+		const isClassic: boolean = pathSegments.includes("classic");
+		const gameMode: string = pathSegments[pathSegments.length - 1];
+		switch (gameMode) {
+			case "names":
+				return (
+					<Names
+						isHard={isHardMode}
+						continentIndex={continentIndex}
+						isClassic={isClassic}
+					/>
+				);
+			case "flags":
+				return (
+					<Flags
+						isHard={isHardMode}
+						continentIndex={continentIndex}
+						isClassic={isClassic}
+					/>
+				);
+			case "currencies":
+				return (
+					<Currencies
+						isHard={isHardMode}
+						continentIndex={continentIndex}
+						isClassic={isClassic}
+					/>
+				);
+			case "languages":
+				return (
+					<Languages
+						isHard={isHardMode}
+						continentIndex={continentIndex}
+						isClassic={isClassic}
+					/>
+				);
+			case "capitals":
+				return (
+					<Capitals
+						isHard={isHardMode}
+						continentIndex={continentIndex}
+						isClassic={isClassic}
+					/>
+				);
+		}
+	}
+	const navigateBack = () => {
+		resetModel();
+		navigate(-1);
+	};
+
+	console.debug("Rendering Game Setter");
+	return (
+		<>
+			<div className="grid-item" id="back">
+				<i
+					className="fa-solid fa-arrow-left grid-item"
+					onClick={() => navigateBack()}
+				></i>
+			</div>
+			{getGameMode()}
+		</>
+	);
 };
 export default GameSetter;

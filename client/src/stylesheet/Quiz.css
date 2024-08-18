@@ -19,6 +19,7 @@
 
 .quiz-grid-container{
     display: grid;
+    max-height: 118px;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(2, 1fr); /* Adjust rows as needed */
 }
@@ -27,7 +28,6 @@
     margin: auto;
     text-align:center;
     padding: 5px;
-
 }
 
 #quiz-controls-table{
@@ -43,6 +43,7 @@
 }
 
 #timer {
+    display:none;
     grid-row:1;
     grid-column:1;
     font-size: 30px;
@@ -50,6 +51,7 @@
 }
 
 #give-up-btn {
+    display:none;
     grid-row:2;
     grid-column:1;
     font-size: 14px;
@@ -77,6 +79,7 @@
 }
 
 #country-counter{
+    display:none;
     text-align:left;
     grid-row:2;
     grid-column:3/5;
@@ -84,3 +87,10 @@
     margin:0;
 }
 
+#checkbox-container{
+    color:#f0f0f0;
+}
+
+#country-name-container{
+	color:#f0f0f0
+}

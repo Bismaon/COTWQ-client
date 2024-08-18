@@ -1,6 +1,7 @@
 // countriesTable.ts
 
-import { Country } from "../models/Country";
+import { Countries } from "./Countries";
+import { Country } from "./Country";
 
 /** Represents the population of each continent. */
 const continentPopulation: [number, number, number, number, number, number] = [56, 49, 3, 52, 19, 45];
@@ -10,10 +11,10 @@ const continentRealPopulation: [number, number, number, number, number, number] 
 
 /**
  * Creates a table displaying countries grouped by continent.
- * @param {Country[]} data - An array of Country objects containing country data.
+ * @param {Country[]} countries - An array of Country objects containing country data.
  * @returns {void}
  */
-export function createTable(data: Country[]): void {
+export function createTable(countries: Countries): void {
 	// Reference to the container div where the table will be placed
 	const tableContainer: HTMLElement | null = document.getElementById("country-continent-name-container");
 
@@ -54,8 +55,7 @@ export function createTable(data: Country[]): void {
 			const newRow: HTMLTableRowElement = table.insertRow();
 
 			// Get the country index
-			const countryIndex: number = getIndexFromLocation(index, i);
-			const country: Country = data[countryIndex];
+			const country: Country = countries.getCountryByLocation([index, i]);
 			if (country.getAcceptedNames().length === 0) {
 				continue;
 			}
@@ -70,25 +70,4 @@ export function createTable(data: Country[]): void {
 	});
 
 	tableContainer.appendChild(tablesContainer);
-}
-
-/**
- * Gets the real index of a country based on its continent and local index.
- * @param {number} continent - The continent index.
- * @param {number} index - The local index of the country within its continent.
- * @returns {number} The real index of the country.
- */
-export function getIndexFromLocation(continent: number, index: number): number {
-	let realIndex: number = 0;
-
-	// Sum populations of previous continents up to the specified continent
-	for (let i: number = 0; i < continent; i++) {
-		realIndex += continentPopulation[i];
-	}
-
-	
-	// Add local index within the specified continent
-	realIndex += index;
-	
-	return realIndex;
 }

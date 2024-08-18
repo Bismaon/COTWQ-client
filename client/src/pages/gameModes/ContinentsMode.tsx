@@ -13,7 +13,7 @@ const ContinentsMode: React.FC = () => {
     navigate(`${location.pathname}/${mode}`);
   };
 
-  console.log("Rendering Continents Mode Menu");
+  console.debug("Rendering Continents Mode Menu");
   return (
     <>
       {/* Render initial Games Menu only if not in a game mode */}

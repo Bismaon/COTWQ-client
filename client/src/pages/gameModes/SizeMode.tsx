@@ -14,7 +14,7 @@ const SizeMode: React.FC = () => {
     location.pathname.endsWith("/europe") ||
     location.pathname.endsWith("/america");
 
-  console.log("Rendering Group Selection");
+  console.debug("Rendering Group Selection");
   return (
     <>
       {/* Render initial Games Menu only if not in a game mode */}

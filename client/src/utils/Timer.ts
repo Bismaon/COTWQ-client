@@ -9,7 +9,7 @@ export class Timer {
 	protected hours: number;
 	protected timerElement: HTMLElement;
 	protected intervalId: NodeJS.Timeout | null;
-	protected isStopped:boolean;
+	protected isStopped: boolean;
 
 	/**
 	 * Creates an instance of Timer.
@@ -20,7 +20,7 @@ export class Timer {
 		this.hours = 0;
 		this.timerElement = document.getElementById("timer") as HTMLElement;
 		this.intervalId = null;
-		this.isStopped=true;
+		this.isStopped = true;
 	}
 
 	/**
@@ -39,7 +39,7 @@ export class Timer {
 			}
 			this.updateDisplay();
 		}, 1000);
-		this.isStopped=false;
+		this.isStopped = false;
 	}
 
 	/**
@@ -47,15 +47,14 @@ export class Timer {
 	 */
 	public stop(): void {
 		if (this.intervalId !== null) {
-            clearInterval(this.intervalId);
-            this.intervalId = null; // Set intervalId to null after clearing the interval
-        } else{
+			clearInterval(this.intervalId);
+			this.intervalId = null; // Set intervalId to null after clearing the interval
+		} else {
 			this.start();
 			this.stop();
 			this.reset();
 		}
-		this.isStopped=true;
-
+		this.isStopped = true;
 	}
 
 	/**
@@ -66,16 +65,19 @@ export class Timer {
 		this.minutes = 0;
 		this.hours = 0;
 		this.updateDisplay();
-		this.isStopped=true;
+		this.isStopped = true;
 	}
 
 	/**
 	 * Updates the timer display element with the current time.
 	 */
 	public updateDisplay(): void {
-		const displayHours: string | number = this.hours < 10 ? "0" + this.hours : this.hours;
-		const displayMinutes: string | number = this.minutes < 10 ? "0" + this.minutes : this.minutes;
-		const displaySeconds: string | number = this.seconds < 10 ? "0" + this.seconds : this.seconds;
+		const displayHours: string | number =
+			this.hours < 10 ? "0" + this.hours : this.hours;
+		const displayMinutes: string | number =
+			this.minutes < 10 ? "0" + this.minutes : this.minutes;
+		const displaySeconds: string | number =
+			this.seconds < 10 ? "0" + this.seconds : this.seconds;
 		this.timerElement.textContent = `${displayHours}:${displayMinutes}:${displaySeconds}`;
 	}
 

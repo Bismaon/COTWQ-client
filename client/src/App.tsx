@@ -13,58 +13,94 @@ import SizeMode from "./pages/gameModes/SizeMode";
 import GameSetter from "./pages/GameSetter";
 
 function App() {
-  return (
-    <Router>
-      <div className="grid-container" id="main-container">
-        <Model />
-        <Routes>
-          <Route path="/" element={<Menus />} />
-          <Route path="/profile" element={<Profile />} />
+	return (
+		<Router>
+			<div className="grid-container" id="main-container">
+				<Model />
+				<Routes>
+					<Route path="/" element={<Menus />} />
+					<Route path="/profile" element={<Profile />} />
 
-          {/* Games Route with Nested Routes */}
-          <Route path="/games" element={<Games />}>
-            <Route path="normal" element={<SizeMode />}>
-              <Route path="classic" element={<GameMode />}>
-                <Route path=":mode" element={<GameSetter />} />
-              </Route>
-              <Route path="sequential-random" element={<GameMode />}>
-                <Route path=":mode" element={<GameSetter />} />
-              </Route>
-              <Route path="hard" element={<HardMode />}>
-                <Route path="classic" element={<GameMode />}>
-                  <Route path=":mode" element={<GameSetter />} />
-                </Route>
-                <Route path="sequential-random" element={<GameMode />}>
-                  <Route path=":mode" element={<GameSetter />} />
-                </Route>
-              </Route>
-            </Route>
-            <Route path="continents" element={<ContinentsMode />}>
-              <Route path=":continent" element={<SizeMode />}>
-                <Route path="classic" element={<GameMode />}>
-                  <Route path=":mode" element={<GameSetter />} />
-                </Route>
-                <Route path="sequential-random" element={<GameMode />}>
-                  <Route path=":mode" element={<GameSetter />} />
-                </Route>
-                <Route path="hard" element={<HardMode />}>
-                  <Route path="classic" element={<GameMode />}>
-                    <Route path=":mode" element={<GameSetter />} />
-                  </Route>
-                  <Route path="sequential-random" element={<GameMode />}>
-                    <Route path=":mode" element={<GameSetter />} />
-                  </Route>
-                </Route>
-              </Route>
-            </Route>
-          </Route>
+					{/* Games Route with Nested Routes */}
+					<Route path="/games" element={<Games />}>
+						<Route path="normal" element={<SizeMode />}>
+							<Route path="classic" element={<GameMode />}>
+								<Route path=":mode" element={<GameSetter />} />
+							</Route>
+							<Route
+								path="sequential-random"
+								element={<GameMode />}
+							>
+								<Route path=":mode" element={<GameSetter />} />
+							</Route>
+							<Route path="hard" element={<HardMode />}>
+								<Route path="classic" element={<GameMode />}>
+									<Route
+										path=":mode"
+										element={<GameSetter />}
+									/>
+								</Route>
+								<Route
+									path="sequential-random"
+									element={<GameMode />}
+								>
+									<Route
+										path=":mode"
+										element={<GameSetter />}
+									/>
+								</Route>
+							</Route>
+						</Route>
+						<Route path="continents" element={<ContinentsMode />}>
+							<Route path=":continent" element={<SizeMode />}>
+								<Route path="classic" element={<GameMode />}>
+									<Route
+										path=":mode"
+										element={<GameSetter />}
+									/>
+								</Route>
+								<Route
+									path="sequential-random"
+									element={<GameMode />}
+								>
+									<Route
+										path=":mode"
+										element={<GameSetter />}
+									/>
+								</Route>
+								<Route path="hard" element={<HardMode />}>
+									<Route
+										path="classic"
+										element={<GameMode />}
+									>
+										<Route
+											path=":mode"
+											element={<GameSetter />}
+										/>
+									</Route>
+									<Route
+										path="sequential-random"
+										element={<GameMode />}
+									>
+										<Route
+											path=":mode"
+											element={<GameSetter />}
+										/>
+									</Route>
+								</Route>
+							</Route>
+						</Route>
+					</Route>
 
-          {/* Catch-all for undefined routes */}
-          <Route path="/*" element={<h2>404 Not Found - B o dau</h2>} />
-        </Routes>
-      </div>
-    </Router>
-  );
+					{/* Catch-all for undefined routes */}
+					<Route
+						path="/*"
+						element={<h2>404 Not Found - B o dau</h2>}
+					/>
+				</Routes>
+			</div>
+		</Router>
+	);
 }
 
 export default App;
