@@ -12,12 +12,12 @@ const SizeMode: React.FC = () => {
     location.pathname.endsWith("/africa") ||
     location.pathname.endsWith("/asia") ||
     location.pathname.endsWith("/europe") ||
+    location.pathname.endsWith("/oceania") ||
     location.pathname.endsWith("/america");
 
   console.debug("Rendering Group Selection");
   return (
     <>
-      {/* Render initial Games Menu only if not in a game mode */}
       {isInSizeMode && (
         <>
           <div className="grid-item" id="title">

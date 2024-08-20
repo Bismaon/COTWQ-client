@@ -3,7 +3,7 @@ import "../../stylesheet/Quiz.css";
 import "../../stylesheet/style.css";
 import { Timer } from "../../utils/Timer";
 
-import { toggleIsPlaying } from "../../controls/toggleControls";
+import { toggleIsPlaying } from "../../controls/playingState";
 import {
 	followCountry,
 	handleTextboxChange,

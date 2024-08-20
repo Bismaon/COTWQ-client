@@ -1,10 +1,10 @@
-// Countries.ts
+// country/Countries.ts
 
 import { Country } from "./Country";
 import { XMLParser } from "fast-xml-parser";
 
 export const countryToFind: { [key: string]: number } = {
-	//!!!!! need to find the names of the game Modes  ASAP
+	//! need to find the names of the game Modes
 	base: 191,
 };
 /** Represents the population of each continent. */
@@ -14,12 +14,12 @@ const continentPopulation: number[] = [56, 49, 3, 52, 19, 45];
 const continentRealPopulation: number[] = [53, 35, 3, 48, 13, 42];
 
 const continentNames: string[] = [
-	"Africa",
-	"America",
-	"Antarctic",
-	"Asia",
-	"Oceania",
-	"Europe",
+	"africa",
+	"america",
+	"antarctic",
+	"asia",
+	"oceania",
+	"europe",
 ];
 
 /**
@@ -84,18 +84,29 @@ export class Countries {
 	 * @returns {boolean} True if all countries are found, false otherwise.
 	 */
 	public isAllFound(gameMode: string): boolean {
+		switch (gameMode) {
+			case "fl":
+				
+				break;
+		
+			default:
+				break;
+		}
 		return countryToFind[gameMode] === this.countriesFound;
 	}
 
 	/**
-	 * Check if a country exists by name.
+	 * Check if a country exists by name and if it is in a valid state.
 	 * @param {string} name The name of the country.
 	 * @returns {number} The array of the indeces of the country/ies if found, otherwise [].
 	 */
 	public exists(name: string): number[] {
 		return this.countriesArray
 			.map((obj, index) =>
-				obj.getAcceptedNames().includes(name) ? index : -1
+				obj.getState() === "unknown" &&
+				obj.getAcceptedNames().includes(name)
+					? index
+					: -1
 			)
 			.filter((index) => index !== -1);
 	}

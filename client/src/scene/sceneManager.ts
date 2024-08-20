@@ -1,13 +1,23 @@
+// scene/sceneManager.ts
 import * as THREE from "three";
 import { createTable } from "../country/countriesTable";
 import { Countries } from "../country/Countries";
 import { loadModel } from "../utils/loader";
 import { animate } from "./animate";
 import { getRenderer } from "./sceneSetup";
-import { changeColorTo, changeVisibilityTo } from "../country/countryManager";
-import { getIsPlaying, toggleIsPlaying } from "../controls/toggleControls";
-import { setCameraPosition } from "../camera/camera";
-
+import {
+	changeCountryStateTo,
+	changeCountryVisibilityTo,
+	getConnected,
+} from "../country/countryManager";
+import {
+	getIsPlaying,
+	toggleIsPlaying,
+	toggleIsRotating,
+	getIsRotating,
+} from "../controls/playingState";
+import { cameraFaceTo, setCameraPosition } from "../camera/camera";
+import { Country } from "../country/Country";
 const countries: Countries = new Countries();
 let modelParent: THREE.Object3D;
 let globe: THREE.Object3D;
@@ -28,7 +38,7 @@ async function loadAndInitializeModel(scene: THREE.Scene): Promise<void> {
 		allCountriesCaps = globe.children[1];
 		allCountriesBody = globe.children[0];
 		for (let i = 0; i < countries.getSize(); i++) {
-			changeColorTo(i, "unknown", countries);
+			changeCountryStateTo(i, "unknown", countries, []);
 		}
 		animate(getRenderer(), modelParent);
 	} catch (error) {
@@ -38,54 +48,72 @@ async function loadAndInitializeModel(scene: THREE.Scene): Promise<void> {
 
 export function resetModel() {
 	if (getIsPlaying()) toggleIsPlaying();
+	if (!getIsRotating()) toggleIsRotating();
 	countries.clearFound();
 	for (let i = 0; i < countries.getSize(); i++) {
-		changeColorTo(i, "unknown", countries);
+		changeCountryStateTo(i, "unknown", countries, []);
+		changeCountryVisibilityTo(i, true, countries, []);
 	}
 	const basePosition: THREE.Vector3 = new THREE.Vector3(0, 0, 140);
 	setCameraPosition(basePosition);
 }
 
 export function setupModelForGame(isHard: boolean, continentIndex: number) {
+	// Countries states/visibility change
 	if (isHard) {
 		// Set countries to invisible to the eye
-		for (let i = 0; i < countries.getSize(); i++) {
-			changeVisibilityTo(i, false, countries);
-		}
-	} else if (continentIndex !== -1) {
-		// Change all countries not in the continent to unavailable color
-		const minIndex = countries.getRealIndex([continentIndex, 0]);
-		const maxIndex =
-			continentIndex === 5
-				? countries.getSize()
-				: countries.getRealIndex([continentIndex + 1, 0]);
-		console.log(minIndex);
-		console.log(maxIndex);
-		for (let i = 0; i < minIndex; i++) {
-			changeColorTo(i, "unavailable", countries);
-		}
-		for (let i = maxIndex; i < countries.getSize(); i++) {
-			changeColorTo(i, "unavailable", countries);
-		}
-		//TODO
+		countries.getCountriesArray().forEach((country: Country) => {
+			if (country.getOwnerLocation() === null) {
+				changeCountryVisibilityTo(
+					country.getCountryLocation(),
+					false,
+					countries,
+					getConnected(country.getCountryLocation(), countries)
+				);
+			}
+		});
 	}
+	if (continentIndex !== -1) {
+		// Change all countries not in the continent to unavailable color/state
+		countries.getCountriesArray().forEach((country: Country) => {
+			if (country.getOwnerLocation() === null) {
+				const countryLoc = country.getCountryLocation();
+				if (countryLoc[0] !== continentIndex) {
+					changeCountryStateTo(
+						countryLoc,
+						"unavailable",
+						countries,
+						getConnected(countryLoc, countries)
+					);
+				}
+			}
+		});
+		const continentCapsObject =
+			getAllCountriesCaps().children[continentIndex];
+		const continentBox = new THREE.Box3().setFromObject(
+			continentCapsObject
+		);
+		const continentCenter = continentBox.getCenter(new THREE.Vector3());
+		cameraFaceTo(continentCenter);
+	}
+	if (getIsRotating()) toggleIsRotating();
 }
 
-export function getAllCountriesCaps() {
+export function getAllCountriesCaps():THREE.Object3D {
 	return allCountriesCaps;
 }
 
-export function getAllCountriesBody() {
+export function getAllCountriesBody():THREE.Object3D {
 	return allCountriesBody;
 }
 
-export function getGlobe() {
+export function getGlobe():THREE.Object3D {
 	return globe;
 }
-export function getColorsArray() {
+export function getColorsArray():THREE.Material[] {
 	return colorsArray;
 }
 
-export function getCountries(){
+export function getCountries():Countries {
 	return countries;
 }

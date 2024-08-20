@@ -18,7 +18,6 @@ export function loadModel(
 		loader.load(
 			"../../assets/models/earth_political.glb",
 			function (gltf: GLTF): void {
-				console.log(gltf);
 				const myModel: THREE.Object3D = gltf.scene;
 
 				// Rotate the model (earth tilt)
@@ -27,7 +26,6 @@ export function loadModel(
 
 				scene.add(myModel);
 				extractColors(myModel, colors);
-				console.debug(colors);
 				resolve(myModel); // Resolve the promise with the loaded model
 			},
 			undefined,

@@ -14,7 +14,6 @@ const Games: React.FC = () => {
 	console.debug("Rendering Games Menu");
 	return (
 		<>
-			{/* Render initial Games Menu only if not in a game mode */}
 			{isInGameMode && (
 				<>
 					<div className="grid-item" id="title">
@@ -35,7 +34,7 @@ const Games: React.FC = () => {
 						</button>
 						<button
 							className="button"
-							onClick={() => navigate("continents")} //! SCENE HAS CONTINENT CHILDREN
+							onClick={() => navigate("continents")}
 						>
 							Continents
 						</button>
@@ -43,7 +42,6 @@ const Games: React.FC = () => {
 				</>
 			)}
 
-			{/* Outlet will render the selected game mode menu and replace the current menu */}
 			{!isInGameMode && <Outlet />}
 		</>
 	);

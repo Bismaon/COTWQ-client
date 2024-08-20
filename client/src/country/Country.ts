@@ -1,4 +1,4 @@
-// Country.ts
+// country/Country.ts
 
 export interface countryDataInterface {
 	name: string;
@@ -25,14 +25,11 @@ export class Country implements countryDataInterface {
 	languages: string[] | null;
 	capital: string | null;
 	protected isFound: boolean;
+	protected state: string;
+	protected visibility: boolean;
 
 	/**
 	 * Creates an instance of Country.
-	 * @param {string} name - The name of the country.
-	 * @param {string[]} acceptedNames - The accepted names of the country.
-	 * @param {[number, number][] | null} territories - The locations of territories (if any) belonging to the country.
-	 * @param {[number, number]} location - The indexes location of the country.
-	 * @param {[number, number] | null} ownedLocation - The location of the owner (if any) of the country.
 	 */
 	constructor(
 		name: string,
@@ -55,6 +52,8 @@ export class Country implements countryDataInterface {
 		this.languages = languages;
 		this.capital = capital;
 		this.isFound = false;
+		this.state = "unknown";
+		this.visibility = true;
 	}
 
 	/**
@@ -151,5 +150,17 @@ export class Country implements countryDataInterface {
 	 */
 	public setTerritories(territories: [number, number][]): void {
 		this.territories = territories;
+	}
+	public setState(state: string): void {
+		this.state = state;
+	}
+	public getState(): string {
+		return this.state;
+	}
+	public isVisible(): boolean {
+		return this.visibility;
+	}
+	public setVisibility(visibility: boolean): void {
+		this.visibility = visibility;
 	}
 }

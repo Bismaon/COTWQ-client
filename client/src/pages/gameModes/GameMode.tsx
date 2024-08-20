@@ -19,7 +19,6 @@ const GameMode: React.FC = () => {
   console.debug("Rendering Game Mode Menu");
   return (
     <>
-      {/* Render initial Games Menu only if in a game mode */}
       {isInGameMode && (
         <>
           <div className="grid-item" id="title">

@@ -1,7 +1,8 @@
+// scene/snimate.ts
 import * as THREE from "three";
 import { update as tweenUpdate } from "@tweenjs/tween.js";
 import { getCamera, setCameraPosition } from "../camera/camera";
-import { getIsRotating } from "../controls/toggleControls";
+import { getIsRotating } from "../controls/playingState";
 import { getScene } from "./sceneSetup";
 import { update } from "../controls/controls";
 
@@ -19,7 +20,6 @@ export function animate(
 		const cameraPosition = new THREE.Vector3();
 		getCamera().getWorldPosition(cameraPosition);
 		setCameraPosition(cameraPosition);
-		
 
 		if (currentTime - lastRenderTime >= 16) {
 			renderer.render(getScene(), getCamera());

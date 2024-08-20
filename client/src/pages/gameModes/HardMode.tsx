@@ -16,7 +16,6 @@ const HardMode: React.FC = () => {
   console.debug("Rendering Hard Mode Menu");
   return (
     <>
-      {/* Render initial Games Menu only if not in a game mode */}
       {isInHardMenu && (
         <>
           <div className="grid-item" id="title">

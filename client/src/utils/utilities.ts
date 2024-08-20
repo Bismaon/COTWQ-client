@@ -21,23 +21,29 @@ export function getIntersect(
 	return raycaster.intersectObjects(getScene().children, true);
 }
 function visualizeRay(raycaster: THREE.Raycaster, length: number = 100) {
-    const rayDirection = raycaster.ray.direction.clone().normalize().multiplyScalar(length);
-    const rayOrigin = raycaster.ray.origin.clone();
+	const rayDirection = raycaster.ray.direction
+		.clone()
+		.normalize()
+		.multiplyScalar(length);
+	const rayOrigin = raycaster.ray.origin.clone();
 
-    // Create a geometry for the ray
-    const geometry = new THREE.BufferGeometry().setFromPoints([rayOrigin, rayOrigin.clone().add(rayDirection)]);
+	// Create a geometry for the ray
+	const geometry = new THREE.BufferGeometry().setFromPoints([
+		rayOrigin,
+		rayOrigin.clone().add(rayDirection),
+	]);
 
-    // Create a line material
-    const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+	// Create a line material
+	const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
-    // Create the line
-    const line = new THREE.Line(geometry, material);
+	// Create the line
+	const line = new THREE.Line(geometry, material);
 
-    // Add the line to the scene
-    getScene().add(line);
+	// Add the line to the scene
+	getScene().add(line);
 
-    // Optionally, remove the line after a short delay
-    setTimeout(() => {
-        getScene().remove(line);
-    }, 2000); // Remove after 2 seconds
+	// Optionally, remove the line after a short delay
+	setTimeout(() => {
+		getScene().remove(line);
+	}, 2000); // Remove after 2 seconds
 }

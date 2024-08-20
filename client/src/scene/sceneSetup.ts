@@ -1,3 +1,4 @@
+// scene/sceneSetup.ts
 import * as THREE from "three";
 import {
 	getHemisphereLight,
@@ -38,7 +39,6 @@ export function setupScene() {
 
 	setupHemisphereLight();
 	scene.add(getHemisphereLight());
-	console.log(scene.children);
 }
 
 export function getRenderer(): THREE.WebGLRenderer {

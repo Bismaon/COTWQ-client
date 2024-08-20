@@ -1,3 +1,4 @@
+// lightning/hemisphereLight.ts
 import * as THREE from "three";
 
 let hemisphereLight: THREE.HemisphereLight;

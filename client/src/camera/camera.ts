@@ -1,12 +1,14 @@
+// camera/camera.ts
 import * as THREE from "three";
 import { getHemisphereLight } from "../lighting/hemisphereLight";
-import { tweenCameraPosition } from "../utils/tween";
+import { CameraAnimation } from "../utils/animation";
 
 let camera: THREE.PerspectiveCamera;
 const minDistance = 70;
 
 export function setupCamera(width: number, height: number) {
-	camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+	const ratio: number = width / height;
+	camera = new THREE.PerspectiveCamera(75, ratio, 0.1, 1000);
 	camera.position.set(0, 0, 140);
 }
 
@@ -18,13 +20,11 @@ export function cameraFaceTo(targetPosition: THREE.Vector3): void {
 	const cameraPosition: THREE.Vector3 = new THREE.Vector3();
 	camera.getWorldPosition(cameraPosition);
 
-	const directionToCenter: THREE.Vector3 = targetPosition
-		.clone()
-		.normalize();
+	const directionToCenter: THREE.Vector3 = targetPosition.clone().normalize();
 	targetPosition = directionToCenter.multiplyScalar(cameraPosition.length());
-	
+
 	getHemisphereLight().position.copy(targetPosition);
-	tweenCameraPosition(cameraPosition, targetPosition, directionToCenter);
+	CameraAnimation(cameraPosition, targetPosition, directionToCenter);
 }
 
 export function setCameraPosition(targetPosition: THREE.Vector3): void {

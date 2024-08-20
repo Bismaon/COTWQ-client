@@ -1,3 +1,4 @@
+// ContinentsMode.tsx
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../../stylesheet/Menus.css";
@@ -16,7 +17,6 @@ const ContinentsMode: React.FC = () => {
   console.debug("Rendering Continents Mode Menu");
   return (
     <>
-      {/* Render initial Games Menu only if not in a game mode */}
       {isInContinentsMenu && (
         <>
           <div className="grid-item" id="title">
@@ -44,7 +44,7 @@ const ContinentsMode: React.FC = () => {
             <button className="button" onClick={() => handleNavigate("europe")}>
               Europe
             </button>
-            <button className="button" onClick={() => handleNavigate("asia")}>
+            <button className="button" onClick={() => handleNavigate("oceania")}>
               Oceania
             </button>
           </div>

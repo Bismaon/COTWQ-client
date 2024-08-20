@@ -1,4 +1,4 @@
-// countriesTable.ts
+// country/countriesTable.ts
 
 import { Countries } from "./Countries";
 import { Country } from "./Country";

@@ -1,3 +1,4 @@
+// controls/playingState.ts
 import { updateControls } from "./controls";
 
 let isPlaying: boolean = false;

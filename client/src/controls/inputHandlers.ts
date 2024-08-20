@@ -1,3 +1,4 @@
+// controls/inputHandlers.ts
 import { Timer } from "../utils/Timer";
 import { countryToFind } from "../country/Countries";
 import { processText } from "../utils/utilities";

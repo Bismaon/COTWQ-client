@@ -1,10 +1,11 @@
+// interaction/mouseInteraction.ts
 import * as THREE from "three";
 import { getIntersect } from "../utils/utilities";
 import {
 	getIsPlaying,
 	getIsRotating,
 	toggleIsRotating,
-} from "../controls/toggleControls";
+} from "../controls/playingState";
 import { getCountries } from "../scene/sceneManager";
 import { Countries } from "../country/Countries";
 
@@ -44,7 +45,6 @@ function isValidObject(
 ): boolean {
 	if (intersectedObject.name === "water") return false;
 	const parentObj: THREE.Object3D | null = intersectedObject.parent;
-	console.log(intersectedObject.name)
 	if (
 		!parentObj ||
 		parentObj.name ===
@@ -55,8 +55,8 @@ function isValidObject(
 	const continent: number = getIndexFromObject3D(parentObj);
 	const country: number = getIndexFromObject3D(intersectedObject);
 	return (
-		countries.getCountryByLocation([continent, country]).getFound() ||
-		!getIsPlaying()
+		countries.getCountryByLocation([continent, country]).getFound() &&
+		getIsPlaying()
 	);
 }
 

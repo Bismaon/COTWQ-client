@@ -1,3 +1,4 @@
+// model/moveModelTo.ts
 import * as THREE from "three";
 import { Tween, Easing } from "@tweenjs/tween.js";
 
