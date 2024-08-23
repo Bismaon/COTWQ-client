@@ -15,10 +15,10 @@ const Names: React.FC<{
 	continentIndex: number;
 	isClassic: boolean;
 }> = ({ isHard, continentIndex, isClassic }) => {
+	const [isQuizInit, setIsQuizInit] = useState(false);
 	const [isQuizStarted, setIsQuizStarted] = useState(false);
 	const [gameTimer, setGameTimer] = useState<Timer | null>(null);
 
-	setupModelForGame(isHard, continentIndex);
 	useEffect(() => {
 		const timer: Timer = new Timer();
 		setGameTimer(timer);
@@ -28,6 +28,10 @@ const Names: React.FC<{
 			timer.stop();
 		};
 	}, []);
+	if (!isQuizInit) {
+		setupModelForGame(isHard, continentIndex);
+		setIsQuizInit(true);
+	}
 
 	useEffect((): void => {
 		if (gameTimer) {
@@ -157,11 +161,11 @@ const Names: React.FC<{
 				</div>
 				<div id="country-name-container"></div>
 			</div>
-			{isHard && (
-				<div className="grid-item" id="country-container">
-					<h2>Not ready yet, need to implement game creation</h2>
-				</div>
-			)}
+			{/* {isHard && ( */}
+			{/* 	<div className="grid-item" id="country-container"> */}
+			{/* 		<h2>Not ready yet, need to implement game creation</h2> */}
+			{/* 	</div> */}
+			{/* )} */}
 		</>
 	);
 };

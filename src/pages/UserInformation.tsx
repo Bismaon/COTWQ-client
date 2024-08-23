@@ -29,7 +29,7 @@ const UserInformation: React.FC<{ userID: number }> = ({ userID }) => {
 				setError("Error during user DB call.");
 			}
 		};
-		fetchUserData();
+		fetchUserData(); //catch/then/finally
 	}, [userID]);
 
 	if (userData != null) {

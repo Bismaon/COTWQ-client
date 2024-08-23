@@ -1,28 +1,25 @@
 // loader.ts
 
-import * as THREE from "three";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { Material, MathUtils, Mesh, MeshPhongMaterial, MeshStandardMaterial, Object3D, Scene } from 'three';
 
 /**
  * Loads a 3D model and adds it to the scene.
- * @param {THREE.Scene} scene - The THREE.Scene where the model will be added.
- * @param {THREE.Material[]} colors - An array of materials representing colors.
- * @returns {Promise<THREE.Object3D>} A promise that resolves to the loaded model.
+ * @param {Scene} scene - The Scene where the model will be added.
+ * @param {Material[]} colors - An array of materials representing colors.
+ * @returns {Promise<Object3D>} A promise that resolves to the loaded model.
  */
-export function loadModel(
-	scene: THREE.Scene,
-	colors: THREE.Material[]
-): Promise<THREE.Object3D> {
+export function loadModel(scene: Scene, colors: Material[]): Promise<Object3D> {
 	return new Promise((resolve, reject): void => {
 		const loader: GLTFLoader = new GLTFLoader();
 		loader.load(
-			"../../assets/models/earth_political.glb",
+			"assets/models/earth_political_nocap_worldset.glb",
 			function (gltf: GLTF): void {
-				const myModel: THREE.Object3D = gltf.scene;
+				const myModel: Object3D = gltf.scene;
 
 				// Rotate the model (earth tilt)
 				const degrees: number = 23.5;
-				myModel.rotation.x = THREE.MathUtils.degToRad(degrees);
+				myModel.rotation.x = MathUtils.degToRad(degrees);
 
 				scene.add(myModel);
 				extractColors(myModel, colors);
@@ -39,18 +36,37 @@ export function loadModel(
 
 /**
  * Extracts colors from the loaded model and adds them to the colors array.
- * @param {THREE.Object3D} model - The loaded 3D model.
- * @param {THREE.Material[]} colors - An array of materials representing colors.
+ * @param {Object3D} model - The loaded 3D model.
+ * @param {Material[]} colors - An array of materials representing colors.
  */
-function extractColors(model: THREE.Object3D, colors: THREE.Material[]): void {
-	model.traverse((child: THREE.Object3D) => {
-		if (child instanceof THREE.Mesh && child.material) {
-			child.receiveShadow = true;
-			const material: THREE.Material = child.material;
+function extractColors(model: Object3D, colors: Material[]): void {
+	model.traverse((child: Object3D): void => {
+		if (child instanceof Mesh && child.material) {
+			child.castShadow = true;
+
+			// Clone the material
+			const material: Material = child.material.clone();
+
+			// Add polygonOffset settings to the material
+			if (
+				material instanceof MeshStandardMaterial ||
+				material instanceof MeshPhongMaterial
+			) {
+				material.polygonOffset = true;
+				material.polygonOffsetFactor = 1; // Adjust this value as needed
+				material.polygonOffsetUnits = 1; // Adjust this value as needed
+			}
+
+			// Check if the material is already in the colors array
 			const materialName: string = material.name;
-			if (colors.findIndex((obj) => obj.name === materialName) === -1) {
-				colors.push(material.clone());
+			if (
+				colors.findIndex(
+					(obj: Material): boolean => obj.name === materialName
+				) === -1
+			) {
+				colors.push(material);
 			}
 		}
 	});
+	console.log(colors);
 }

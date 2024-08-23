@@ -1,4 +1,5 @@
 // country/Country.ts
+import { Object3D } from "three";
 
 export interface countryDataInterface {
 	_name: string;
@@ -11,22 +12,25 @@ export interface countryDataInterface {
 	_languages: string[] | null;
 	_capital: string | null;
 }
+
 /**
  * Represents a country.
  */
 export class Country implements countryDataInterface {
-	_name: string;
-	_location: [number, number];
-	_territories: [number, number][] | null;
-	_ownedLocation: [number, number] | null;
 	_acceptedNames: string[];
-	_flag: [string, string];
-	_currency: string | null;
-	_languages: string[] | null;
 	_capital: string | null;
-	protected isFound: boolean;
-	protected state: string;
-	protected visibility: boolean;
+	_currency: string | null;
+	_flag: [string, string];
+	_languages: string[] | null;
+	_location: [number, number];
+	_name: string;
+	_ownedLocation: [number, number] | null;
+	_territories: [number, number][] | null;
+	private _isFound: boolean;
+	private _state: string;
+	private _visibility: boolean;
+	private _countryMeshes: Object3D;
+	private _countryObj: Object3D;
 
 	/**
 	 * Creates an instance of Country.
@@ -51,17 +55,35 @@ export class Country implements countryDataInterface {
 		this._currency = currency;
 		this._languages = languages;
 		this._capital = capital;
-		this.isFound = false;
-		this.state = "unknown";
-		this.visibility = true;
+		this._isFound = false;
+		this._state = "unknown";
+		this._visibility = true;
+		this._countryMeshes = new Object3D();
+		this._countryObj = new Object3D();
 	}
-	
+
+	public getcountryObj(): Object3D {
+		return this._countryObj;
+	}
+
+	public setcountryMeshes(value: Object3D) {
+		this._countryMeshes = value;
+	}
+
+	public setCountryObj(value: Object3D) {
+		this._countryObj = value;
+	}
+
+	public getCountryMeshes(): Object3D {
+		return this._countryMeshes;
+	}
+
 	/**
 	 * Get the found status of the country.
 	 * @returns {boolean} True if the country is found, otherwise false.
 	 */
 	public getFound(): boolean {
-		return this.isFound;
+		return this._isFound;
 	}
 
 	/**
@@ -69,20 +91,20 @@ export class Country implements countryDataInterface {
 	 * @param {boolean} isFound - The found status to set.
 	 */
 	public setFound(isFound: boolean): void {
-		this.isFound = isFound;
+		this._isFound = isFound;
 	}
 
 	/**
 	 * Get the location of the country owning this country.
 	 * @returns {number[]} The location of the owner.
 	 */
-	public getOwnerLocation(): number[] | null {
+	public getOwnerLocation(): [number, number] | null {
 		return this._ownedLocation;
 	}
 
 	/**
 	 * Set the location of the country owning this country.
-	 * @param {number[]} ownedLocation - The location of the owner to set.
+	 * @param {[number, number]} ownedLocation - The location of the owner to set.
 	 */
 	public setOwnerLocation(ownedLocation: [number, number] | null): void {
 		this._ownedLocation = ownedLocation;
@@ -122,15 +144,15 @@ export class Country implements countryDataInterface {
 
 	/**
 	 * Get the indexes location of the country.
-	 * @returns {number[]} The indexes location of the country.
+	 * @returns {[number, number]} The indexes location of the country.
 	 */
-	public getCountryLocation(): number[] {
+	public getCountryLocation(): [number, number] {
 		return this._location;
 	}
 
 	/**
 	 * Set the indexes location of the country.
-	 * @param {number[]} countryLocation - The indexes location of the country to set.
+	 * @param {[number, number]} countryLocation - The indexes location of the country to set.
 	 */
 	public setCountryLocation(countryLocation: [number, number]): void {
 		this._location = countryLocation;
@@ -138,7 +160,7 @@ export class Country implements countryDataInterface {
 
 	/**
 	 * Get the locations of territories belonging to the country.
-	 * @returns {number[][]} The locations of territories belonging to the country.
+	 * @returns {[number, number][]} The locations of territories belonging to the country.
 	 */
 	public getTerritories(): [number, number][] {
 		return this._territories || [];
@@ -146,21 +168,26 @@ export class Country implements countryDataInterface {
 
 	/**
 	 * Set the locations of territories belonging to the country.
-	 * @param {number[][]} territories - The locations of territories to set.
+	 * @param {[number, number][]} territories - The locations of territories to set.
 	 */
 	public setTerritories(territories: [number, number][]): void {
 		this._territories = territories;
 	}
+
 	public setState(state: string): void {
-		this.state = state;
+		this._state = state;
 	}
+
 	public getState(): string {
-		return this.state;
+		return this._state;
 	}
+
 	public isVisible(): boolean {
-		return this.visibility;
+		return this._visibility;
 	}
+
 	public setVisibility(visibility: boolean): void {
-		this.visibility = visibility;
+		this._countryObj.visible = visibility;
+		this._visibility = visibility;
 	}
 }

@@ -1,4 +1,5 @@
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import React from "react";
 
 const ProfileMenu: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();

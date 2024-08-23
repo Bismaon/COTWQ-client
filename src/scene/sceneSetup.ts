@@ -1,5 +1,4 @@
 // scene/sceneSetup.ts
-import * as THREE from "three";
 import {
 	getHemisphereLight,
 	setupHemisphereLight,
@@ -11,10 +10,17 @@ import {
 	handleMouseUp,
 	onMouseMove,
 } from "../controls/mouseInteraction";
+import { Scene, WebGLRenderer } from "three";
 
-let renderer: THREE.WebGLRenderer;
-let scene: THREE.Scene;
+let renderer: WebGLRenderer;
+let scene: Scene;
 
+/**
+ * Sets up the Three.js scene, including the canvas, renderer, camera, controls, and lighting.
+ * Initializes event listeners for mouse interactions and configures the rendering environment.
+ *
+ * @throws {Error} Throws an error if the canvas element with the ID 'modelCanvas' is not found.
+ */
 export function setupScene(): void {
 	const canvas: HTMLCanvasElement = document.getElementById(
 		"modelCanvas"
@@ -36,11 +42,12 @@ export function setupScene(): void {
 	const width: number = canvas.offsetWidth;
 	const height: number = canvas.offsetHeight;
 
-	renderer = new THREE.WebGLRenderer({ canvas });
+	renderer = new WebGLRenderer({ canvas });
 	renderer.setSize(width, height);
 	mainContainer.appendChild(renderer.domElement);
 
-	scene = new THREE.Scene();
+	scene = new Scene();
+	// Set the background color to any color you prefer, e.g., white
 	setupCamera(width, height);
 	initializeControls(getCamera(), renderer);
 
@@ -48,10 +55,20 @@ export function setupScene(): void {
 	scene.add(getHemisphereLight());
 }
 
-export function getRenderer(): THREE.WebGLRenderer {
+/**
+ * Retrieves the WebGL renderer used in the scene setup.
+ *
+ * @returns {WebGLRenderer} The WebGLRenderer instance used for rendering the scene.
+ */
+export function getRenderer(): WebGLRenderer {
 	return renderer;
 }
 
-export function getScene(): THREE.Scene {
+/**
+ * Retrieves the Three.js scene object.
+ *
+ * @returns {Scene} The Scene instance used in the application.
+ */
+export function getScene(): Scene {
 	return scene;
 }

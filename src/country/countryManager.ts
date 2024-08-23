@@ -1,193 +1,173 @@
 // country/countryManager.ts
 import { Countries } from "./Countries";
-import * as THREE from "three";
+import { Material, Mesh, Object3D, Vector3 } from "three";
 import { isFollowing } from "../controls/inputHandlers";
 import { Country } from "./Country";
-import { getAllCountriesBody, getAllCountriesCaps, getColorsArray } from "../scene/sceneManager";
+import {
+	getColorsArray,
+	getCountryMovement,
+	getObjCenter,
+} from "../scene/sceneManager";
 import { cameraFaceTo } from "../camera/camera";
 import { bounceAnimation } from "../utils/animation";
 
 const colorDict: { [key: string]: number } = {
 	unknown: 0,
 	found: 1,
-	unavailable: 2,
+	selected: 2,
 	error: 3,
-	selected: 4,
+	unavailable: 4,
 	water: 5,
 };
 
-const globeCenter: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
-
+/**
+ * Marks a country as found and updates related territories.
+ *
+ * @param {Country} wantedCountry - The country to mark as found.
+ * @param {boolean} found - Indicates whether the country is found or not.
+ * @param {Countries} countries - The Countries instance managing the collection of countries.
+ */
 export function setCountryIsFoundTo(
 	wantedCountry: Country,
 	found: boolean,
-	countries: Countries,
+	countries: Countries
 ): void {
 	wantedCountry.setFound(found);
 	countries.incrementFound();
-	wantedCountry.getTerritories().forEach((location: number[]) => {
-		const country: Country = countries.getCountryByLocation(location);
-		country.setFound(true);
-	});
+	wantedCountry
+		.getTerritories()
+		.forEach((location: [number, number]): void => {
+			countries.getCountryByLocation(location).setFound(true);
+		});
 }
 
+/**
+ * Handles the search for a country based on user input and updates the game state.
+ *
+ * @param {Country} wantedCountry - The country that was searched for.
+ * @param {HTMLInputElement} textBox - The input element containing the search text.
+ * @param {Countries} countries - The Countries instance managing the collection of countries.
+ * @returns {boolean} - True if all countries have been found according to the game mode, otherwise false.
+ */
 export function foundSearch(
 	wantedCountry: Country,
 	textBox: HTMLInputElement,
-	countries: Countries,
+	countries: Countries
 ): boolean {
 	if (!wantedCountry.getFound()) {
 		textBox.value = "";
 
-		const location: number[] = wantedCountry.getCountryLocation();
-		const connectedLoc: number[][] = getConnected(location, countries);
+		const location: [number, number] = wantedCountry.getCountryLocation();
+		const connectedLoc = getConnected(location, countries);
 		setCountryIsFoundTo(wantedCountry, true, countries);
 		if (!wantedCountry.isVisible()) {
-			changeCountryVisibilityTo(location, true, countries, connectedLoc);
+			changeCountryVisibilityTo(true, countries, connectedLoc);
 		}
 
-		countryFoundAnimation(location, countries, connectedLoc);
+		countryFoundAnimation(countries, connectedLoc);
 		if (isFollowing()) {
-			const worldPosition: THREE.Vector3 = new THREE.Vector3();
-			getAllCountriesBody().children[location[0]].children[
-				location[1]
-				].getWorldPosition(worldPosition);
-			cameraFaceTo(worldPosition);
+			cameraFaceTo(getObjCenter(wantedCountry.getcountryObj()));
 		}
 	}
 	return countries.isAllFound("base");
 }
 
+/**
+ * Triggers an animation to indicate that a country has been found.
+ *
+ * @param {Countries} countries - The Countries instance managing the collection of countries.
+ * @param {Array<[number, number]>} locations - The locations of the countries to animate.
+ */
 function countryFoundAnimation(
-	countryLoc: number[],
 	countries: Countries,
-	connectedLoc: number[][],
+	locations: [number, number][]
 ): void {
-	if (connectedLoc.length === 0) {
-		connectedLoc.push(countryLoc);
-	}
-	const allCountriesBody: THREE.Object3D = getAllCountriesBody();
-	const allCountriesCaps: THREE.Object3D = getAllCountriesCaps();
-	const direction: THREE.Vector3 = new THREE.Vector3();
-
-	connectedLoc.forEach((location: number[]): void => {
-		const countryBodyObject: THREE.Object3D =
-			allCountriesBody.children[location[0]].children[location[1]];
-		const countryCapObject: THREE.Object3D =
-			allCountriesCaps.children[location[0]].children[location[1]];
-
-		// Calculate the direction from the globe center to the object
-		direction
-			.subVectors(countryCapObject.position, globeCenter)
-			.normalize();
-
-		// Calculate the original position
-		const originalPosition: THREE.Vector3 = countryCapObject.position.clone();
-
-		// Calculate the "up" position by moving the object along the direction vector
-		const targetPosition: THREE.Vector3 = originalPosition
-			.clone()
-			.addScaledVector(direction, 50);
-
-		bounceAnimation(
-			countryBodyObject,
-			countryCapObject,
-			originalPosition,
-			targetPosition,
-			(): void => {
-				changeCountryStateTo(location, "found", countries, []);
-			},
+	locations.forEach((location: [number, number]): void => {
+		const countryObj: Object3D = countries
+			.getCountryByLocation([location[0], location[1]])
+			.getcountryObj();
+		const [bodyOrgPos, bodyTargetPos]: Vector3[] = getCountryMovement(
+			countryObj,
+			100
 		);
+		bounceAnimation(countryObj, bodyOrgPos, bodyTargetPos, (): void => {
+			changeCountryStateTo("found", countries, [location]);
+		});
 	});
 }
 
+/**
+ * Updates the visibility of countries at specified locations.
+ *
+ * @param {boolean} visibility - The visibility state to set for the countries.
+ * @param {Countries} countries - The Countries instance managing the collection of countries.
+ * @param {Array<[number, number]>} locations - The locations of the countries to update.
+ */
 export function changeCountryVisibilityTo(
-	countryLoc: number[] | number,
 	visibility: boolean,
 	countries: Countries,
-	connectedLoc: number[][],
+	locations: [number, number][]
 ): void {
-	if (connectedLoc.length === 0) {
-		if (!Array.isArray(countryLoc)) {
-			connectedLoc.push(
-				countries.getCountriesArray()[countryLoc].getCountryLocation(),
-			);
-		} else {
-			connectedLoc.push(countryLoc);
-		}
-	}
-	const allCountriesBody: THREE.Object3D = getAllCountriesBody();
-	const allCountriesCaps: THREE.Object3D = getAllCountriesCaps();
-
-	connectedLoc.forEach(([continent, country]: number[]): void => {
-		const countryElement: Country = countries.getCountryByLocation([
-			continent,
-			country,
-		]);
-		countryElement.setVisibility(visibility);
-		allCountriesCaps.children[continent].children[country].visible =
-			visibility;
-		allCountriesBody.children[continent].children[country].visible =
-			visibility;
+	locations.forEach(([continent, country]: number[]): void => {
+		countries
+			.getCountryByLocation([continent, country])
+			.setVisibility(visibility);
 	});
 }
 
+/**
+ * Retrieves locations connected to a given country.
+ *
+ * @param {Array<number, number>} location - The location of the country to find connected locations from.
+ * @param {Countries} countries - The Countries instance managing the collection of countries.
+ * @returns {Array<[number, number]>} - An array of connected locations.
+ */
 export function getConnected(
-	location: number[],
-	countries: Countries,
-): number[][] {
-	const connectedLocations: number[][] = [];
+	location: [number, number],
+	countries: Countries
+): [number, number][] {
+	const connectedLocations: [number, number][] = [];
 	const country: Country = countries.getCountryByLocation(location);
 
-	const ownerLocation: number[] | null = country.getOwnerLocation();
+	const ownerLocation: [number, number] | null = country.getOwnerLocation();
 	if (ownerLocation) {
 		const owner: Country = countries.getCountryByLocation(ownerLocation);
 		connectedLocations.push(
 			owner.getCountryLocation(),
-			...owner.getTerritories(),
+			...owner.getTerritories() // contains country location
 		);
 	} else {
 		connectedLocations.push(
-			country.getCountryLocation(),
-			...country.getTerritories(),
+			country.getCountryLocation(), // contains country location
+			...country.getTerritories()
 		);
 	}
 	return connectedLocations;
 }
 
+/**
+ * Changes the state of countries at specified locations and updates their material color.
+ *
+ * @param {string} state - The new state to set for the countries.
+ * @param {Countries} countries - The Countries instance managing the collection of countries.
+ * @param {Array<[number, number]>} locations - The locations of the countries to update.
+ */
 export function changeCountryStateTo(
-	countryLoc: number[] | number,
 	state: string,
 	countries: Countries,
-	connectedLoc: number[][],
+	locations: [number, number][]
 ): void {
-	const materialCloned: THREE.Material =
-		getColorsArray()[colorDict[state]].clone();
+	const materialCloned: Material = getColorsArray()[colorDict[state]].clone();
 
-	if (connectedLoc.length === 0) {
-		if (!Array.isArray(countryLoc)) {
-			connectedLoc.push(
-				countries.getCountriesArray()[countryLoc].getCountryLocation(),
-			);
-		} else {
-			connectedLoc.push(countryLoc);
-		}
-	}
-
-	const allCountriesBody: THREE.Object3D = getAllCountriesBody();
-	const allCountriesCaps: THREE.Object3D = getAllCountriesCaps();
-	connectedLoc.forEach(([continent, country]: number[]): void => {
+	locations.forEach(([continent, country]: number[]): void => {
 		const countryElement: Country = countries.getCountryByLocation([
 			continent,
 			country,
 		]);
 		countryElement.setState(state);
-		const cap: THREE.Object3D =
-			allCountriesCaps.children[continent].children[country];
-		const body: THREE.Object3D =
-			allCountriesBody.children[continent].children[country].children[0];
-		if (cap instanceof THREE.Mesh) cap.material = materialCloned;
-		if (body instanceof THREE.Mesh) body.material = materialCloned;
+		const countryMeshes: Object3D = countryElement.getCountryMeshes();
+		if (countryMeshes instanceof Mesh)
+			countryMeshes.material = materialCloned;
 	});
 	materialCloned.needsUpdate = true;
 }

@@ -11,7 +11,13 @@ function Model(): React.JSX.Element {
 	useEffect((): void => {
 		if (!isSetupModelCalled.current) {
 			setupScene();
-			setupSceneModel(getScene());
+			setupSceneModel(getScene())
+				.then(() => {
+					console.debug("Scene has been set up successfully");
+				})
+				.catch((error) => {
+					console.error(error);
+				});
 			isSetupModelCalled.current = true;
 		}
 	}, []);

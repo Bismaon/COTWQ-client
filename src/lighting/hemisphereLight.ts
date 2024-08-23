@@ -1,11 +1,12 @@
 // lightning/hemisphereLight.ts
-import * as THREE from "three";
+import { HemisphereLight } from "three";
 
-let hemisphereLight: THREE.HemisphereLight;
-export function setupHemisphereLight():void {
-	hemisphereLight = new THREE.HemisphereLight(0xffffff, 0.7);
+let hemisphereLight: HemisphereLight;
+
+export function setupHemisphereLight(): void {
+	hemisphereLight = new HemisphereLight();
 }
 
-export function getHemisphereLight():THREE.HemisphereLight {
+export function getHemisphereLight(): HemisphereLight {
 	return hemisphereLight;
 }

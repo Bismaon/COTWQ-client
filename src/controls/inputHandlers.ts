@@ -9,6 +9,14 @@ import { Country } from "../country/Country";
 
 let follow: boolean = false;
 
+/**
+ * Handles changes in the answer input textbox during the game.
+ * It processes the input text, checks if the entered country exists, and updates
+ * the guessed countries counter. If the correct country is found, the timer stops.
+ *
+ * @param {React.FormEvent<HTMLInputElement>} _event - The form event triggered by input in the textbox.
+ * @param {Timer | null} timer - The timer object that controls the game's timing.
+ */
 export function handleTextboxChange(
 	_event: React.FormEvent<HTMLInputElement>,
 	timer: Timer | null
@@ -41,6 +49,12 @@ export function handleTextboxChange(
 	}
 }
 
+/**
+ * Handles the state of whether the camera should follow a selected country.
+ * Updates the global `follow` variable based on the checkbox state.
+ *
+ * @param {React.ChangeEvent<HTMLInputElement>} event - The change event from the follow checkbox.
+ */
 export function followCountry(
 	event: React.ChangeEvent<HTMLInputElement>
 ): void {
@@ -48,6 +62,11 @@ export function followCountry(
 	follow = checkbox.checked;
 }
 
+/**
+ * Checks if the camera is set to follow a country.
+ *
+ * @returns {boolean} - Returns true if the follow mode is enabled, otherwise false.
+ */
 export function isFollowing(): boolean {
 	return follow;
 }
