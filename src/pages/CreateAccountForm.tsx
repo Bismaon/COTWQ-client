@@ -21,14 +21,14 @@ const CreateAccountForm: React.FC<{ setUserID: (userID: number) => void }> = ({
 				body: JSON.stringify({ email, username, password }),
 			});
 
-			console.log("Raw response:", response);
+			console.debug("Raw response:", response);
 
 			if (response.ok) {
 				const data = await response.json();
 				const { id } = data[0];
-				console.log("Parsed response:", data);
+				console.debug("Parsed response:", data);
 				setUserID(id);
-				console.log("User logged in:", id);
+				console.debug("User logged in:", id);
 				alert("CREATE ACCOUNT SUCCESSFULL!");
 			} else {
 				const errorText: string = await response.text();

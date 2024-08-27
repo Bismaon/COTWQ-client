@@ -10,7 +10,7 @@ import {
 	Scene,
 	Vector3,
 } from "three";
-import { Countries } from "../country/Countries";
+import { Countries, countryToFind } from "../country/Countries";
 import { loadModel } from "../utils/loader";
 import { animate } from "../utils/animation";
 import { getRenderer } from "./sceneSetup";
@@ -23,12 +23,16 @@ import {
 	isFollowing,
 	isPlaying,
 	isRotating,
+	toggleIsFollowing,
 	toggleIsPlaying,
 	toggleIsRotating,
 } from "../controls/playingState";
 import { cameraFaceTo, setCameraPosition } from "../camera/camera";
 import { Country } from "../country/Country";
 import { isMesh } from "../utils/utilities";
+import { Timer } from "../utils/Timer";
+import { handlePauseStart } from "../controls/inputHandlers";
+import { changeCountryCellTo } from "../country/countriesTable";
 
 const countries: Countries = new Countries();
 let modelParent: Object3D;
@@ -46,7 +50,6 @@ const colorsArray: Material[] = [];
 export async function setupSceneModel(scene: Scene): Promise<void> {
 	await countries.initialize("assets/xml/countries_data.xml");
 	await loadAndInitializeModel(scene);
-	//createTable(countries);
 }
 
 /**
@@ -62,20 +65,20 @@ async function loadAndInitializeModel(scene: Scene): Promise<void> {
 		globe = modelParent.children[0];
 		water = globe.children[1];
 		water.receiveShadow = true;
-		const continents = globe.children[0];
+		const continents: Object3D = globe.children[0];
 		countries.setContinents(continents.children);
-		console.log(countries.getContinents());
+		console.debug(countries.getContinents());
 
 		countries.getCountriesArray().forEach((country: Country): void => {
 			const location: [number, number] = country.getCountryLocation();
 			const countryObj: Object3D =
 				continents.children[location[0]].children[location[1]]; // need to get the pos of the parent for this one
 			country.setCountryObj(countryObj);
-			const meshes = countryObj.children[0];
+			const meshes: Object3D = countryObj.children[0];
 			if (isMesh(meshes)) {
 				country.setcountryMeshes(meshes);
 			}
-			changeCountryStateTo("unknown", countries, [location]);
+			changeCountryStateTo("unknown", [location]);
 			makeCountryOutline(country.getCountryMeshes());
 		});
 		animate(getRenderer(), modelParent);
@@ -85,17 +88,18 @@ async function loadAndInitializeModel(scene: Scene): Promise<void> {
 }
 
 /**
- * Resets the model state to its initial configuration.
- * Stops any ongoing game, toggles rotation state, clears found countries, and resets visibility and camera position.
+ * Resets the model to its initial state.
+ * Stops any ongoing game, enables rotation state, clears found countries, and resets visibility and camera position.
  */
 export function resetModel(): void {
 	if (isPlaying()) toggleIsPlaying();
 	if (!isRotating()) toggleIsRotating();
-	if (isFollowing()) countries.clearFound();
+	if (isFollowing()) toggleIsFollowing();
+	countries.clearFound();
 	countries.getCountriesArray().forEach((country: Country): void => {
 		const location: [number, number] = country.getCountryLocation();
-		changeCountryStateTo("unknown", countries, [location]);
-		changeCountryVisibilityTo(true, countries, [location]);
+		changeCountryStateTo("unknown", [location]);
+		changeCountryVisibilityTo(true, [location]);
 	});
 	const basePosition: Vector3 = new Vector3(0, 0, 140);
 	setCameraPosition(basePosition);
@@ -112,38 +116,27 @@ export function setupModelForGame(
 	isHard: boolean,
 	continentIndex: number
 ): void {
-	// Countries states/visibility change
-	if (isHard) {
-		// Set countries to invisible to the eye
-		countries.getCountriesArray().forEach((country: Country): void => {
-			if (country.getOwnerLocation() === null) {
-				changeCountryVisibilityTo(
-					false,
-					countries,
-					getConnected(country.getCountryLocation(), countries)
-				);
-			}
-		});
-	}
-	if (continentIndex !== -1) {
-		// Change all countries not in the continent to unavailable color/state
-		countries.getCountriesArray().forEach((country: Country): void => {
-			if (country.getOwnerLocation() === null) {
-				const countryLoc: [number, number] =
-					country.getCountryLocation();
-				if (countryLoc[0] !== continentIndex) {
-					changeCountryStateTo(
-						"unavailable",
-						countries,
-						getConnected(countryLoc, countries)
-					);
+	// Change all countries not in the continent to unavailable color/state
+	countries.getCountriesArray().forEach((country: Country): void => {
+		if (country.getOwnerLocation() === null) {
+			const countryLoc: [number, number] = country.getCountryLocation();
+			if (continentIndex !== -1 && countryLoc[0] !== continentIndex) {
+				changeCountryStateTo("unavailable", getConnected(countryLoc));
+			} else {
+				if (isHard) {
+					changeCountryVisibilityTo(false, getConnected(countryLoc));
 				}
+				changeCountryStateTo("unknown", getConnected(countryLoc));
 			}
-		});
+			changeCountryCellTo(countryLoc[0], countryLoc[1], "invisible");
+		}
+	});
+	if (continentIndex !== -1) {
 		const continentObj: Object3D =
 			countries.getContinents()[continentIndex];
 		cameraFaceTo(getObjCenter(continentObj));
 	}
+
 	if (isRotating()) toggleIsRotating();
 }
 
@@ -202,22 +195,14 @@ function makeCountryOutline(obj: Mesh): void {
  * @returns {Vector3[]} An array with the original position and the target position.
  */
 export function getCountryMovement(obj: Object3D, distance: number): Vector3[] {
-	const objPos = obj.position.clone();
-	const direction = objPos.clone().normalize();
+	const objPos: Vector3 = obj.position.clone();
+	const direction: Vector3 = objPos.clone().normalize();
 
 	// Calculate the target position by moving the object along the direction vector
-	const targetPos = objPos.clone().addScaledVector(direction, distance);
+	const targetPos: Vector3 = objPos
+		.clone()
+		.addScaledVector(direction, distance);
 
-	// const objCenter = getObjCenter(obj);
-
-	// // Visualize the direction with an ArrowHelper
-	// const arrowHelper = new ArrowHelper(
-	// 	objCenter.clone().normalize(),
-	// 	objCenter,
-	// 	50,
-	// 	0xff0000
-	// );
-	// getScene().add(arrowHelper);
 	return [objPos, targetPos];
 }
 
@@ -232,4 +217,31 @@ export function getObjCenter(obj: Object3D): Vector3 {
 	const objCenter: Vector3 = new Vector3();
 	objBox.getCenter(objCenter);
 	return objCenter;
+}
+
+export function restartQuiz(
+	continentIndex: number,
+	timer: Timer,
+	isHard: boolean,
+	restartButton: HTMLButtonElement
+): void {
+	const countryCounter: HTMLDivElement = document.getElementById(
+		"country-counter"
+	) as HTMLDivElement;
+	const pauseStart: HTMLButtonElement = document.getElementById(
+		"quiz-stop-start"
+	) as HTMLButtonElement;
+	const countries: Countries = getCountries();
+	countries.clearFound();
+	countryCounter.textContent =
+		String(countries.getFound()) +
+		"\u00A0/\u00A0" +
+		countryToFind["base"] +
+		" guessed";
+	setupModelForGame(isHard, continentIndex);
+	timer.reset();
+	toggleIsPlaying();
+	handlePauseStart(false, timer);
+	pauseStart.style.visibility = "visible";
+	restartButton.remove();
 }

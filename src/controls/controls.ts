@@ -26,19 +26,19 @@ export function initializeControls(
 }
 
 /**
- * Updates the enabled state of the controls based on the isPlaying flag.
- * If `isPlaying` is true, controls are enabled; otherwise, they are disabled.
+ * Updates the enabled state of the controls based on the `state` flag.
+ * If `state` is true, controls are enabled; otherwise, they are disabled.
  *
- * @param {boolean} isPlaying - A flag indicating whether the controls should be enabled.
+ * @param {boolean} state - A flag indicating whether the controls should be enabled.
  */
-export function updateControls(isPlaying: boolean): void {
-	controls.enabled = isPlaying;
+export function isControlsEnabled(state: boolean): void {
+	controls.enabled = state;
 }
 
 /**
  * Updates the controls. This method should be called in the animation loop
  * to apply damping and other effects if enabled.
  */
-export function update(): void {
+export function updateControls(): void {
 	controls.update();
 }

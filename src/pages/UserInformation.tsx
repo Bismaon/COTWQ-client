@@ -19,7 +19,7 @@ const UserInformation: React.FC<{ userID: number }> = ({ userID }) => {
 				if (response.ok) {
 					const userData = await response.json();
 					setUserData(userData);
-					console.log("success");
+					console.debug("success");
 				} else {
 					const errorText: string = await response.text();
 					setError(`Failed to fetch user: ${errorText}`);

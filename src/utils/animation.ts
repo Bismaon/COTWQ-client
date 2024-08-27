@@ -4,9 +4,9 @@ import { getCamera, setCameraPosition } from "../camera/camera";
 import { Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from "three";
 import { isRotating } from "../controls/playingState";
 import { getScene } from "../scene/sceneSetup";
-import { update } from "../controls/controls";
+import { updateControls } from "../controls/controls";
 
-const group: Group = new Group();
+const group: Group = new Group(); // Contains the current tween updates
 
 /**
  * Main animation loop function that updates the scene and renders it.
@@ -36,10 +36,9 @@ export function animate(renderer: WebGLRenderer, model: Object3D): void {
 			lastRenderTime = currentTime;
 		}
 
-		requestAnimationFrame(_animate);
 		group.update();
-		console.log(group.getAll());
-		update();
+		updateControls();
+		requestAnimationFrame(_animate);
 	}
 
 	_animate(0);

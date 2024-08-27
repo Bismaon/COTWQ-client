@@ -7,7 +7,7 @@ export class Timer {
 	protected _seconds: number;
 	protected _minutes: number;
 	protected _hours: number;
-	protected _timerElement: HTMLElement;
+	protected _timerElement: HTMLDivElement | undefined;
 	protected _intervalId: NodeJS.Timeout | null;
 	protected _isStopped: boolean;
 
@@ -18,9 +18,12 @@ export class Timer {
 		this._seconds = 0;
 		this._minutes = 0;
 		this._hours = 0;
-		this._timerElement = document.getElementById("timer") as HTMLElement;
 		this._intervalId = null;
 		this._isStopped = true;
+	}
+
+	public setTimerElement(timerDiv: HTMLDivElement): void {
+		this._timerElement = timerDiv;
 	}
 
 	/**
@@ -78,7 +81,8 @@ export class Timer {
 			this._minutes < 10 ? "0" + this._minutes : this._minutes;
 		const displaySeconds: string | number =
 			this._seconds < 10 ? "0" + this._seconds : this._seconds;
-		this._timerElement.textContent = `${displayHours}:${displayMinutes}:${displaySeconds}`;
+		if (this._timerElement)
+			this._timerElement.textContent = `${displayHours}:${displayMinutes}:${displaySeconds}`;
 	}
 
 	/**

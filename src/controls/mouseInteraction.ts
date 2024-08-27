@@ -1,29 +1,10 @@
 // interaction/mouseInteraction.ts
 import { Intersection, Object3D } from "three";
 import { getIntersect } from "../utils/utilities";
-import { isPlaying, isRotating, toggleIsRotating } from "./playingState";
+import { isPlaying } from "./playingState";
 import { getCountries } from "../scene/sceneManager";
 import { Countries } from "../country/Countries";
-
-/**
- * Handles the mouse up event. If the left mouse button is clicked and the game
- * is not playing and not rotating, it toggles the rotation state.
- *
- * @param {MouseEvent} event - The mouse event object.
- */
-export function handleMouseUp(event: MouseEvent): void {
-	if (event.button === 0 && !isPlaying() && !isRotating()) toggleIsRotating();
-}
-
-/**
- * Handles the mouse down event. If the left mouse button is clicked and the game
- * is playing and rotating, it toggles the rotation state.
- *
- * @param {MouseEvent} event - The mouse event object.
- */
-export function handleMouseDown(event: MouseEvent): void {
-	if (event.button === 0 && isPlaying() && isRotating()) toggleIsRotating();
-}
+import { Country } from "../country/Country";
 
 /**
  * Handles the mouse move event. Calculates the normalized device coordinates (NDC)
@@ -80,9 +61,13 @@ function isValidObject(
 	}
 	const continent: number = getIndexFromObject3D(continentObj);
 	const country: number = getIndexFromObject3D(countryObj);
+	const countryElement: Country = countries.getCountryByLocation([
+		continent,
+		country,
+	]);
 	return (
-		countries.getCountryByLocation([continent, country]).getFound() &&
-		isPlaying()
+		(countryElement.getFound() && isPlaying()) ||
+		(!isPlaying() && ["error", "found"].includes(countryElement.getState()))
 	);
 }
 

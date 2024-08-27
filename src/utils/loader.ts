@@ -1,16 +1,7 @@
 // loader.ts
 
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import {
-	LoadingManager,
-	Material,
-	MathUtils,
-	Mesh,
-	MeshPhongMaterial,
-	MeshStandardMaterial,
-	Object3D,
-	Scene,
-} from "three";
+import { Material, MathUtils, Mesh, MeshPhongMaterial, MeshStandardMaterial, Object3D, Scene } from "three";
 import { isMesh } from "./utilities";
 
 /**
@@ -20,19 +11,8 @@ import { isMesh } from "./utilities";
  * @returns {Promise<Object3D>} A promise that resolves to the loaded model.
  */
 export function loadModel(scene: Scene, colors: Material[]): Promise<Object3D> {
-	const loadingManager = new LoadingManager();
-	loadingManager.onStart = function (url, _item, _total) {
-		console.log(`Started loading: ${url}`);
-	};
-
-	loadingManager.onStart = function (url, _loaded, _total) {
-		console.log(`Started loading: ${url}`);
-	};
-	loadingManager.onLoad = function () {
-		console.log(`Finished loading`);
-	};
 	return new Promise((resolve, reject): void => {
-		const loader: GLTFLoader = new GLTFLoader(loadingManager);
+		const loader: GLTFLoader = new GLTFLoader();
 		loader.load(
 			"assets/models/earth_political_nocap_worldset.glb",
 			function (gltf: GLTF): void {
@@ -62,7 +42,6 @@ export function loadModel(scene: Scene, colors: Material[]): Promise<Object3D> {
  */
 function extractColors(model: Object3D, colors: Material[]): void {
 	model.traverse((child: Object3D): void => {
-		console.log(child);
 		if (isMesh(child) && child.material) {
 			const childMesh: Mesh = child as Mesh;
 
@@ -92,5 +71,5 @@ function extractColors(model: Object3D, colors: Material[]): void {
 			}
 		}
 	});
-	console.log(colors);
+	console.debug(colors);
 }

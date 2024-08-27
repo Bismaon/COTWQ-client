@@ -5,11 +5,7 @@ import {
 } from "../lighting/hemisphereLight";
 import { getCamera, setupCamera } from "../camera/camera";
 import { initializeControls } from "../controls/controls";
-import {
-	handleMouseDown,
-	handleMouseUp,
-	onMouseMove,
-} from "../controls/mouseInteraction";
+import { onMouseMove } from "../controls/mouseInteraction";
 import { Scene, WebGLRenderer } from "three";
 
 let renderer: WebGLRenderer;
@@ -26,9 +22,6 @@ export function setupScene(): void {
 		"modelCanvas"
 	) as HTMLCanvasElement;
 
-	// Attach event listeners
-	canvas.addEventListener("mousedown", handleMouseDown);
-	canvas.addEventListener("mouseup", handleMouseUp);
 	canvas.addEventListener("mousemove", onMouseMove);
 	const mainContainer: HTMLDivElement = document.getElementById(
 		"main-container"

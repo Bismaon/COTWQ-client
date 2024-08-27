@@ -1,91 +1,89 @@
-/* Country container */
-/* Ensure the country-container is a flex container */
-#country-container {
-    border: 2px solid rgb(204, 204, 204);
-    border-radius: 5px;
+#country-continent {
+    grid-row: 5/15;
+    grid-column: 2/7;
 }
 
-/* Style for checkbox-container */
-#checkbox-container {
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    width: auto; 
-    margin: 4px 4px 0 4px;
-}
-
-/* Style for country-name-container */
-#country-name-container {
-    color: #fff;
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    margin: 4px 4px 0 4px;
-}
-
-/* Styling for the label inside checkbox-container */
-#checkbox-container label {
-    color: #fff;
-    text-align: left; /* Align text to the left */
-}
-
+/* Container that holds all continent tables */
 #country-continent-name-container {
-    display: none; /* When not playing */
-    font-size: 14px;
-    border-collapse: collapse;
-    border-spacing: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15%, 1fr)); /* Adjust column width */
+    gap: 20px; /* Adjust the gap between columns */
+    margin: 20px; /* Optional: Margin around the grid container */
 }
 
-#country-continent-name-container td td{
-    border: 1px solid rgb(204, 204, 204);
-    padding: 5px 10px;
-    font-size: 14px;
+/* Style for each continent table */
+.grid-continent-item {
+    border-collapse: collapse; /* Ensure borders are collapsed */
+    width: 100%; /* Ensure table takes full width of its grid cell */
+    height: auto;
+    display: block;
+}
+
+/* Remove default padding and spacing */
+.grid-continent-item td, .grid-continent-item th {
+    padding: 0;
+    border-spacing: 0; /* Ensure there's no space between cells */
+    margin: 0; /* Remove any margins */
+}
+
+/* Style for the continent name row */
+.grid-continent-item .continent-name {
+    font-weight: bold;
     text-align: center;
-    line-height: 1.3em;
-    margin: 0 10px;
-}
-#country-continent-name-container .continent-table{
-    display:table-cell;
-    vertical-align: top;
-    padding-top: 10px;
+    padding: 5px;
 }
 
-#country-continent-name-container .africa{
-    background-color: #068806;
-    color: #fff;
-    border-color: #068806 !important;
-}
-#country-continent-name-container .america{
-    background-color: blue;
-    color: #fff;
-    border-color: blue !important;
-}
-#country-continent-name-container .asia{
-    background-color: #e00000;
-    color: #fff;
-    border-color: #e00000 !important;
-}
-#country-continent-name-container .oceania{
-    background-color: #846705;
-    color: #fff;
-    border-color: #846705 !important;
-}
-#country-continent-name-container .europe{
-    background-color: #800080;
-    color: #fff;
-    border-color: #800080 !important;
+/* Style for each country row */
+.grid-continent-item .cell {
+    border: 1px solid white; /* Border color */
+    background-color: transparent; /* Cell background */
+    padding: 5px; /* Adjust padding as needed */
+    text-align: center; /* Center align text */
 }
 
-#country-continent-name-container .cell{
-    background-color: transparent;
-    color:white;
+
+/* Optional: Specific colors for continent names */
+.continent-name#africa {
+    background-color: #EF0D0D;
+    color: #fff;
+    border-color: #EF0D0D !important;
 }
-#country-continent-name-container .cell-found{
-    color:#66FF66;
+
+.continent-name#america {
+    background-color: #EF790D;
+    color: #fff;
+    border-color: #EF790D !important;
 }
-#country-continent-name-container .cell-missed{
-    color: #FF6666;
+
+.continent-name#asia {
+    background-color: #A60DEF;
+    color: #fff;
+    border-color: #A60DEF !important;
 }
-#country-continent-name-container .cell-invisible{
-    display:none;
+
+.continent-name#oceania {
+    background-color: #D0B111;
+    color: #fff;
+    border-color: #D0B111 !important;
+}
+
+.continent-name#europe {
+    background-color: #0D75EF;
+    color: #fff;
+    border-color: #0D75EF !important;
+}
+
+/* Cell styles for special cases */
+#country-continent-name-container .found {
+    color: #66FF66; /* Color for found cells */
+}
+
+#country-continent-name-container .missed {
+    color: #FF6666; /* Color for missed cells */
+}
+
+/* Optional: Hide cells with specific class if needed */
+#country-continent-name-container .invisible {
+    color: transparent;
+    user-select: none;
 }

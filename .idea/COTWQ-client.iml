@@ -2,7 +2,10 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/build/assets/xml" />
+      <excludeFolder url="file://$MODULE_DIR$/build/static" />
       <excludeFolder url="file://$MODULE_DIR$/build/static/js" />
+      <excludeFolder url="file://$MODULE_DIR$/old GLB models" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

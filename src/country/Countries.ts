@@ -155,11 +155,11 @@ export class Countries {
 	 * Resets the count of found countries to zero.
 	 */
 	public clearFound(): void {
-		for (let i: number = 0; i < this._countriesArray.length; i++) {
-			if (this._countriesArray[i].getFound()) {
-				this._countriesArray[i].setFound(false);
+		this._countriesArray.forEach((country: Country): void => {
+			if (country.getFound()) {
+				country.setFound(false);
 			}
-		}
+		});
 		this._countriesFound = 0;
 	}
 

@@ -1,5 +1,5 @@
 // controls/playingState.ts
-import { updateControls } from "./controls";
+import { isControlsEnabled } from "./controls";
 
 let playing: boolean = false;
 let rotating: boolean = true;
@@ -12,7 +12,9 @@ let follow: boolean = false;
  */
 export function toggleIsPlaying(): void {
 	playing = !playing;
-	updateControls(playing);
+	if (playing && rotating) toggleIsRotating();
+
+	isControlsEnabled(playing);
 }
 
 /**

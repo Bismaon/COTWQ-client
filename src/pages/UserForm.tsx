@@ -25,7 +25,7 @@ const UserForm: React.FC = () => {
 			if (response.ok) {
 				const fetchedUser = await response.json();
 				setUserData(fetchedUser);
-				console.log("Fetched user data:", fetchedUser);
+				console.debug("Fetched user data:", fetchedUser);
 			} else {
 				const errorText = await response.text();
 				setError(`Failed to fetch user: ${errorText}`);
