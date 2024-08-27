@@ -1,5 +1,5 @@
 // country/Country.ts
-import { Object3D } from "three";
+import { Mesh, Object3D } from "three";
 
 export interface countryDataInterface {
 	_name: string;
@@ -29,7 +29,7 @@ export class Country implements countryDataInterface {
 	private _isFound: boolean;
 	private _state: string;
 	private _visibility: boolean;
-	private _countryMeshes: Object3D;
+	private _countryMeshes: Mesh;
 	private _countryObj: Object3D;
 
 	/**
@@ -58,7 +58,7 @@ export class Country implements countryDataInterface {
 		this._isFound = false;
 		this._state = "unknown";
 		this._visibility = true;
-		this._countryMeshes = new Object3D();
+		this._countryMeshes = new Mesh();
 		this._countryObj = new Object3D();
 	}
 
@@ -66,7 +66,7 @@ export class Country implements countryDataInterface {
 		return this._countryObj;
 	}
 
-	public setcountryMeshes(value: Object3D) {
+	public setcountryMeshes(value: Mesh) {
 		this._countryMeshes = value;
 	}
 
@@ -74,7 +74,7 @@ export class Country implements countryDataInterface {
 		this._countryObj = value;
 	}
 
-	public getCountryMeshes(): Object3D {
+	public getCountryMeshes(): Mesh {
 		return this._countryMeshes;
 	}
 

@@ -10,10 +10,9 @@ import {
 	Scene,
 	Vector3,
 } from "three";
-import { createTable } from "../country/countriesTable";
 import { Countries } from "../country/Countries";
 import { loadModel } from "../utils/loader";
-import { animate } from "./animate";
+import { animate } from "../utils/animation";
 import { getRenderer } from "./sceneSetup";
 import {
 	changeCountryStateTo,
@@ -21,13 +20,15 @@ import {
 	getConnected,
 } from "../country/countryManager";
 import {
-	getIsPlaying,
-	getIsRotating,
+	isFollowing,
+	isPlaying,
+	isRotating,
 	toggleIsPlaying,
 	toggleIsRotating,
 } from "../controls/playingState";
 import { cameraFaceTo, setCameraPosition } from "../camera/camera";
 import { Country } from "../country/Country";
+import { isMesh } from "../utils/utilities";
 
 const countries: Countries = new Countries();
 let modelParent: Object3D;
@@ -45,7 +46,7 @@ const colorsArray: Material[] = [];
 export async function setupSceneModel(scene: Scene): Promise<void> {
 	await countries.initialize("assets/xml/countries_data.xml");
 	await loadAndInitializeModel(scene);
-	createTable(countries);
+	//createTable(countries);
 }
 
 /**
@@ -70,7 +71,10 @@ async function loadAndInitializeModel(scene: Scene): Promise<void> {
 			const countryObj: Object3D =
 				continents.children[location[0]].children[location[1]]; // need to get the pos of the parent for this one
 			country.setCountryObj(countryObj);
-			country.setcountryMeshes(countryObj.children[0]);
+			const meshes = countryObj.children[0];
+			if (isMesh(meshes)) {
+				country.setcountryMeshes(meshes);
+			}
 			changeCountryStateTo("unknown", countries, [location]);
 			makeCountryOutline(country.getCountryMeshes());
 		});
@@ -85,9 +89,9 @@ async function loadAndInitializeModel(scene: Scene): Promise<void> {
  * Stops any ongoing game, toggles rotation state, clears found countries, and resets visibility and camera position.
  */
 export function resetModel(): void {
-	if (getIsPlaying()) toggleIsPlaying();
-	if (!getIsRotating()) toggleIsRotating();
-	countries.clearFound();
+	if (isPlaying()) toggleIsPlaying();
+	if (!isRotating()) toggleIsRotating();
+	if (isFollowing()) countries.clearFound();
 	countries.getCountriesArray().forEach((country: Country): void => {
 		const location: [number, number] = country.getCountryLocation();
 		changeCountryStateTo("unknown", countries, [location]);
@@ -140,7 +144,7 @@ export function setupModelForGame(
 			countries.getContinents()[continentIndex];
 		cameraFaceTo(getObjCenter(continentObj));
 	}
-	if (getIsRotating()) toggleIsRotating();
+	if (isRotating()) toggleIsRotating();
 }
 
 /**
@@ -173,22 +177,20 @@ export function getCountries(): Countries {
 /**
  * Creates an outline around a country object for better visibility.
  *
- * @param {Object3D} obj - The 3D object to add an outline to.
+ * @param {Mesh} obj - The 3D object to add an outline to.
  */
-function makeCountryOutline(obj: Object3D): void {
-	if (obj instanceof Mesh) {
-		if (obj.geometry) {
-			// Create an EdgesGeometry for the outline
-			const edgesGeometry = new EdgesGeometry(obj.geometry, 45);
-			const edgeMaterial = new LineBasicMaterial({
-				color: 0x000000,
-			});
+function makeCountryOutline(obj: Mesh): void {
+	if (obj.geometry) {
+		// Create an EdgesGeometry for the outline
+		const edgesGeometry = new EdgesGeometry(obj.geometry, 45);
+		const edgeMaterial = new LineBasicMaterial({
+			color: 0x000000,
+		});
 
-			const edgesMesh = new LineSegments(edgesGeometry, edgeMaterial);
+		const edgesMesh = new LineSegments(edgesGeometry, edgeMaterial);
 
-			// Add the outline to the child Mesh
-			obj.add(edgesMesh);
-		}
+		// Add the outline to the child Mesh
+		obj.add(edgesMesh);
 	}
 }
 
@@ -206,7 +208,7 @@ export function getCountryMovement(obj: Object3D, distance: number): Vector3[] {
 	// Calculate the target position by moving the object along the direction vector
 	const targetPos = objPos.clone().addScaledVector(direction, distance);
 
-	const objCenter = getObjCenter(obj);
+	// const objCenter = getObjCenter(obj);
 
 	// // Visualize the direction with an ArrowHelper
 	// const arrowHelper = new ArrowHelper(

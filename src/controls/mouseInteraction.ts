@@ -1,9 +1,9 @@
 // interaction/mouseInteraction.ts
-import { Intersection, Object3D } from 'three';
-import { getIntersect } from '../utils/utilities';
-import { getIsPlaying, getIsRotating, toggleIsRotating } from './playingState';
-import { getCountries } from '../scene/sceneManager';
-import { Countries } from '../country/Countries';
+import { Intersection, Object3D } from "three";
+import { getIntersect } from "../utils/utilities";
+import { isPlaying, isRotating, toggleIsRotating } from "./playingState";
+import { getCountries } from "../scene/sceneManager";
+import { Countries } from "../country/Countries";
 
 /**
  * Handles the mouse up event. If the left mouse button is clicked and the game
@@ -12,8 +12,7 @@ import { Countries } from '../country/Countries';
  * @param {MouseEvent} event - The mouse event object.
  */
 export function handleMouseUp(event: MouseEvent): void {
-	if (event.button === 0 && !getIsPlaying() && !getIsRotating())
-		toggleIsRotating();
+	if (event.button === 0 && !isPlaying() && !isRotating()) toggleIsRotating();
 }
 
 /**
@@ -23,8 +22,7 @@ export function handleMouseUp(event: MouseEvent): void {
  * @param {MouseEvent} event - The mouse event object.
  */
 export function handleMouseDown(event: MouseEvent): void {
-	if (event.button === 0 && getIsPlaying() && getIsRotating())
-		toggleIsRotating();
+	if (event.button === 0 && isPlaying() && isRotating()) toggleIsRotating();
 }
 
 /**
@@ -84,7 +82,7 @@ function isValidObject(
 	const country: number = getIndexFromObject3D(countryObj);
 	return (
 		countries.getCountryByLocation([continent, country]).getFound() &&
-		getIsPlaying()
+		isPlaying()
 	);
 }
 
@@ -103,13 +101,19 @@ function updateCountryName(
 		"country-name-container"
 	);
 	if (countryNameElement) {
-		if (intersectedObject == null || intersectedObject.parent == null) {
+		if (
+			intersectedObject == null ||
+			intersectedObject.parent == null ||
+			intersectedObject.parent.parent == null
+		) {
 			countryNameElement.textContent = "";
 		} else {
 			const continent: number = getIndexFromObject3D(
+				intersectedObject.parent.parent
+			);
+			const country: number = getIndexFromObject3D(
 				intersectedObject.parent
 			);
-			const country: number = getIndexFromObject3D(intersectedObject);
 			countryNameElement.textContent = countries
 				.getCountryByLocation([continent, country])
 				.getCountryName(); // Display country name

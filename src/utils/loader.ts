@@ -1,7 +1,17 @@
 // loader.ts
 
-import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Material, MathUtils, Mesh, MeshPhongMaterial, MeshStandardMaterial, Object3D, Scene } from 'three';
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import {
+	LoadingManager,
+	Material,
+	MathUtils,
+	Mesh,
+	MeshPhongMaterial,
+	MeshStandardMaterial,
+	Object3D,
+	Scene,
+} from "three";
+import { isMesh } from "./utilities";
 
 /**
  * Loads a 3D model and adds it to the scene.
@@ -10,20 +20,31 @@ import { Material, MathUtils, Mesh, MeshPhongMaterial, MeshStandardMaterial, Obj
  * @returns {Promise<Object3D>} A promise that resolves to the loaded model.
  */
 export function loadModel(scene: Scene, colors: Material[]): Promise<Object3D> {
+	const loadingManager = new LoadingManager();
+	loadingManager.onStart = function (url, _item, _total) {
+		console.log(`Started loading: ${url}`);
+	};
+
+	loadingManager.onStart = function (url, _loaded, _total) {
+		console.log(`Started loading: ${url}`);
+	};
+	loadingManager.onLoad = function () {
+		console.log(`Finished loading`);
+	};
 	return new Promise((resolve, reject): void => {
-		const loader: GLTFLoader = new GLTFLoader();
+		const loader: GLTFLoader = new GLTFLoader(loadingManager);
 		loader.load(
 			"assets/models/earth_political_nocap_worldset.glb",
 			function (gltf: GLTF): void {
-				const myModel: Object3D = gltf.scene;
+				const model: Object3D = gltf.scene;
 
 				// Rotate the model (earth tilt)
 				const degrees: number = 23.5;
-				myModel.rotation.x = MathUtils.degToRad(degrees);
+				model.rotation.x = MathUtils.degToRad(degrees);
 
-				scene.add(myModel);
-				extractColors(myModel, colors);
-				resolve(myModel); // Resolve the promise with the loaded model
+				scene.add(model);
+				extractColors(model, colors);
+				resolve(model); // Resolve the promise with the loaded model
 			},
 			undefined,
 			function (error): void {
@@ -41,11 +62,14 @@ export function loadModel(scene: Scene, colors: Material[]): Promise<Object3D> {
  */
 function extractColors(model: Object3D, colors: Material[]): void {
 	model.traverse((child: Object3D): void => {
-		if (child instanceof Mesh && child.material) {
-			child.castShadow = true;
+		console.log(child);
+		if (isMesh(child) && child.material) {
+			const childMesh: Mesh = child as Mesh;
+
+			childMesh.castShadow = true;
 
 			// Clone the material
-			const material: Material = child.material.clone();
+			const material: Material = (childMesh.material as Material).clone();
 
 			// Add polygonOffset settings to the material
 			if (

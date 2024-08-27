@@ -6,8 +6,7 @@ import { foundSearch } from "../country/countryManager";
 import { getCountries } from "../scene/sceneManager";
 import React from "react";
 import { Country } from "../country/Country";
-
-let follow: boolean = false;
+import { isFollowing, toggleIsFollowing } from "./playingState";
 
 /**
  * Handles changes in the answer input textbox during the game.
@@ -59,14 +58,5 @@ export function followCountry(
 	event: React.ChangeEvent<HTMLInputElement>
 ): void {
 	const checkbox: HTMLInputElement = event.target;
-	follow = checkbox.checked;
-}
-
-/**
- * Checks if the camera is set to follow a country.
- *
- * @returns {boolean} - Returns true if the follow mode is enabled, otherwise false.
- */
-export function isFollowing(): boolean {
-	return follow;
+	if (isFollowing() && !checkbox.checked) toggleIsFollowing();
 }

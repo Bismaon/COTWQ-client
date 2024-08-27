@@ -1,7 +1,49 @@
 // utils/animation.ts
-import { Easing, Tween } from '@tweenjs/tween.js';
-import { getCamera } from '../camera/camera';
-import { Object3D, PerspectiveCamera, Vector3 } from 'three';
+import { Easing, Group, Tween } from "@tweenjs/tween.js";
+import { getCamera, setCameraPosition } from "../camera/camera";
+import { Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from "three";
+import { isRotating } from "../controls/playingState";
+import { getScene } from "../scene/sceneSetup";
+import { update } from "../controls/controls";
+
+const group: Group = new Group();
+
+/**
+ * Main animation loop function that updates the scene and renders it.
+ *
+ * @param {WebGLRenderer} renderer - The renderer used to render the scene.
+ * @param {Object3D} model - The 3D model to be animated.
+ */
+export function animate(renderer: WebGLRenderer, model: Object3D): void {
+	let lastRenderTime: number = 0;
+
+	/**
+	 * Internal animation function that performs updates and rendering.
+	 *
+	 * @param {number} currentTime - The current time in milliseconds since the start of the animation.
+	 */
+	function _animate(currentTime: number): void {
+		if (isRotating()) {
+			model.rotation.y += 0.0005;
+		}
+
+		const cameraPosition: Vector3 = new Vector3();
+		getCamera().getWorldPosition(cameraPosition);
+		setCameraPosition(cameraPosition);
+
+		if (currentTime - lastRenderTime >= 16) {
+			renderer.render(getScene(), getCamera());
+			lastRenderTime = currentTime;
+		}
+
+		requestAnimationFrame(_animate);
+		group.update();
+		console.log(group.getAll());
+		update();
+	}
+
+	_animate(0);
+}
 
 /**
  * Animates the camera's position from a start position to a target position,
@@ -18,7 +60,7 @@ export function CameraAnimation(
 	lookAtVector: Vector3,
 	duration: number = 1000
 ): void {
-	new Tween(startPosition)
+	const tweenCam: Tween = new Tween(startPosition)
 		.to(targetPosition, duration)
 		.easing(Easing.Linear.In)
 		.onUpdate((): void => {
@@ -26,7 +68,10 @@ export function CameraAnimation(
 			camera.position.copy(startPosition);
 			camera.lookAt(lookAtVector);
 		})
-		.start();
+		.onComplete((): void => {
+			group.remove(tweenCam);
+		});
+	group.add(tweenCam.start());
 }
 
 /**
@@ -52,7 +97,7 @@ export function bounceAnimation(
 ): void {
 	const halfDuration: number = duration / 2;
 
-	new Tween({ t: 0 })
+	const tweenUp: Tween = new Tween({ t: 0 })
 		.to({ t: 1 }, halfDuration)
 		.easing(Easing.Cubic.Out)
 		.onUpdate(({ t }): void => {
@@ -61,14 +106,18 @@ export function bounceAnimation(
 		.onComplete((): void => {
 			setTimeout((): void => {
 				if (callback) callback();
-				new Tween({ t: 0 })
-					.to({ t: 1 }, halfDuration)
-					.easing(Easing.Bounce.Out)
-					.onUpdate(({ t }): void => {
-						obj.position.lerpVectors(targetPos, orgPos, t);
-					})
-					.start();
+				group.add(tweenDown.start());
 			}, 250);
+			group.remove(tweenUp);
+		});
+	const tweenDown: Tween = new Tween({ t: 0 })
+		.to({ t: 1 }, halfDuration)
+		.easing(Easing.Bounce.Out)
+		.onUpdate(({ t }): void => {
+			obj.position.lerpVectors(targetPos, orgPos, t);
 		})
-		.start();
+		.onComplete((): void => {
+			group.remove(tweenDown);
+		});
+	group.add(tweenUp.start());
 }

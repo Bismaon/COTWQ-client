@@ -3,11 +3,11 @@ import React from "react";
 import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 import "../stylesheet/Quiz.css";
 import "../stylesheet/style.css";
-import Names from "./quiz/Names";
-import Currencies from "./quiz/Currencies";
-import Flags from "./quiz/Flags";
-import Languages from "./quiz/Languages";
-import Capitals from "./quiz/Capitals";
+import Names from "./Names";
+import Currencies from "./Currencies";
+import Flags from "./Flags";
+import Languages from "./Languages";
+import Capitals from "./Capitals";
 import { resetModel } from "../scene/sceneManager";
 
 const GameSetter: React.FC = () => {

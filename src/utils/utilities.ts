@@ -1,6 +1,6 @@
-import { getCamera } from '../camera/camera';
-import { getScene } from '../scene/sceneSetup';
-import { BufferGeometry, Intersection, Line, LineBasicMaterial, Raycaster, Vector2 } from 'three';
+import { getCamera } from "../camera/camera";
+import { getScene } from "../scene/sceneSetup";
+import { BufferGeometry, Intersection, Line, LineBasicMaterial, Mesh, Raycaster, Vector2 } from "three";
 
 /**
  * Processes a string by converting it to lowercase, removing any text within
@@ -66,4 +66,8 @@ function visualizeRay(raycaster: Raycaster, length: number = 100) {
 	setTimeout(() => {
 		getScene().remove(line);
 	}, 2000); // Remove after 2 seconds
+}
+
+export function isMesh(obj: any): obj is Mesh {
+	return obj && obj instanceof Mesh;
 }

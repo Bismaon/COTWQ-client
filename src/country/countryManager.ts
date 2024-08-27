@@ -1,7 +1,7 @@
 // country/countryManager.ts
 import { Countries } from "./Countries";
 import { Material, Mesh, Object3D, Vector3 } from "three";
-import { isFollowing } from "../controls/inputHandlers";
+import { isFollowing } from "../controls/playingState";
 import { Country } from "./Country";
 import {
 	getColorsArray,
@@ -165,9 +165,8 @@ export function changeCountryStateTo(
 			country,
 		]);
 		countryElement.setState(state);
-		const countryMeshes: Object3D = countryElement.getCountryMeshes();
-		if (countryMeshes instanceof Mesh)
-			countryMeshes.material = materialCloned;
+		const countryMeshes: Mesh = countryElement.getCountryMeshes();
+		countryMeshes.material = materialCloned;
 	});
 	materialCloned.needsUpdate = true;
 }

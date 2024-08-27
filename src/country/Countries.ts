@@ -66,7 +66,7 @@ export class Countries {
 	 *
 	 * @param {Object3D[]} value - The array of continent 3D objects to set.
 	 */
-	public setContinents(value: Object3D[]) {
+	public setContinents(value: Object3D[]): void {
 		this._continents = value;
 	}
 
@@ -206,7 +206,7 @@ export class Countries {
 
 			// Parse XML to JavaScript object
 			const parser: XMLParser = new XMLParser();
-			const parsedData = parser.parse(xmlData);
+			const parsedData: any = parser.parse(xmlData);
 
 			// Map parsed data to instances of the Country class
 			return parsedData.countries.country.map((country: any): Country => {
@@ -224,12 +224,13 @@ export class Countries {
 					acceptedNames = [acceptedNames];
 				}
 
-				let ownedLocation = country.ownedLocation
-					? (country.ownedLocation.split(",").map(Number) as [
-							number,
-							number,
-						])
-					: null;
+				let ownedLocation: [number, number] | null =
+					country.ownedLocation
+						? (country.ownedLocation.split(",").map(Number) as [
+								number,
+								number,
+							])
+						: null;
 
 				return new Country(
 					country.name,

@@ -1,25 +1,26 @@
 // controls/playingState.ts
 import { updateControls } from "./controls";
 
-let isPlaying: boolean = false;
-let isRotating: boolean = true;
+let playing: boolean = false;
+let rotating: boolean = true;
+let follow: boolean = false;
 
 /**
  * Toggles the playing state of the user.
- * When toggled, it updates the `isPlaying` flag and reflects this change
+ * When toggled, it updates the `playing` flag and reflects this change
  * in the controls by calling `updateControls`.
  */
 export function toggleIsPlaying(): void {
-	isPlaying = !isPlaying;
-	updateControls(isPlaying);
+	playing = !playing;
+	updateControls(playing);
 }
 
 /**
  * Toggles the rotating state of the model.
- * This function changes the `isRotating` flag between true and false.
+ * This function changes the `rotating` flag between true and false.
  */
 export function toggleIsRotating(): void {
-	isRotating = !isRotating;
+	rotating = !rotating;
 }
 
 /**
@@ -27,8 +28,8 @@ export function toggleIsRotating(): void {
  *
  * @returns {boolean} - The current state of whether the user is playing.
  */
-export function getIsPlaying(): boolean {
-	return isPlaying;
+export function isPlaying(): boolean {
+	return playing;
 }
 
 /**
@@ -36,6 +37,19 @@ export function getIsPlaying(): boolean {
  *
  * @returns {boolean} - The current state of whether the model is rotating.
  */
-export function getIsRotating(): boolean {
-	return isRotating;
+export function isRotating(): boolean {
+	return rotating;
+}
+
+/**
+ * Checks if the camera is set to follow a country.
+ *
+ * @returns {boolean} - Returns true if the follow mode is enabled, otherwise false.
+ */
+export function isFollowing(): boolean {
+	return follow;
+}
+
+export function toggleIsFollowing(): void {
+	follow = !follow;
 }
