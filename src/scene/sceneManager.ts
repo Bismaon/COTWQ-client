@@ -1,24 +1,9 @@
 // scene/sceneManager.ts
-import {
-	Box3,
-	EdgesGeometry,
-	LineBasicMaterial,
-	LineSegments,
-	Material,
-	Mesh,
-	Object3D,
-	Scene,
-	Vector3,
-} from "three";
+import { Box3, Material, Object3D, Scene, Vector3 } from "three";
 import { Countries, countryToFind } from "../country/Countries";
 import { loadModel } from "../utils/loader";
 import { animate } from "../utils/animation";
 import { getRenderer } from "./sceneSetup";
-import {
-	changeCountryStateTo,
-	changeCountryVisibilityTo,
-	getConnected,
-} from "../country/countryManager";
 import {
 	isFollowing,
 	isPlaying,
@@ -29,10 +14,16 @@ import {
 } from "../controls/playingState";
 import { cameraFaceTo, setCameraPosition } from "../camera/camera";
 import { Country } from "../country/Country";
-import { isMesh } from "../utils/utilities";
 import { Timer } from "../utils/Timer";
 import { handlePauseStart } from "../controls/inputHandlers";
 import { changeCountryCellTo } from "../country/countriesTable";
+import {
+	changeCountryStateTo,
+	changeCountryVisibilityTo,
+	getConnected,
+	initializeCountries,
+	resetCountries,
+} from "../utils/countryUtils";
 
 const countries: Countries = new Countries();
 let modelParent: Object3D;
@@ -69,18 +60,7 @@ async function loadAndInitializeModel(scene: Scene): Promise<void> {
 		countries.setContinents(continents.children);
 		console.debug(countries.getContinents());
 
-		countries.getCountriesArray().forEach((country: Country): void => {
-			const location: [number, number] = country.getCountryLocation();
-			const countryObj: Object3D =
-				continents.children[location[0]].children[location[1]]; // need to get the pos of the parent for this one
-			country.setCountryObj(countryObj);
-			const meshes: Object3D = countryObj.children[0];
-			if (isMesh(meshes)) {
-				country.setcountryMeshes(meshes);
-			}
-			changeCountryStateTo("unknown", [location]);
-			makeCountryOutline(country.getCountryMeshes());
-		});
+		initializeCountries(continents);
 		animate(getRenderer(), modelParent);
 	} catch (error: unknown) {
 		console.error("An error occurred while loading the model:", error);
@@ -96,13 +76,8 @@ export function resetModel(): void {
 	if (!isRotating()) toggleIsRotating();
 	if (isFollowing()) toggleIsFollowing();
 	countries.clearFound();
-	countries.getCountriesArray().forEach((country: Country): void => {
-		const location: [number, number] = country.getCountryLocation();
-		changeCountryStateTo("unknown", [location]);
-		changeCountryVisibilityTo(true, [location]);
-	});
-	const basePosition: Vector3 = new Vector3(0, 0, 140);
-	setCameraPosition(basePosition);
+	resetCountries();
+	setCameraPosition(new Vector3(0, 0, 118));
 }
 
 /**
@@ -117,7 +92,7 @@ export function setupModelForGame(
 	continentIndex: number
 ): void {
 	// Change all countries not in the continent to unavailable color/state
-	countries.getCountriesArray().forEach((country: Country): void => {
+	countries.getCountryArray().forEach((country: Country): void => {
 		if (country.getOwnerLocation() === null) {
 			const countryLoc: [number, number] = country.getCountryLocation();
 			if (continentIndex !== -1 && countryLoc[0] !== continentIndex) {
@@ -165,45 +140,6 @@ export function getColorsArray(): Material[] {
  */
 export function getCountries(): Countries {
 	return countries;
-}
-
-/**
- * Creates an outline around a country object for better visibility.
- *
- * @param {Mesh} obj - The 3D object to add an outline to.
- */
-function makeCountryOutline(obj: Mesh): void {
-	if (obj.geometry) {
-		// Create an EdgesGeometry for the outline
-		const edgesGeometry = new EdgesGeometry(obj.geometry, 45);
-		const edgeMaterial = new LineBasicMaterial({
-			color: 0x000000,
-		});
-
-		const edgesMesh = new LineSegments(edgesGeometry, edgeMaterial);
-
-		// Add the outline to the child Mesh
-		obj.add(edgesMesh);
-	}
-}
-
-/**
- * Calculates the starting and target positions for animating a country object.
- *
- * @param {Object3D} obj - The 3D object to animate.
- * @param {number} distance - The distance to move the object.
- * @returns {Vector3[]} An array with the original position and the target position.
- */
-export function getCountryMovement(obj: Object3D, distance: number): Vector3[] {
-	const objPos: Vector3 = obj.position.clone();
-	const direction: Vector3 = objPos.clone().normalize();
-
-	// Calculate the target position by moving the object along the direction vector
-	const targetPos: Vector3 = objPos
-		.clone()
-		.addScaledVector(direction, distance);
-
-	return [objPos, targetPos];
 }
 
 /**

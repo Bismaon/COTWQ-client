@@ -88,7 +88,7 @@ export class Countries {
 	 *
 	 * @returns {Country[]} - The array of Country objects.
 	 */
-	public getCountriesArray(): Country[] {
+	public getCountryArray(): Country[] {
 		return this._countriesArray;
 	}
 

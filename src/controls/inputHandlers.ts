@@ -2,8 +2,7 @@
 import { Timer } from "../utils/Timer";
 import { Countries, countryToFind } from "../country/Countries";
 import { processText } from "../utils/utilities";
-import { changeCountryStateTo, changeCountryVisibilityTo, foundSearch, getConnected } from "../country/countryManager";
-import { getCountries, getCountryMovement, restartQuiz } from "../scene/sceneManager";
+import { getCountries, restartQuiz } from "../scene/sceneManager";
 import React from "react";
 import { Country } from "../country/Country";
 import { isFollowing, isPlaying, toggleIsFollowing, toggleIsPlaying } from "./playingState";
@@ -11,6 +10,13 @@ import { isControlsEnabled } from "./controls";
 import { changeCountryCellTo } from "../country/countriesTable";
 import { bounceAnimation } from "../utils/animation";
 import { Object3D, Vector3 } from "three";
+import {
+	changeCountryStateTo,
+	changeCountryVisibilityTo,
+	foundSearch,
+	getConnected,
+	getCountryMovement,
+} from "../utils/countryUtils";
 
 /**
  * Handles changes in the answer input textbox during the game.
@@ -35,7 +41,7 @@ export function handleTextboxChange(timer: Timer): void {
 		const indexCountry: number[] = countries.exists(countryName);
 
 		indexCountry.forEach((index: number): void => {
-			const country: Country = countries.getCountriesArray()[index];
+			const country: Country = countries.getCountryArray()[index];
 			if (foundSearch(country, textBox)) {
 				timer.stop();
 			}
@@ -94,7 +100,7 @@ export function handleGiveUp(
 
 	const countries: Countries = getCountries();
 
-	countries.getCountriesArray().forEach((country: Country): void => {
+	countries.getCountryArray().forEach((country: Country): void => {
 		// Check if the country meets the criteria (owner is null and not found)
 		if (country.getOwnerLocation() === null && !country.getFound()) {
 			const location: [number, number] = country.getCountryLocation();

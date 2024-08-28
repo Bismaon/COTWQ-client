@@ -43,9 +43,15 @@ const ContinentsMode: React.FC = () => {
 						</button>
 						<button
 							className="button"
-							onClick={() => handleNavigate("america")}
+							onClick={() => handleNavigate("south_america")}
 						>
-							America
+							South America
+						</button>
+						<button
+							className="button"
+							onClick={() => handleNavigate("north_america")}
+						>
+							North America
 						</button>
 						<button
 							className="button"

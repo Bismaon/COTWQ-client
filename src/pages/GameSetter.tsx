@@ -15,11 +15,12 @@ const GameSetter: React.FC = () => {
 	const location = useLocation();
 	const continentNames: string[] = [
 		"africa",
-		"america",
 		"antarctic",
 		"asia",
-		"oceania",
 		"europe",
+		"north_america",
+		"oceania",
+		"south_america",
 	];
 
 	function getGameMode() {

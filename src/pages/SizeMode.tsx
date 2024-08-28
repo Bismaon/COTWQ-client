@@ -18,7 +18,8 @@ const SizeMode: React.FC = () => {
 		location.pathname.endsWith("/asia") ||
 		location.pathname.endsWith("/europe") ||
 		location.pathname.endsWith("/oceania") ||
-		location.pathname.endsWith("/america");
+		location.pathname.endsWith("/south_america") ||
+		location.pathname.endsWith("/north_america");
 
 	console.debug("Rendering Group Selection");
 	return (
