@@ -25,21 +25,16 @@ const colorDict: { [key: string]: number } = {
 /**
  * Marks a country as found and updates related territories.
  *
- * @param {Country} wantedCountry - The country to mark as found.
+ * @param {Country} country - The country to mark as found.
  * @param {boolean} found - Indicates whether the country is found or not.
  */
-export function setCountryIsFoundTo(
-	wantedCountry: Country,
-	found: boolean
-): void {
+export function setCountryIsFoundTo(country: Country, found: boolean): void {
 	const countries: Countries = getCountries();
-	wantedCountry.setFound(found);
+	country.setFound(found);
 	countries.incrementFound();
-	wantedCountry
-		.getTerritories()
-		.forEach((location: [number, number]): void => {
-			countries.getCountryByLocation(location).setFound(true);
-		});
+	country.getTerritories().forEach((location: [number, number]): void => {
+		countries.getCountryByLocation(location).setFound(true);
+	});
 }
 
 /**
@@ -59,7 +54,7 @@ export function foundSearch(
 		const location: [number, number] = country.getCountryLocation();
 		const connectedLoc: [number, number][] = getConnected(location);
 		setCountryIsFoundTo(country, true);
-		changeCountryCellTo(location[0], location[1], "found");
+		changeCountryCellTo("found", location);
 		if (!country.isVisible()) {
 			changeCountryVisibilityTo(true, connectedLoc);
 		}
@@ -83,11 +78,11 @@ function countryFoundAnimation(locations: [number, number][]): void {
 		const countryObj: Object3D = countries
 			.getCountryByLocation([location[0], location[1]])
 			.getcountryObj();
-		const [bodyOrgPos, bodyTargetPos]: Vector3[] = getCountryMovement(
+		const [orgPos, targetPos]: Vector3[] = getCountryMovement(
 			countryObj,
 			100
 		);
-		bounceAnimation(countryObj, bodyOrgPos, bodyTargetPos, (): void => {
+		bounceAnimation(countryObj, orgPos, targetPos, (): void => {
 			changeCountryStateTo("found", [location]);
 		});
 	});

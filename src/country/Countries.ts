@@ -14,24 +14,25 @@ export const countryToFind: { [key: string]: number } = {
  * Represents the population of each continent.
  * The values correspond to the number of countries in each continent.
  */
-const continentPopulation: number[] = [56, 49, 3, 52, 19, 45];
+const continentPopulation: number[] = [56, 3, 51, 46, 34, 19, 15];
 
 /**
  * Represents the real population of each continent.
  * The values are used for accessing country data in each continent.
  */
-const continentRealPopulation: number[] = [53, 35, 3, 48, 13, 42];
+const continentRealPopulation: number[] = [54, 1, 47, 43, 24, 13, 12];
 
 /**
  * Names of the continents in the game.
  */
 const continentNames: string[] = [
 	"africa",
-	"america",
 	"antarctic",
 	"asia",
-	"oceania",
 	"europe",
+	"north_america",
+	"oceania",
+	"south_america",
 ];
 
 /**

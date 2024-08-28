@@ -3,12 +3,14 @@ import { Timer } from "../utils/Timer";
 import { Countries, countryToFind } from "../country/Countries";
 import { processText } from "../utils/utilities";
 import { changeCountryStateTo, changeCountryVisibilityTo, foundSearch, getConnected } from "../country/countryManager";
-import { getCountries, restartQuiz } from "../scene/sceneManager";
+import { getCountries, getCountryMovement, restartQuiz } from "../scene/sceneManager";
 import React from "react";
 import { Country } from "../country/Country";
 import { isFollowing, isPlaying, toggleIsFollowing, toggleIsPlaying } from "./playingState";
 import { isControlsEnabled } from "./controls";
 import { changeCountryCellTo } from "../country/countriesTable";
+import { bounceAnimation } from "../utils/animation";
+import { Object3D, Vector3 } from "three";
 
 /**
  * Handles changes in the answer input textbox during the game.
@@ -92,35 +94,35 @@ export function handleGiveUp(
 
 	const countries: Countries = getCountries();
 
-	if (continentIndex !== -1) {
-		countries.getCountriesArray().forEach((country: Country): void => {
-			if (
-				country.getOwnerLocation() === null &&
-				country.getCountryLocation()[0] === continentIndex &&
-				!country.getFound()
-			) {
-				const location: [number, number] = country.getCountryLocation();
+	countries.getCountriesArray().forEach((country: Country): void => {
+		// Check if the country meets the criteria (owner is null and not found)
+		if (country.getOwnerLocation() === null && !country.getFound()) {
+			const location: [number, number] = country.getCountryLocation();
+
+			// If continentIndex is specified, filter by continent
+			if (continentIndex === -1 || location[0] === continentIndex) {
 				const locations: [number, number][] = getConnected(
 					country.getCountryLocation()
 				);
-				changeCountryStateTo("error", locations);
+
+				locations.forEach((location: [number, number]): void => {
+					const countryObj: Object3D = countries
+						.getCountryByLocation([location[0], location[1]])
+						.getcountryObj();
+					const [orgPos, targetPos]: Vector3[] = getCountryMovement(
+						countryObj,
+						100
+					);
+					bounceAnimation(countryObj, orgPos, targetPos, (): void => {
+						changeCountryStateTo("error", [location]);
+					});
+				});
+
 				changeCountryVisibilityTo(true, locations);
-				changeCountryCellTo(location[0], location[1], "missed");
+				changeCountryCellTo("missed", location);
 			}
-		});
-	} else {
-		countries.getCountriesArray().forEach((country: Country): void => {
-			if (country.getOwnerLocation() === null && !country.getFound()) {
-				const location: [number, number] = country.getCountryLocation();
-				const locations: [number, number][] = getConnected(
-					country.getCountryLocation()
-				);
-				changeCountryStateTo("error", locations);
-				changeCountryVisibilityTo(true, locations);
-				changeCountryCellTo(location[0], location[1], "missed");
-			}
-		});
-	}
+		}
+	});
 }
 
 export function handlePauseStart(ongoing: boolean, timer: Timer): void {

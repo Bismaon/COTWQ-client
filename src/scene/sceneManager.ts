@@ -128,7 +128,7 @@ export function setupModelForGame(
 				}
 				changeCountryStateTo("unknown", getConnected(countryLoc));
 			}
-			changeCountryCellTo(countryLoc[0], countryLoc[1], "invisible");
+			changeCountryCellTo("invisible", countryLoc);
 		}
 	});
 	if (continentIndex !== -1) {

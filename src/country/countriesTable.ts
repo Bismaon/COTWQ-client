@@ -5,17 +5,29 @@ import { Country } from "./Country";
 import { getCountries } from "../scene/sceneManager";
 
 /** Represents the number of countries in each continent for table layout purposes. */
-const continentCountryCounts: [number, number, number, number, number, number] =
-	[56, 49, 3, 52, 19, 45];
+const continentCountryCounts: [56, 3, 51, 46, 34, 19, 15] = [
+	56, 3, 51, 46, 34, 19, 15,
+];
 
 /** Defines the names of the continents. */
 const continentNames: string[] = [
 	"africa",
-	"america",
 	"antarctic",
 	"asia",
-	"oceania",
 	"europe",
+	"north_america",
+	"oceania",
+	"south_america",
+];
+
+const continentFormattedNames: string[] = [
+	"Africa",
+	"Antarctic",
+	"Asia",
+	"Europe",
+	"North America",
+	"Oceania",
+	"South America",
 ];
 
 /**
@@ -36,7 +48,7 @@ export function createTable(): void {
 	// Iterate over each continent to create a separate table.
 	continentNames.forEach((continent: string, index: number): void => {
 		// Skip "Antarctic" as per requirements.
-		if (continent === "antarctic") return;
+		if (continent === "antarctic" || continent === "south_america") return;
 
 		// Create a new table element for the current continent.
 		const table: HTMLTableElement = document.createElement("table");
@@ -50,7 +62,7 @@ export function createTable(): void {
 		const continentRow: HTMLTableRowElement = tableBody.insertRow();
 		const continentCell: HTMLTableCellElement = continentRow.insertCell();
 		continentCell.colSpan = 1; // Ensuring the cell takes full width of the column.
-		continentCell.innerHTML = `<div class="continent-name" id=${continent.toLowerCase()}>${continent}</div>`;
+		continentCell.innerHTML = `<div class="continent-name" id=${continent.toLowerCase()}>${continentFormattedNames[index]}</div>`;
 
 		// Add the countries as subsequent rows.
 		for (let i: number = 0; i < continentCountryCounts[index]; i++) {
@@ -58,52 +70,63 @@ export function createTable(): void {
 			if (country.getOwnerLocation() !== null) continue;
 			const row: HTMLTableRowElement = tableBody.insertRow();
 			const cell: HTMLTableCellElement = row.insertCell();
-			cell.innerHTML = `<div class="cell invisible" id="_${i}">${country.getCountryName()}</div>`;
+			cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.getCountryName()}</div>`;
 		}
 
 		// Append the table to the container div.
 		container.appendChild(table);
+		if (continent === "oceania") {
+			index++; // South America
+			continent = continentNames[index];
+			// Add the continent name as the first row.
+
+			const emptyRow: HTMLTableRowElement = tableBody.insertRow();
+			const emptyCell: HTMLTableCellElement = emptyRow.insertCell();
+			emptyCell.colSpan = 1;
+			emptyCell.innerHTML = "<div id='empty-space'>EMPTY</div>";
+
+			const continentRow: HTMLTableRowElement = tableBody.insertRow();
+			const continentCell: HTMLTableCellElement =
+				continentRow.insertCell();
+			continentCell.colSpan = 1; // Ensuring the cell takes full width of the column.
+			continentCell.innerHTML = `<div class="continent-name" id=${continent.toLowerCase()}>${continentFormattedNames[index]}</div>`;
+
+			// Add the countries as subsequent rows.
+			for (let i: number = 0; i < continentCountryCounts[index]; i++) {
+				const country: Country = countries.getCountryByLocation([
+					index,
+					i,
+				]);
+				if (country.getOwnerLocation() !== null) continue;
+				const row: HTMLTableRowElement = tableBody.insertRow();
+				const cell: HTMLTableCellElement = row.insertCell();
+				cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.getCountryName()}</div>`;
+			}
+		}
 	});
 }
 
-/**
- *
- * @param {number} continentIndex
- * @param {number} index
- * @param {"found" | "missed" | "invisible"} state
- */
 export function changeCountryCellTo(
-	continentIndex: number,
-	index: number,
-	state: "found" | "missed" | "invisible"
+	state: "found" | "missed" | "invisible",
+	[continent, country]: [number, number]
 ): void {
-	if (continentIndex === 2) {
-		console.error("Antarctic index not a possibility for now...");
-	} else if (continentIndex > 2) continentIndex -= 1;
+	if (continent === 1) {
+		console.debug("No antarctic!");
+		return;
+	}
 	// Retrieve the container element where the tables are appended
 	const container: HTMLTableElement = document.getElementById(
 		"country-continent-name-container"
 	) as HTMLTableElement;
 
-	// Find the table for the specified continent
-	const table: HTMLTableElement | null = container.children[
-		continentIndex
-	] as HTMLTableElement;
-
-	if (!table) {
-		console.error(
-			`Table for continent ${continentNames[continentIndex]} not found.`
-		);
-		return;
-	}
-
 	// Find the cell with the specific index in the table
-	const cell: HTMLTableCellElement | null = table.querySelector(
-		`div#_${index}`
+	const cell: HTMLTableCellElement | null = container.querySelector(
+		`div#_${continent}_${country}`
 	);
 
+	console.log(cell);
 	if (!cell) {
-		console.error(`Cell with index ${index} not found.`);
+		console.error(`Cell with index _${continent}_${country} not found.`);
 		return;
 	}
 

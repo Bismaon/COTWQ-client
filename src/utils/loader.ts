@@ -14,7 +14,7 @@ export function loadModel(scene: Scene, colors: Material[]): Promise<Object3D> {
 	return new Promise((resolve, reject): void => {
 		const loader: GLTFLoader = new GLTFLoader();
 		loader.load(
-			"assets/models/earth_political_nocap_worldset.glb",
+			"assets/models/earth_political_continentUp.glb",
 			function (gltf: GLTF): void {
 				const model: Object3D = gltf.scene;
 

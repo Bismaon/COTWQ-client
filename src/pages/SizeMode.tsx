@@ -31,25 +31,25 @@ const SizeMode: React.FC = () => {
 					<div className="grid-item" id="back">
 						<i
 							className="fa-solid fa-arrow-left grid-item"
-							onClick={() => navigate(-1)}
+							onClick={(): void => navigate(-1)}
 						></i>
 					</div>
 					<div className="grid-item" id="menu">
 						<button
 							className="button"
-							onClick={() => navigate("classic")}
+							onClick={(): void => navigate("classic")}
 						>
 							Classic
 						</button>
 						<button
 							className="button"
-							onClick={() => navigate("sequential-random")}
+							onClick={(): void => navigate("sequential-random")}
 						>
 							Sequential Random
 						</button>
 						<button
 							className="button"
-							onClick={() => navigate("hard")}
+							onClick={(): void => navigate("hard")}
 						>
 							Hard
 						</button>

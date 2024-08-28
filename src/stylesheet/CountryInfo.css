@@ -49,10 +49,23 @@
     border-color: #EF0D0D !important;
 }
 
-.continent-name#america {
+#empty-space {
+    user-select: none;
+    color: transparent;
+    padding: 5px;
+    visibility: hidden;
+}
+
+.continent-name#north_america {
     background-color: #EF790D;
     color: #fff;
     border-color: #EF790D !important;
+}
+
+.continent-name#south_america {
+    background-color: #15B42F;
+    color: #fff;
+    border-color: #15B42F !important;
 }
 
 .continent-name#asia {
@@ -75,7 +88,7 @@
 
 /* Cell styles for special cases */
 #country-continent-name-container .found {
-    color: #66FF66; /* Color for found cells */
+    color: #66FF66; /*  Color for found cells */
 }
 
 #country-continent-name-container .missed {
