@@ -1,8 +1,19 @@
-// loader.ts
+// utils/loader.ts
 
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Material, MathUtils, Mesh, MeshPhongMaterial, MeshStandardMaterial, Object3D, Scene } from "three";
+import {
+	LoadingManager,
+	Material,
+	MathUtils,
+	Mesh,
+	MeshPhongMaterial,
+	MeshStandardMaterial,
+	Object3D,
+	Scene,
+} from "three";
 import { isMesh } from "./utilities";
+
+export const loadingManager = new LoadingManager();
 
 /**
  * Loads a 3D model and adds it to the scene.
@@ -12,7 +23,7 @@ import { isMesh } from "./utilities";
  */
 export function loadModel(scene: Scene, colors: Material[]): Promise<Object3D> {
 	return new Promise((resolve, reject): void => {
-		const loader: GLTFLoader = new GLTFLoader();
+		const loader: GLTFLoader = new GLTFLoader(loadingManager);
 		loader.load(
 			"assets/models/earth_political_continentUp.glb",
 			function (gltf: GLTF): void {
