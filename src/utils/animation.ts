@@ -3,25 +3,15 @@ import { Easing, Group, Tween } from "@tweenjs/tween.js";
 import { getCamera, setCameraPosition } from "../camera/camera";
 import { Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from "three";
 import { isRotating } from "../controls/playingState";
-import { getScene } from "../scene/sceneSetup";
+import { getRenderer, getScene } from "../scene/sceneSetup";
 import { updateControls } from "../controls/controls";
 
 const group: Group = new Group(); // Contains the current tween updates
 
-/**
- * Main animation loop function that updates the scene and renders it.
- *
- * @param {WebGLRenderer} renderer - The renderer used to render the scene.
- * @param {Object3D} model - The 3D model to be animated.
- */
-export function animate(renderer: WebGLRenderer, model: Object3D): void {
+export function animate(model: Object3D): void {
 	let lastRenderTime: number = 0;
+	const renderer: WebGLRenderer = getRenderer();
 
-	/**
-	 * Internal animation function that performs updates and rendering.
-	 *
-	 * @param {number} currentTime - The current time in milliseconds since the start of the animation.
-	 */
 	function _animate(currentTime: number): void {
 		if (isRotating()) {
 			model.rotation.y += 0.0005;
@@ -44,15 +34,6 @@ export function animate(renderer: WebGLRenderer, model: Object3D): void {
 	_animate(0);
 }
 
-/**
- * Animates the camera's position from a start position to a target position,
- * and makes the camera look at a specified vector.
- *
- * @param {Vector3} startPosition - The initial position of the camera.
- * @param {Vector3} targetPosition - The target position of the camera.
- * @param {Vector3} lookAtVector - The vector that the camera should look at.
- * @param {number} [duration=1000] - The duration of the animation in milliseconds.
- */
 export function CameraAnimation(
 	startPosition: Vector3,
 	targetPosition: Vector3,
@@ -73,20 +54,6 @@ export function CameraAnimation(
 	group.add(tweenCam.start());
 }
 
-/**
- * Creates a bouncing animation for an object, moving it between an original
- * position and a target position.
- *
- * The animation is split into two phases:
- * 1. Moving from the original position to the target position with a cubic ease-out.
- * 2. Bouncing back from the target position to the original position with a bounce ease-out.
- *
- * @param {Object3D} obj - The object to animate.
- * @param {Vector3} orgPos - The original position of the object.
- * @param {Vector3} targetPos - The target position of the object.
- * @param {() => void} [callback] - Optional callback function to be called after the bounce-in phase completes.
- * @param {number} [duration=1000] - The total duration of the animation in milliseconds.
- */
 export function bounceAnimation(
 	obj: Object3D,
 	orgPos: Vector3,

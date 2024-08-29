@@ -5,24 +5,18 @@ import {
 } from "../lighting/hemisphereLight";
 import { getCamera, setupCamera } from "../camera/camera";
 import { initializeControls } from "../controls/controls";
-import { onMouseMove } from "../controls/mouseInteraction";
+import { mouseHover } from "../controls/mouseInteraction";
 import { Scene, WebGLRenderer } from "three";
 
 let renderer: WebGLRenderer;
 let scene: Scene;
 
-/**
- * Sets up the Three.js scene, including the canvas, renderer, camera, controls, and lighting.
- * Initializes event listeners for mouse interactions and configures the rendering environment.
- *
- * @throws {Error} Throws an error if the canvas element with the ID 'modelCanvas' is not found.
- */
 export function setupScene(): void {
 	const canvas: HTMLCanvasElement = document.getElementById(
 		"modelCanvas"
 	) as HTMLCanvasElement;
 
-	canvas.addEventListener("mousemove", onMouseMove);
+	canvas.addEventListener("mousemove", mouseHover);
 	const mainContainer: HTMLDivElement = document.getElementById(
 		"main-container"
 	) as HTMLDivElement;
@@ -48,20 +42,10 @@ export function setupScene(): void {
 	scene.add(getHemisphereLight());
 }
 
-/**
- * Retrieves the WebGL renderer used in the scene setup.
- *
- * @returns {WebGLRenderer} The WebGLRenderer instance used for rendering the scene.
- */
 export function getRenderer(): WebGLRenderer {
 	return renderer;
 }
 
-/**
- * Retrieves the Three.js scene object.
- *
- * @returns {Scene} The Scene instance used in the application.
- */
 export function getScene(): Scene {
 	return scene;
 }

@@ -90,7 +90,9 @@ export class Timer {
 	 * @returns The timer as a string.
 	 */
 	public toString(): string {
-		return `${this._hours}:${this._minutes}:${this._seconds}`;
+		const hours: string = this._hours === 0 ? "" : `${this._hours}:`;
+		const minutes: string = this._minutes === 0 ? "" : `${this._minutes}:`;
+		return hours + minutes + `${this._seconds}`;
 	}
 
 	/**

@@ -9,12 +9,8 @@ import {
 	Vector3,
 } from "three";
 import { Country } from "../country/Country";
-import { isMesh } from "./utilities";
-import {
-	getColorsArray,
-	getCountries,
-	getObjCenter,
-} from "../scene/sceneManager";
+import { getObjCenter, isMesh } from "./utilities";
+import { getColorsArray, getCountries } from "../scene/sceneManager";
 import { Countries } from "../country/Countries";
 import { bounceAnimation } from "./animation";
 import { isFollowing } from "../controls/playingState";
@@ -30,45 +26,26 @@ const colorDict: { [key: string]: number } = {
 	water: 5,
 };
 
-/**
- * Marks a country as found and updates related territories.
- *
- * @param {Country} country - The country to mark as found.
- * @param {boolean} found - Indicates whether the country is found or not.
- */
 export function setCountryIsFoundTo(country: Country, found: boolean): void {
 	const countries: Countries = getCountries();
-	country.setFound(found);
+	country.isFound = found;
 	countries.incrementFound();
-	country.getTerritories().forEach((location: [number, number]): void => {
-		countries.getCountryByLocation(location).setFound(true);
+	country.territories.forEach((location: [number, number]): void => {
+		countries.getCountryByLocation(location).isFound = true;
 	});
 }
 
-/**
- * Updates the visibility of countries at specified locations.
- *
- * @param {boolean} visibility - The visibility state to set for the countries.
- * @param {Array<[number, number]>} locations - The locations of the countries to update.
- */
 export function changeCountryVisibilityTo(
 	visibility: boolean,
 	locations: [number, number][]
 ): void {
 	const countries: Countries = getCountries();
 	locations.forEach(([continent, country]: number[]): void => {
-		countries
-			.getCountryByLocation([continent, country])
-			.setVisibility(visibility);
+		countries.getCountryByLocation([continent, country]).visibility =
+			visibility;
 	});
 }
 
-/**
- * Changes the state of countries at specified locations and updates their material color.
- *
- * @param {string} state - The new state to set for the countries.
- * @param {Array<[number, number]>} locations - The locations of the countries to update.
- */
 export function changeCountryStateTo(
 	state: string,
 	locations: [number, number][]
@@ -81,45 +58,36 @@ export function changeCountryStateTo(
 			continent,
 			country,
 		]);
-		countryElement.setState(state);
-		const countryMeshes: Mesh = countryElement.getCountryMeshes();
+		countryElement.state = state;
+		const countryMeshes: Mesh = countryElement.meshes;
 		countryMeshes.material = materialCloned;
 	});
 	materialCloned.needsUpdate = true;
 }
 
-export function initializeCountries(continents: Object3D): void {
-	getCountries()
-		.getCountryArray()
-		.forEach((country: Country): void => {
-			const location: [number, number] = country.getCountryLocation();
-			const countryObj: Object3D =
-				continents.children[location[0]].children[location[1]];
-			country.setCountryObj(countryObj);
-			const meshes: Object3D = countryObj.children[0];
-			if (isMesh(meshes)) {
-				country.setcountryMeshes(meshes);
-			}
-			changeCountryStateTo("unknown", [location]);
-			createCountryOutline(country.getCountryMeshes());
-		});
+export function initializeCountries(): void {
+	const continents: Object3D[] = getCountries().continents;
+	getCountries().countryArray.forEach((country: Country): void => {
+		const location: [number, number] = country.location;
+		const countryObj: Object3D =
+			continents[location[0]].children[location[1]];
+		country.object = countryObj;
+		const meshes: Object3D = countryObj.children[0];
+		if (isMesh(meshes)) {
+			country.meshes = meshes;
+		}
+		changeCountryStateTo("unknown", [location]);
+		createCountryOutline(country.meshes);
+	});
 }
 
 export function resetCountries(): void {
-	getCountries()
-		.getCountryArray()
-		.forEach((country: Country): void => {
-			const location: [number, number] = country.getCountryLocation();
-			changeCountryStateTo("unknown", [location]);
-			changeCountryVisibilityTo(true, [location]);
-		});
+	getCountries().countryArray.forEach((country: Country): void => {
+		const location: [number, number] = country.location;
+		changeCountryStateTo("unknown", [location]);
+		changeCountryVisibilityTo(true, [location]);
+	});
 }
-
-/**
- * Creates an outline around a country object for better visibility.
- *
- * @param {Mesh} obj - The 3D object to add an outline to.
- */
 
 export function createCountryOutline(obj: Mesh): void {
 	if (obj.geometry) {
@@ -154,9 +122,10 @@ export function getCountryMovement(obj: Object3D, distance: number): Vector3[] {
 function triggerCountryFoundAnimation(locations: [number, number][]): void {
 	const countries: Countries = getCountries();
 	locations.forEach((location: [number, number]): void => {
-		const countryObj: Object3D = countries
-			.getCountryByLocation([location[0], location[1]])
-			.getcountryObj();
+		const countryObj: Object3D = countries.getCountryByLocation([
+			location[0],
+			location[1],
+		]).object;
 		const [orgPos, targetPos]: Vector3[] = getCountryMovement(
 			countryObj,
 			100
@@ -167,34 +136,22 @@ function triggerCountryFoundAnimation(locations: [number, number][]): void {
 	});
 }
 
-/**
- * Handles the search for a country based on user input and updates the game state.
- *
- * @param {Country} country - The country that was searched for.
- * @param {HTMLInputElement} textBox - The input element containing the search text.
- * @returns {boolean} - True if all countries have been found according to the game mode, otherwise false.
- */
-export function foundSearch(
-	country: Country,
-	textBox: HTMLInputElement
-): boolean {
-	if (!country.getFound()) {
-		textBox.value = "";
-
-		const location: [number, number] = country.getCountryLocation();
+export function foundSearch(country: Country, gameMode: string): boolean {
+	if (!country.isFound) {
+		const location: [number, number] = country.location;
 		const connectedLoc: [number, number][] = getConnected(location);
 		setCountryIsFoundTo(country, true);
 		changeCountryCellTo("found", location);
-		if (!country.isVisible()) {
+		if (!country.visibility) {
 			changeCountryVisibilityTo(true, connectedLoc);
 		}
 
 		triggerCountryFoundAnimation(connectedLoc);
 		if (isFollowing()) {
-			cameraFaceTo(getObjCenter(country.getcountryObj()));
+			cameraFaceTo(getObjCenter(country.object));
 		}
 	}
-	return getCountries().isAllFound("base");
+	return getCountries().isAllFound(gameMode);
 }
 
 /**
@@ -208,18 +165,13 @@ export function getConnected(location: [number, number]): [number, number][] {
 	const connectedLocations: [number, number][] = [];
 	const country: Country = countries.getCountryByLocation(location);
 
-	const ownerLocation: [number, number] | null = country.getOwnerLocation();
+	// console.log(country.countryObj);
+	const ownerLocation: [number, number] | null = country.ownerLocation;
 	if (ownerLocation) {
 		const owner: Country = countries.getCountryByLocation(ownerLocation);
-		connectedLocations.push(
-			owner.getCountryLocation(),
-			...owner.getTerritories()
-		);
+		connectedLocations.push(owner.location, ...owner.territories);
 	} else {
-		connectedLocations.push(
-			country.getCountryLocation(), // contains country location
-			...country.getTerritories()
-		);
+		connectedLocations.push(country.location, ...country.territories);
 	}
 	return connectedLocations;
 }

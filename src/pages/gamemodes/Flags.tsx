@@ -1,6 +1,6 @@
 import React from "react";
-import "../stylesheet/style.css";
-import "../stylesheet/Quiz.css";
+import "../../stylesheet/style.css";
+import "../../stylesheet/Quiz.css";
 
 const Flags: React.FC<{
 	isHard: boolean;

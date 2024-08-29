@@ -4,7 +4,7 @@
 }
 
 /* Container that holds all continent tables */
-#country-continent-name-container {
+.grid-continent {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(15%, 1fr)); /* Adjust column width */
     gap: 20px; /* Adjust the gap between columns */

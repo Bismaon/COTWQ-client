@@ -5,7 +5,6 @@ import {
 	useLocation,
 	useNavigate,
 } from "react-router-dom";
-import "../stylesheet/Menus.css";
 import "../stylesheet/style.css";
 
 const HardMode: React.FC = () => {
@@ -28,7 +27,7 @@ const HardMode: React.FC = () => {
 					</div>
 					<div className="grid-item" id="back">
 						<i
-							className="fa-solid fa-arrow-left grid-item"
+							className={`fa-solid fa-arrow-left $"grid-item"`}
 							onClick={() => navigate(-1)}
 						></i>
 					</div>

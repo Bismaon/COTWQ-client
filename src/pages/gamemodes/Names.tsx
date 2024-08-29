@@ -1,33 +1,36 @@
-import React, { useEffect } from "react";
-import "../stylesheet/Quiz.css";
-import "../stylesheet/CountryInfo.css";
-import "../stylesheet/style.css";
-import { Timer } from "../utils/Timer";
+import React, { useEffect, useRef } from "react";
+import "../../stylesheet/Quiz.css";
+import "../../stylesheet/style.css";
+import "../../stylesheet/CountryInfo.css";
+import { Timer } from "../../utils/Timer";
 import {
-	followCountry,
+	cameraFollowCountry,
 	handleGiveUp,
 	handlePauseStart,
 	handleTextboxChange,
-} from "../controls/inputHandlers";
-import { setupModelForGame } from "../scene/sceneManager";
-import { createTable } from "../country/countriesTable";
+} from "../../controls/inputHandlers";
+import { setupModelForGame } from "../../scene/sceneManager";
+import { continentNames, createTable } from "../../country/countriesTable";
+import { countryToFind } from "../../country/Countries";
 
 const Names: React.FC<{
 	isHard: boolean;
 	continentIndex: number;
 	isClassic: boolean;
 }> = ({ isHard, continentIndex, isClassic }) => {
-	let isQuizInit: boolean = false;
+	let isQuizInit = useRef(false);
 	let ongoing: boolean = false;
-	const gameTimer = new Timer();
+	const gameTimer: Timer = new Timer();
+	const gameMode: string =
+		continentIndex === -1 ? "base" : continentNames[continentIndex];
 
 	useEffect(() => {
-		if (!isQuizInit) {
+		if (!isQuizInit.current) {
 			createTable(); // Ensure createTable is only called once
 			setupModelForGame(isHard, continentIndex);
-			isQuizInit = true;
+			isQuizInit.current = true;
 		}
-	}, []); // Empty dependency array ensures this runs only once
+	}, [continentIndex, isHard]); // Empty dependency array ensures this runs only once
 	return (
 		<>
 			<div className="grid-item" id="quiz-controls">
@@ -40,7 +43,12 @@ const Names: React.FC<{
 						id="give-up-btn"
 						onClick={(): void => {
 							ongoing = !ongoing;
-							handleGiveUp(continentIndex, gameTimer, isHard);
+							handleGiveUp(
+								continentIndex,
+								gameTimer,
+								isHard,
+								gameMode
+							);
 						}}
 					>
 						Give Up
@@ -63,13 +71,15 @@ const Names: React.FC<{
 							type="text"
 							id="answer-box-input"
 							name="textbox"
-							onInput={(): void => handleTextboxChange(gameTimer)}
+							onInput={(): void =>
+								handleTextboxChange(gameTimer, gameMode)
+							}
 							autoComplete="off"
 							autoCorrect="off"
 						/>
 					</div>
 					<div className="quiz-grid-item" id="country-counter">
-						0&nbsp;/&nbsp;191 guessed
+						0&nbsp;/&nbsp;{countryToFind[gameMode]} guessed
 					</div>
 				</div>
 			</div>
@@ -80,7 +90,7 @@ const Names: React.FC<{
 						type="checkbox"
 						id="follow"
 						name="follow"
-						onChange={followCountry}
+						onChange={cameraFollowCountry}
 					></input>
 				</div>
 				<div id="country-name-container"></div>

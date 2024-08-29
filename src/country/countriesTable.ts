@@ -10,7 +10,7 @@ const continentCountryCounts: [56, 3, 51, 46, 34, 19, 15] = [
 ];
 
 /** Defines the names of the continents. */
-const continentNames: string[] = [
+export const continentNames: string[] = [
 	"africa",
 	"antarctic",
 	"asia",
@@ -67,10 +67,10 @@ export function createTable(): void {
 		// Add the countries as subsequent rows.
 		for (let i: number = 0; i < continentCountryCounts[index]; i++) {
 			const country: Country = countries.getCountryByLocation([index, i]);
-			if (country.getOwnerLocation() !== null) continue;
+			if (country.ownerLocation !== null) continue;
 			const row: HTMLTableRowElement = tableBody.insertRow();
 			const cell: HTMLTableCellElement = row.insertCell();
-			cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.getCountryName()}</div>`;
+			cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.name}</div>`;
 		}
 
 		// Append the table to the container div.
@@ -97,10 +97,10 @@ export function createTable(): void {
 					index,
 					i,
 				]);
-				if (country.getOwnerLocation() !== null) continue;
+				if (country.ownerLocation !== null) continue;
 				const row: HTMLTableRowElement = tableBody.insertRow();
 				const cell: HTMLTableCellElement = row.insertCell();
-				cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.getCountryName()}</div>`;
+				cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.name}</div>`;
 			}
 		}
 	});
@@ -124,7 +124,7 @@ export function changeCountryCellTo(
 		`div#_${continent}_${country}`
 	);
 
-	console.log(cell);
+	// console.log(cell);
 	if (!cell) {
 		console.error(`Cell with index _${continent}_${country} not found.`);
 		return;

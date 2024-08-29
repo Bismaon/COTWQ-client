@@ -2,7 +2,6 @@
 
 import React from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import "../stylesheet/Menus.css";
 import "../stylesheet/style.css";
 
 const MainMenu: React.FC = () => {

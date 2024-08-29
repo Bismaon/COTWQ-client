@@ -6,7 +6,6 @@ import {
 	useLocation,
 	useNavigate,
 } from "react-router-dom";
-import "../stylesheet/Menus.css";
 import "../stylesheet/style.css";
 
 const GameMode: React.FC = () => {
@@ -32,7 +31,7 @@ const GameMode: React.FC = () => {
 					<div className="grid-item" id="back">
 						<i
 							className="fa-solid fa-arrow-left grid-item"
-							onClick={() => navigate(-1)}
+							onClick={(): void => navigate(-1)}
 						></i>
 					</div>
 					<div className="grid-item" id="menu">

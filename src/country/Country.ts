@@ -1,36 +1,15 @@
 // country/Country.ts
 import { Mesh, Object3D } from "three";
 
-export interface countryDataInterface {
-	_name: string;
-	_location: [number, number];
-	_territories: [number, number][] | null;
-	_ownedLocation: [number, number] | null;
-	_acceptedNames: string[];
-	_flag: [string, string];
-	_currency: string | null;
-	_languages: string[] | null;
-	_capital: string | null;
-}
-
 /**
  * Represents a country.
  */
-export class Country implements countryDataInterface {
-	_acceptedNames: string[];
-	_capital: string | null;
-	_currency: string | null;
-	_flag: [string, string];
-	_languages: string[] | null;
-	_location: [number, number];
-	_name: string;
-	_ownedLocation: [number, number] | null;
-	_territories: [number, number][] | null;
-	private _isFound: boolean;
-	private _state: string;
-	private _visibility: boolean;
-	private _countryMeshes: Mesh;
-	private _countryObj: Object3D;
+export class Country {
+	private _capital: string | null;
+	private _currency: string | null;
+	private _flag: [string, string];
+	private _languages: string[] | null;
+	private readonly _isOwned: boolean;
 
 	/**
 	 * Creates an instance of Country.
@@ -40,7 +19,7 @@ export class Country implements countryDataInterface {
 		acceptedNames: string[],
 		territories: [number, number][] | null,
 		location: [number, number],
-		ownedLocation: [number, number] | null,
+		ownerLocation: [number, number] | null,
 		flag: [string, string],
 		currency: string | null,
 		capital: string | null,
@@ -50,7 +29,7 @@ export class Country implements countryDataInterface {
 		this._acceptedNames = acceptedNames;
 		this._territories = territories;
 		this._location = location;
-		this._ownedLocation = ownedLocation;
+		this._ownerLocation = ownerLocation;
 		this._flag = flag;
 		this._currency = currency;
 		this._languages = languages;
@@ -58,95 +37,18 @@ export class Country implements countryDataInterface {
 		this._isFound = false;
 		this._state = "unknown";
 		this._visibility = true;
-		this._countryMeshes = new Mesh();
-		this._countryObj = new Object3D();
+		this._meshes = new Mesh();
+		this._object = new Object3D();
+		this._isOwned = ownerLocation !== null;
 	}
 
-	public getcountryObj(): Object3D {
-		return this._countryObj;
-	}
-
-	public setcountryMeshes(value: Mesh) {
-		this._countryMeshes = value;
-	}
-
-	public setCountryObj(value: Object3D) {
-		this._countryObj = value;
-	}
-
-	public getCountryMeshes(): Mesh {
-		return this._countryMeshes;
-	}
-
-	/**
-	 * Get the found status of the country.
-	 * @returns {boolean} True if the country is found, otherwise false.
-	 */
-	public getFound(): boolean {
-		return this._isFound;
-	}
-
-	/**
-	 * Set the found status of the country.
-	 * @param {boolean} isFound - The found status to set.
-	 */
-	public setFound(isFound: boolean): void {
-		this._isFound = isFound;
-	}
-
-	/**
-	 * Get the location of the country owning this country.
-	 * @returns {number[]} The location of the owner.
-	 */
-	public getOwnerLocation(): [number, number] | null {
-		return this._ownedLocation;
-	}
-
-	/**
-	 * Set the location of the country owning this country.
-	 * @param {[number, number]} ownedLocation - The location of the owner to set.
-	 */
-	public setOwnerLocation(ownedLocation: [number, number] | null): void {
-		this._ownedLocation = ownedLocation;
-	}
-
-	/**
-	 * Get the name of the country.
-	 * @returns {string} The name of the country.
-	 */
-	public getCountryName(): string {
-		return this._name;
-	}
-
-	/**
-	 * Set the name of the country.
-	 * @param {string} countryName - The name of the country to set.
-	 */
-	public setCountryName(countryName: string): void {
-		this._name = countryName;
-	}
-
-	/**
-	 * Get the accepted names of the country.
-	 * @returns {string[]} The accepted names of the country.
-	 */
-	public getAcceptedNames(): string[] {
-		return this._acceptedNames || [];
-	}
-
-	/**
-	 * Set the accepted names of the country.
-	 * @param {string[]} acceptedNames - The accepted names of the country to set.
-	 */
-	public setAcceptedNames(acceptedNames: string[]): void {
-		this._acceptedNames = acceptedNames;
-	}
+	private _location: [number, number];
 
 	/**
 	 * Get the indexes location of the country.
 	 * @returns {[number, number]} The indexes location of the country.
 	 */
-	public getCountryLocation(): [number, number] {
+	public get location(): [number, number] {
 		return this._location;
 	}
 
@@ -154,15 +56,53 @@ export class Country implements countryDataInterface {
 	 * Set the indexes location of the country.
 	 * @param {[number, number]} countryLocation - The indexes location of the country to set.
 	 */
-	public setCountryLocation(countryLocation: [number, number]): void {
+	public set location(countryLocation: [number, number]) {
 		this._location = countryLocation;
 	}
+
+	private _ownerLocation: [number, number] | null;
+
+	/**
+	 * Get the location of the country owning this country.
+	 * @returns {number[]} The location of the owner.
+	 */
+	public get ownerLocation(): [number, number] | null {
+		return this._ownerLocation;
+	}
+
+	/**
+	 * Set the location of the country owning this country.
+	 * @param {[number, number]} ownedLocation - The location of the owner to set.
+	 */
+	public set ownerLocation(ownedLocation: [number, number] | null) {
+		this._ownerLocation = ownedLocation;
+	}
+
+	private _acceptedNames: string[];
+
+	/**
+	 * Get the accepted names of the country.
+	 * @returns {string[]} The accepted names of the country.
+	 */
+	public get acceptedNames(): string[] {
+		return this._acceptedNames || [];
+	}
+
+	/**
+	 * Set the accepted names of the country.
+	 * @param {string[]} acceptedNames - The accepted names of the country to set.
+	 */
+	public set acceptedNames(acceptedNames: string[]) {
+		this._acceptedNames = acceptedNames;
+	}
+
+	private _territories: [number, number][] | null;
 
 	/**
 	 * Get the locations of territories belonging to the country.
 	 * @returns {[number, number][]} The locations of territories belonging to the country.
 	 */
-	public getTerritories(): [number, number][] {
+	public get territories(): [number, number][] {
 		return this._territories || [];
 	}
 
@@ -170,24 +110,88 @@ export class Country implements countryDataInterface {
 	 * Set the locations of territories belonging to the country.
 	 * @param {[number, number][]} territories - The locations of territories to set.
 	 */
-	public setTerritories(territories: [number, number][]): void {
+	public set territories(territories: [number, number][]) {
 		this._territories = territories;
 	}
 
-	public setState(state: string): void {
-		this._state = state;
-	}
+	private _state: string;
 
-	public getState(): string {
+	public get state(): string {
 		return this._state;
 	}
 
-	public isVisible(): boolean {
+	public set state(state: string) {
+		this._state = state;
+	}
+
+	private _isFound: boolean;
+
+	/**
+	 * Get the found status of the country.
+	 * @returns {boolean} True if the country is found, otherwise false.
+	 */
+	public get isFound(): boolean {
+		return this._isFound;
+	}
+
+	/**
+	 * Set the found status of the country.
+	 * @param {boolean} isFound - The found status to set.
+	 */
+	public set isFound(isFound: boolean) {
+		this._isFound = isFound;
+	}
+
+	private _visibility: boolean;
+
+	public get visibility(): boolean {
 		return this._visibility;
 	}
 
-	public setVisibility(visibility: boolean): void {
-		this._countryObj.visible = visibility;
+	public set visibility(visibility: boolean) {
+		this._object.visible = visibility;
 		this._visibility = visibility;
+	}
+
+	private _meshes: Mesh;
+
+	public get meshes(): Mesh {
+		return this._meshes;
+	}
+
+	public set meshes(value: Mesh) {
+		this._meshes = value;
+	}
+
+	private _object: Object3D;
+
+	public get object(): Object3D {
+		return this._object;
+	}
+
+	public set object(value: Object3D) {
+		this._object = value;
+	}
+
+	private _name: string;
+
+	/**
+	 * Get the name of the country.
+	 * @returns {string} The name of the country.
+	 */
+	public get name(): string {
+		return this._name;
+	}
+
+	/**
+	 * Set the name of the country.
+	 * @param {string} countryName - The name of the country to set.
+	 */
+	public set name(countryName: string) {
+		this._name = countryName;
+	}
+
+	public get isOwned(): boolean {
+		return this._isOwned;
 	}
 }

@@ -5,23 +5,16 @@ import {
 	LoadingManager,
 	Material,
 	MathUtils,
-	Mesh,
-	MeshPhongMaterial,
 	MeshStandardMaterial,
 	Object3D,
-	Scene,
 } from "three";
 import { isMesh } from "./utilities";
+import { getScene } from "../scene/sceneSetup";
+import { getColorsArray } from "../scene/sceneManager";
 
 export const loadingManager = new LoadingManager();
 
-/**
- * Loads a 3D model and adds it to the scene.
- * @param {Scene} scene - The Scene where the model will be added.
- * @param {Material[]} colors - An array of materials representing colors.
- * @returns {Promise<Object3D>} A promise that resolves to the loaded model.
- */
-export function loadModel(scene: Scene, colors: Material[]): Promise<Object3D> {
+export function loadModel(): Promise<Object3D> {
 	return new Promise((resolve, reject): void => {
 		const loader: GLTFLoader = new GLTFLoader(loadingManager);
 		loader.load(
@@ -33,8 +26,8 @@ export function loadModel(scene: Scene, colors: Material[]): Promise<Object3D> {
 				const degrees: number = 23.5;
 				model.rotation.x = MathUtils.degToRad(degrees);
 
-				scene.add(model);
-				extractColors(model, colors);
+				getScene().add(model);
+				extractColors(model);
 				resolve(model); // Resolve the promise with the loaded model
 			},
 			undefined,
@@ -46,41 +39,32 @@ export function loadModel(scene: Scene, colors: Material[]): Promise<Object3D> {
 	});
 }
 
-/**
- * Extracts colors from the loaded model and adds them to the colors array.
- * @param {Object3D} model - The loaded 3D model.
- * @param {Material[]} colors - An array of materials representing colors.
- */
-function extractColors(model: Object3D, colors: Material[]): void {
+function extractColors(model: Object3D): void {
+	const colors: Material[] = getColorsArray();
 	model.traverse((child: Object3D): void => {
-		if (isMesh(child) && child.material) {
-			const childMesh: Mesh = child as Mesh;
+		if (isMesh(child)) {
+			child.castShadow = true;
 
-			childMesh.castShadow = true;
+			const material: Material = (child.material as Material).clone();
+			if (isInColors(colors, material)) {
+				return;
+			}
 
-			// Clone the material
-			const material: Material = (childMesh.material as Material).clone();
-
-			// Add polygonOffset settings to the material
-			if (
-				material instanceof MeshStandardMaterial ||
-				material instanceof MeshPhongMaterial
-			) {
+			// Add polygonOffset to be able to see countries outline
+			if (material instanceof MeshStandardMaterial) {
 				material.polygonOffset = true;
-				material.polygonOffsetFactor = 1; // Adjust this value as needed
-				material.polygonOffsetUnits = 1; // Adjust this value as needed
+				material.polygonOffsetFactor = 1;
+				material.polygonOffsetUnits = 1;
 			}
-
-			// Check if the material is already in the colors array
-			const materialName: string = material.name;
-			if (
-				colors.findIndex(
-					(obj: Material): boolean => obj.name === materialName
-				) === -1
-			) {
-				colors.push(material);
-			}
+			colors.push(material);
 		}
 	});
-	console.debug(colors);
+}
+
+function isInColors(colors: Material[], material: Material): boolean {
+	return (
+		colors.findIndex(
+			(obj: Material): boolean => obj.name === material.name
+		) !== -1
+	);
 }

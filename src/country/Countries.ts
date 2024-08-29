@@ -5,8 +5,14 @@ import { XMLParser } from "fast-xml-parser";
 import { Object3D } from "three";
 
 // A map of game modes to the number of countries to be guessed in that mode.
-export const countryToFind: { [key: string]: number } = {
-	//! need to find the names of the game Modes
+export const countryToFind: { [gameMode: string]: number } = {
+	africa: 53,
+	antarctic: 1,
+	asia: 47,
+	europe: 43,
+	north_america: 23,
+	oceania: 13,
+	south_america: 12,
 	base: 191,
 };
 
@@ -17,32 +23,11 @@ export const countryToFind: { [key: string]: number } = {
 const continentPopulation: number[] = [56, 3, 51, 46, 34, 19, 15];
 
 /**
- * Represents the real population of each continent.
- * The values are used for accessing country data in each continent.
- */
-const continentRealPopulation: number[] = [54, 1, 47, 43, 24, 13, 12];
-
-/**
- * Names of the continents in the game.
- */
-const continentNames: string[] = [
-	"africa",
-	"antarctic",
-	"asia",
-	"europe",
-	"north_america",
-	"oceania",
-	"south_america",
-];
-
-/**
  * Represents a collection of countries and provides methods to manage and query them.
  */
 export class Countries {
-	protected _countriesArray: Country[] = [];
-	protected _countriesFound: number;
-	protected _arraySize: number;
-	private _continents: Object3D[] = [];
+	private _countriesArray: Country[] = [];
+	private _arraySize: number;
 
 	/**
 	 * Creates an instance of Countries.
@@ -53,12 +38,14 @@ export class Countries {
 		this._arraySize = 0;
 	}
 
+	private _continents: Object3D[] = [];
+
 	/**
 	 * Retrieves the array of continent 3D objects.
 	 *
 	 * @returns {Object3D[]} - The array of continent 3D objects.
 	 */
-	public getContinents(): Object3D[] {
+	public get continents(): Object3D[] {
 		return this._continents;
 	}
 
@@ -67,8 +54,37 @@ export class Countries {
 	 *
 	 * @param {Object3D[]} value - The array of continent 3D objects to set.
 	 */
-	public setContinents(value: Object3D[]): void {
+	public set continents(value: Object3D[]) {
 		this._continents = value;
+	}
+
+	private _countriesFound: number;
+
+	/**
+	 * Retrieves the count of found countries.
+	 *
+	 * @returns {number} - The count of found countries.
+	 */
+	public get countriesFound(): number {
+		return this._countriesFound;
+	}
+
+	/**
+	 * Retrieves the array of Country objects.
+	 *
+	 * @returns {Country[]} - The array of Country objects.
+	 */
+	public get countryArray(): Country[] {
+		return this._countriesArray;
+	}
+
+	/**
+	 * Retrieves the size of the countries array.
+	 *
+	 * @returns {number} - The size of the countries array.
+	 */
+	public get size(): number {
+		return this._arraySize;
 	}
 
 	/**
@@ -84,37 +100,10 @@ export class Countries {
 	}
 
 	/**
-	 * Retrieves the array of Country objects.
-	 *
-	 * @returns {Country[]} - The array of Country objects.
-	 */
-	public getCountryArray(): Country[] {
-		return this._countriesArray;
-	}
-
-	/**
 	 * Increment the count of found countries.
 	 */
 	public incrementFound(): void {
 		this._countriesFound++;
-	}
-
-	/**
-	 * Retrieves the size of the countries array.
-	 *
-	 * @returns {number} - The size of the countries array.
-	 */
-	public getSize(): number {
-		return this._arraySize;
-	}
-
-	/**
-	 * Retrieves the count of found countries.
-	 *
-	 * @returns {number} - The count of found countries.
-	 */
-	public getFound(): number {
-		return this._countriesFound;
 	}
 
 	/**
@@ -124,13 +113,6 @@ export class Countries {
 	 * @returns {boolean} - True if all required countries are found, false otherwise.
 	 */
 	public isAllFound(gameMode: string): boolean {
-		switch (gameMode) {
-			case "fl":
-				break;
-
-			default:
-				break;
-		}
 		return countryToFind[gameMode] === this._countriesFound;
 	}
 
@@ -143,8 +125,7 @@ export class Countries {
 	public exists(name: string): number[] {
 		return this._countriesArray
 			.map((obj: Country, index: number): number =>
-				obj.getState() === "unknown" &&
-				obj.getAcceptedNames().includes(name)
+				obj.state === "unknown" && obj.acceptedNames.includes(name)
 					? index
 					: -1
 			)
@@ -157,8 +138,8 @@ export class Countries {
 	 */
 	public clearFound(): void {
 		this._countriesArray.forEach((country: Country): void => {
-			if (country.getFound()) {
-				country.setFound(false);
+			if (country.isFound) {
+				country.isFound = false;
 			}
 		});
 		this._countriesFound = 0;

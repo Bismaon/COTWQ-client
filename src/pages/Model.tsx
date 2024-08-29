@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "../stylesheet/style.css";
 import "../stylesheet/Model.css";
 import { setupSceneModel } from "../scene/sceneManager";
-import { getScene, setupScene } from "../scene/sceneSetup";
+import { setupScene } from "../scene/sceneSetup";
 import { loadingManager } from "../utils/loader";
 
 function Model(): React.JSX.Element {
@@ -29,7 +29,7 @@ function Model(): React.JSX.Element {
 				setIsLoaded(true);
 			};
 
-			setupSceneModel(getScene())
+			setupSceneModel()
 				.then((): void => {
 					console.debug("Scene has been set up successfully");
 				})

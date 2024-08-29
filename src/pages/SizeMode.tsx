@@ -5,7 +5,6 @@ import {
 	useLocation,
 	useNavigate,
 } from "react-router-dom";
-import "../stylesheet/Menus.css";
 import "../stylesheet/style.css";
 
 const SizeMode: React.FC = () => {
@@ -31,7 +30,7 @@ const SizeMode: React.FC = () => {
 					</div>
 					<div className="grid-item" id="back">
 						<i
-							className="fa-solid fa-arrow-left grid-item"
+							className={`fa-solid fa-arrow-left $"grid-item"`}
 							onClick={(): void => navigate(-1)}
 						></i>
 					</div>

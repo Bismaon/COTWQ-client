@@ -1,6 +1,5 @@
 // App.tsx
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import "./stylesheet/App.css";
 import "./stylesheet/style.css";
 import Model from "./pages/Model";
 import Menus from "./pages/MainMenu";
@@ -21,7 +20,6 @@ function App() {
 					<Route path="/" element={<Menus />} />
 					<Route path="/profile" element={<Profile />} />
 
-					{/* Games Route with Nested Routes */}
 					<Route path="/games" element={<Games />}>
 						<Route path="normal" element={<SizeMode />}>
 							<Route path="classic" element={<GameMode />}>

@@ -1,10 +1,6 @@
-export class UserModel {
-	_id: string;
-	_username: string;
-	_highscores: { [gameName: string]: number };
-
+export class User {
 	constructor(
-		id: string,
+		id: number,
 		username: string,
 		highscores: { [gameName: string]: number } = {}
 	) {
@@ -13,51 +9,34 @@ export class UserModel {
 		this._highscores = highscores;
 	}
 
-	public getUsername(): string {
-		return this._username;
-	}
+	private _id: number;
 
-	public setUsername(name: string): void {
-		this._username = name;
-	}
-
-	public getID(): string {
+	public get id(): number {
 		return this._id;
 	}
 
-	public setID(id: string): void {
+	public set id(id: number) {
 		this._id = id;
 	}
 
-	public getHighscores(): { [gameName: string]: number } {
+	private _username: string;
+
+	public get username(): string {
+		return this._username;
+	}
+
+	public set username(name: string) {
+		this._username = name;
+	}
+
+	private _highscores: { [gameName: string]: number };
+
+	public get highscores(): { [gameName: string]: number } {
 		return this._highscores;
 	}
 
-	public getHighscoreFor(gameName: string): number {
-		return this._highscores[gameName];
-	}
-
-	public setHighscores(highscores: { [gameName: string]: number }): void {
+	public set highscores(highscores: { [gameName: string]: number }) {
 		this._highscores = highscores;
-	}
-
-	// New methods to interact with the backend
-	public async fetchUserData(): Promise<void> {
-		try {
-			const response: Response = await fetch(`/users/${this._id}`);
-			if (response.ok) {
-				const data = await response.json();
-				this._username = data.username;
-				this._highscores = data.highscores;
-			} else {
-				console.error(
-					"Failed to fetch user data:",
-					response.statusText
-				);
-			}
-		} catch (error) {
-			console.error("Error fetching user data:", error);
-		}
 	}
 
 	public async updateHighscore(

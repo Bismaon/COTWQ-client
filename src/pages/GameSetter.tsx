@@ -1,13 +1,12 @@
 // GameSetter.tsx
 import React from "react";
 import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
-import "../stylesheet/Quiz.css";
 import "../stylesheet/style.css";
-import Names from "./Names";
-import Currencies from "./Currencies";
-import Flags from "./Flags";
-import Languages from "./Languages";
-import Capitals from "./Capitals";
+import Names from "./gamemodes/Names";
+import Currencies from "./gamemodes/Currencies";
+import Flags from "./gamemodes/Flags";
+import Languages from "./gamemodes/Languages";
+import Capitals from "./gamemodes/Capitals";
 import { resetModel } from "../scene/sceneManager";
 
 const GameSetter: React.FC = () => {

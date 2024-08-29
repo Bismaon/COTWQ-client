@@ -58,6 +58,7 @@ body {
     /*border: 2px solid white; !*Border for visibility*!*/
 }
 
+
 /* Title section */
 #title {
     grid-row: 1;
@@ -101,9 +102,11 @@ h2 {
 }
 
 .transparent-box {
-    background-color: rgba(39, 39, 39, 0.2); /* Transparent background */
+    background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
     border: 2px solid white; /* Combine border color, style, and width */
     color: white;
     border-radius: 10px; /* Rounded corners */
 }
+
+
 
