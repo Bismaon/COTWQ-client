@@ -3,28 +3,18 @@ import {
 	EdgesGeometry,
 	LineBasicMaterial,
 	LineSegments,
-	Material,
 	Mesh,
 	Object3D,
 	Vector3,
 } from "three";
 import { Country } from "../country/Country";
-import { getObjCenter, isMesh } from "./utilities";
-import { getColorsArray, getCountries } from "../scene/sceneManager";
+import { getObjCenter } from "./utilities";
+import { getCountries } from "../scene/sceneManager";
 import { Countries } from "../country/Countries";
 import { bounceAnimation } from "./animation";
 import { isFollowing } from "../controls/playingState";
 import { cameraFaceTo } from "../camera/camera";
 import { changeCountryCellTo } from "../country/countriesTable";
-
-const colorDict: { [key: string]: number } = {
-	unknown: 0,
-	found: 1,
-	selected: 2,
-	error: 3,
-	unavailable: 4,
-	water: 5,
-};
 
 export function setCountryIsFoundTo(country: Country, found: boolean): void {
 	const countries: Countries = getCountries();
@@ -41,7 +31,7 @@ export function changeCountryVisibilityTo(
 ): void {
 	const countries: Countries = getCountries();
 	locations.forEach(([continent, country]: number[]): void => {
-		countries.getCountryByLocation([continent, country]).visibility =
+		countries.getCountryByLocation([continent, country]).isVisible =
 			visibility;
 	});
 }
@@ -51,35 +41,12 @@ export function changeCountryStateTo(
 	locations: [number, number][]
 ): void {
 	const countries: Countries = getCountries();
-	const materialCloned: Material = getColorsArray()[colorDict[state]].clone();
 
-	locations.forEach(([continent, country]: number[]): void => {
-		const countryElement: Country = countries.getCountryByLocation([
-			continent,
-			country,
-		]);
-		countryElement.state = state;
-		const countryMeshes: Mesh = countryElement.meshes;
-		countryMeshes.material = materialCloned;
-	});
-	materialCloned.needsUpdate = true;
-}
-
-export function initializeCountries(): void {
-	const continents: Object3D[] = getCountries().continents;
-	getCountries().countryArray.forEach((country: Country): void => {
-		const location: [number, number] = country.location;
-		const countryObj: Object3D =
-			continents[location[0]].children[location[1]];
-		country.object = countryObj;
-		const meshes: Object3D = countryObj.children[0];
-		if (isMesh(meshes)) {
-			country.meshes = meshes;
-		}
-		changeCountryStateTo("unknown", [location]);
-		createCountryOutline(country.meshes);
+	locations.forEach((location: [number, number]): void => {
+		countries.getCountryByLocation(location).state = state;
 	});
 }
+
 
 export function resetCountries(): void {
 	getCountries().countryArray.forEach((country: Country): void => {
@@ -89,12 +56,12 @@ export function resetCountries(): void {
 	});
 }
 
-export function createCountryOutline(obj: Mesh): void {
-	if (obj.geometry) {
-		const edgesGeometry = new EdgesGeometry(obj.geometry, 45);
+export function createCountryOutline(mesh: Mesh): void {
+	if (mesh.geometry) {
+		const edgesGeometry = new EdgesGeometry(mesh.geometry, 45);
 		const edgeMaterial = new LineBasicMaterial({ color: 0x000000 });
 		const edgesMesh = new LineSegments(edgesGeometry, edgeMaterial);
-		obj.add(edgesMesh);
+		mesh.add(edgesMesh);
 	}
 }
 
@@ -142,7 +109,7 @@ export function foundSearch(country: Country, gameMode: string): boolean {
 		const connectedLoc: [number, number][] = getConnected(location);
 		setCountryIsFoundTo(country, true);
 		changeCountryCellTo("found", location);
-		if (!country.visibility) {
+		if (!country.isVisible) {
 			changeCountryVisibilityTo(true, connectedLoc);
 		}
 
@@ -166,7 +133,7 @@ export function getConnected(location: [number, number]): [number, number][] {
 	const country: Country = countries.getCountryByLocation(location);
 
 	// console.log(country.countryObj);
-	const ownerLocation: [number, number] | null = country.ownerLocation;
+	const ownerLocation: [number, number] | null = country.owner;
 	if (ownerLocation) {
 		const owner: Country = countries.getCountryByLocation(ownerLocation);
 		connectedLocations.push(owner.location, ...owner.territories);

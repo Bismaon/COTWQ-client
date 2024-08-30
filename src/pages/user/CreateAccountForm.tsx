@@ -12,6 +12,7 @@ interface CreateAccountFormProps {
 const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 	onSessionChange,
 }) => {
+	const [showPassword, setShowPassword] = useState(false);
 	const [showLoginForm, setShowLoginForm] = useState(false);
 	const [logged, setLogged] = useState(false);
 	const [username, setUsername] = useState("");
@@ -26,6 +27,17 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 		return <UserForm onSessionChange={onSessionChange} />;
 	}
 
+	const handleShowPassword = () => {
+		const passwordInput = document.getElementById(
+			"password1"
+		) as HTMLInputElement;
+		setShowPassword(!showPassword);
+		const type =
+			passwordInput.getAttribute("type") === "password"
+				? "text"
+				: "password";
+		passwordInput.setAttribute("type", type);
+	};
 	const handleCreateAccount = async (
 		event: React.FormEvent<HTMLFormElement>
 	): Promise<void> => {
@@ -123,7 +135,17 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 					required
 					minLength={8}
 				/>
-				<div className="status-icon" />
+				{showPassword ? (
+					<i
+						className="fa-regular fa-eye-slash"
+						onClick={handleShowPassword}
+					></i>
+				) : (
+					<i
+						className="fa-regular fa-eye"
+						onClick={handleShowPassword}
+					></i>
+				)}
 			</div>
 
 			<label className="grid-item" htmlFor="password2">
@@ -142,7 +164,6 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 					required
 					minLength={8}
 				/>
-				<div className="status-icon" />
 			</div>
 
 			<div className="grid-item">

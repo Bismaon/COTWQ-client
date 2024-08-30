@@ -6,7 +6,6 @@ import {
 	useLocation,
 	useNavigate,
 } from "react-router-dom";
-import "../stylesheet/Menus.css";
 import "../stylesheet/style.css";
 
 const ContinentsMode: React.FC = () => {
@@ -34,44 +33,42 @@ const ContinentsMode: React.FC = () => {
 							onClick={() => navigate(-1)}
 						></i>
 					</div>
-					<div className="grid-item" id="menu">
-						<button
-							className="button"
-							onClick={() => handleNavigate("africa")}
-						>
-							Africa
-						</button>
-						<button
-							className="button"
-							onClick={() => handleNavigate("south_america")}
-						>
-							South America
-						</button>
-						<button
-							className="button"
-							onClick={() => handleNavigate("north_america")}
-						>
-							North America
-						</button>
-						<button
-							className="button"
-							onClick={() => handleNavigate("asia")}
-						>
-							Asia
-						</button>
-						<button
-							className="button"
-							onClick={() => handleNavigate("europe")}
-						>
-							Europe
-						</button>
-						<button
-							className="button"
-							onClick={() => handleNavigate("oceania")}
-						>
-							Oceania
-						</button>
-					</div>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("africa")}
+					>
+						Africa
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("south_america")}
+					>
+						South America
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("north_america")}
+					>
+						North America
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("asia")}
+					>
+						Asia
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("europe")}
+					>
+						Europe
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("oceania")}
+					>
+						Oceania
+					</button>
 				</>
 			)}
 

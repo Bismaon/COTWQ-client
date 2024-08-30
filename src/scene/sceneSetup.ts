@@ -16,7 +16,6 @@ export function setupScene(): void {
 		"modelCanvas"
 	) as HTMLCanvasElement;
 
-	canvas.addEventListener("mousemove", mouseHover);
 	const mainContainer: HTMLDivElement = document.getElementById(
 		"main-container"
 	) as HTMLDivElement;
@@ -28,6 +27,8 @@ export function setupScene(): void {
 
 	const width: number = canvas.offsetWidth;
 	const height: number = canvas.offsetHeight;
+	console.log("Width: ", width)
+	console.log("Height: ", height)
 
 	renderer = new WebGLRenderer({ canvas });
 	renderer.setSize(width, height);
@@ -40,6 +41,8 @@ export function setupScene(): void {
 
 	setupHemisphereLight();
 	scene.add(getHemisphereLight());
+	canvas.addEventListener("mousemove", mouseHover);
+
 }
 
 export function getRenderer(): WebGLRenderer {

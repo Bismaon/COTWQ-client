@@ -31,20 +31,19 @@ const HardMode: React.FC = () => {
 							onClick={() => navigate(-1)}
 						></i>
 					</div>
-					<div className="grid-item" id="menu">
-						<button
-							className="button"
-							onClick={() => handleNavigate("classic")}
-						>
-							Classic
-						</button>
-						<button
-							className="button"
-							onClick={() => handleNavigate("sequential-random")}
-						>
-							Sequential Random
-						</button>
-					</div>
+
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("classic")}
+					>
+						Classic
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("sequential-random")}
+					>
+						Sequential Random
+					</button>
 				</>
 			)}
 

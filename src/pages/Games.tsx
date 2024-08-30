@@ -29,20 +29,18 @@ const Games: React.FC = () => {
 							onClick={() => navigate(-1)}
 						></i>
 					</div>
-					<div className="grid-item" id="menu">
-						<button
-							className="button"
-							onClick={() => navigate("normal")}
-						>
-							Normal
-						</button>
-						<button
-							className="button"
-							onClick={() => navigate("continents")}
-						>
-							Continents
-						</button>
-					</div>
+					<button
+						className="button grid-item"
+						onClick={() => navigate("normal")}
+					>
+						Normal
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => navigate("continents")}
+					>
+						Continents
+					</button>
 				</>
 			)}
 

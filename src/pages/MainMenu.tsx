@@ -13,23 +13,31 @@ const MainMenu: React.FC = () => {
 			<div className="grid-item" id="title">
 				<h1>Countries Of The World Quizzes</h1>
 			</div>
-			<div className="grid-item" id="menu">
-				<button className="button" onClick={() => navigate("games")}>
-					Games
-				</button>
-				<button
-					className="button"
-					onClick={() => navigate("high-scores")}
-				>
-					High Scores
-				</button>
-				<button className="button" onClick={() => navigate("settings")}>
-					Settings
-				</button>
-				<button className="button" onClick={() => navigate("profile")}>
-					Profile
-				</button>
-			</div>
+			<div className="grid-item" id="back"></div>
+			<button
+				className="button grid-item"
+				onClick={() => navigate("games")}
+			>
+				Games
+			</button>
+			<button
+				className="button grid-item"
+				onClick={() => navigate("high-scores")}
+			>
+				High Scores
+			</button>
+			<button
+				className="button grid-item"
+				onClick={() => navigate("settings")}
+			>
+				Settings
+			</button>
+			<button
+				className="button grid-item"
+				onClick={() => navigate("profile")}
+			>
+				Profile
+			</button>
 		</>
 	);
 };

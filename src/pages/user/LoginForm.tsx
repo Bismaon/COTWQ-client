@@ -9,6 +9,7 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 	const [showCreateAccountForm, setShowCreateAccountForm] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 	const [logged, setLogged] = useState(false);
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -20,6 +21,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 		return <UserForm onSessionChange={onSessionChange} />;
 	}
 
+	const handleShowPassword = () => {
+		const passwordInput = document.getElementById(
+			"password"
+		) as HTMLInputElement;
+		setShowPassword(!showPassword);
+		const type =
+			passwordInput.getAttribute("type") === "password"
+				? "text"
+				: "password";
+		passwordInput.setAttribute("type", type);
+	};
 	const handleLogin = async (
 		event: React.FormEvent<HTMLFormElement>
 	): Promise<void> => {
@@ -93,7 +105,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 					required
 					minLength={8}
 				/>
-				<div className="status-icon" />
+				{showPassword ? (
+					<i
+						className="fa-regular fa-eye-slash"
+						onClick={handleShowPassword}
+					></i>
+				) : (
+					<i
+						className="fa-regular fa-eye"
+						onClick={handleShowPassword}
+					></i>
+				)}
 			</div>
 
 			<div className="grid-item">

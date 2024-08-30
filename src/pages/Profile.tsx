@@ -31,14 +31,12 @@ const ProfileMenu: React.FC = () => {
 					onClick={(): void => navigate(-1)}
 				></i>
 			</div>
-			<div className="grid-item" id="menu">
-				<button className="button">Edit</button>
-				{checkUserSession() !== -1 && (
-					<button className="button" onClick={handleLogOut}>
-						Logout
-					</button>
-				)}
-			</div>
+			<button className="button grid-item">Edit</button>
+			{checkUserSession() !== -1 && (
+				<button className="button grid-item" onClick={handleLogOut}>
+					Logout
+				</button>
+			)}
 			<div id="profile-box" className="grid-item transparent-box">
 				{checkUserSession() === -1 ? (
 					<LoginForm onSessionChange={handleSessionChange} />

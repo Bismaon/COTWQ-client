@@ -67,7 +67,7 @@ export function createTable(): void {
 		// Add the countries as subsequent rows.
 		for (let i: number = 0; i < continentCountryCounts[index]; i++) {
 			const country: Country = countries.getCountryByLocation([index, i]);
-			if (country.ownerLocation !== null) continue;
+			if (country.owner !== null) continue;
 			const row: HTMLTableRowElement = tableBody.insertRow();
 			const cell: HTMLTableCellElement = row.insertCell();
 			cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.name}</div>`;
@@ -97,7 +97,7 @@ export function createTable(): void {
 					index,
 					i,
 				]);
-				if (country.ownerLocation !== null) continue;
+				if (country.owner !== null) continue;
 				const row: HTMLTableRowElement = tableBody.insertRow();
 				const cell: HTMLTableCellElement = row.insertCell();
 				cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.name}</div>`;

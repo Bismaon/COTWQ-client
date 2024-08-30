@@ -1,7 +1,7 @@
 #profile-box {
     width: 100%;
     max-height: fit-content;
-    grid-row: 2/6;
+    grid-row: 2/auto;
     grid-column: 3/6;
     padding: 0;
     aspect-ratio: 1;
@@ -40,26 +40,22 @@
 
 
 .grid-item.inputDiv input:valid {
-    border: 2px solid green;
+    border: 2px solid #0fb20f;
 }
 
-.grid-item.inputDivinput:valid + .status-icon::before {
-    content: "✓";
-    color: green;
-}
 
 .grid-item.inputDiv input:user-invalid {
     border: 2px solid red;
 }
 
-.grid-item.inputDiv input:user-invalid + .status-icon::before {
-    content: "✖";
-    color: red;
-}
 
 .status-icon {
     margin-left: 10px;
-    font-size: 16px; /* Adjust size if needed */
+    font-size: 16px;
+}
+.status-icon {
+    margin-left: 10px;
+    font-size: 16px;
 }
 
 .grid-profile-container .grid-item button {

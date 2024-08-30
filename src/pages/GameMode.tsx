@@ -34,38 +34,36 @@ const GameMode: React.FC = () => {
 							onClick={(): void => navigate(-1)}
 						></i>
 					</div>
-					<div className="grid-item" id="menu">
-						<button
-							className="button"
-							onClick={() => handleNavigate("names")}
-						>
-							Names
-						</button>
-						<button
-							className="button"
-							onClick={() => handleNavigate("flags")}
-						>
-							Flags
-						</button>
-						<button
-							className="button"
-							onClick={() => handleNavigate("languages")}
-						>
-							Languages
-						</button>
-						<button
-							className="button"
-							onClick={() => handleNavigate("currencies")}
-						>
-							Currencies
-						</button>
-						<button
-							className="button"
-							onClick={() => navigate("capitals")}
-						>
-							Capitals
-						</button>
-					</div>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("names")}
+					>
+						Names
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("flags")}
+					>
+						Flags
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("languages")}
+					>
+						Languages
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => handleNavigate("currencies")}
+					>
+						Currencies
+					</button>
+					<button
+						className="button grid-item"
+						onClick={() => navigate("capitals")}
+					>
+						Capitals
+					</button>
 				</>
 			)}
 

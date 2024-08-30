@@ -34,26 +34,24 @@ const SizeMode: React.FC = () => {
 							onClick={(): void => navigate(-1)}
 						></i>
 					</div>
-					<div className="grid-item" id="menu">
-						<button
-							className="button"
-							onClick={(): void => navigate("classic")}
-						>
-							Classic
-						</button>
-						<button
-							className="button"
-							onClick={(): void => navigate("sequential-random")}
-						>
-							Sequential Random
-						</button>
-						<button
-							className="button"
-							onClick={(): void => navigate("hard")}
-						>
-							Hard
-						</button>
-					</div>
+					<button
+						className="button grid-item"
+						onClick={(): void => navigate("classic")}
+					>
+						Classic
+					</button>
+					<button
+						className="button grid-item"
+						onClick={(): void => navigate("sequential-random")}
+					>
+						Sequential Random
+					</button>
+					<button
+						className="button grid-item"
+						onClick={(): void => navigate("hard")}
+					>
+						Hard
+					</button>
 				</>
 			)}
 

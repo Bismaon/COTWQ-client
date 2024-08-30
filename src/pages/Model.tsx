@@ -9,7 +9,7 @@ import { loadingManager } from "../utils/loader";
 
 function Model(): React.JSX.Element {
 	const isSetupModelCalled: React.MutableRefObject<boolean> = useRef(false);
-	const [loadingProgress, setLoadingProgress] = useState(0);
+	const [loadingProgress, setLoadingProgress] = useState(50);
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect((): void => {

@@ -2,8 +2,9 @@
 #modelCanvas {
     width: 100%;
     height: 100%;
-    grid-row: 2/6;
-    grid-column: 3/6;
+    max-height: 100%;
+    grid-row: 2/span 4;
+    grid-column: 3/span 3;
     padding: 0;
     aspect-ratio: 1;
 }
@@ -11,8 +12,9 @@
 #loading-screen {
     width: 100%;
     height: 100%;
-    grid-row: 2/6;
-    grid-column: 3/6;
+    grid-row: 2/span 4;
+    padding:0;
+    grid-column: 3/ span 3;
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.8);
