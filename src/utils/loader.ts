@@ -18,7 +18,7 @@ export function loadModel(): Promise<Object3D> {
 	return new Promise((resolve, reject): void => {
 		const loader: GLTFLoader = new GLTFLoader(loadingManager);
 		loader.load(
-			"assets/models/earth_political_continentUp.glb",
+			`${process.env.PUBLIC_URL}/assets/models/earth_political_UV_WIP.glb`,
 			function (gltf: GLTF): void {
 				const model: Object3D = gltf.scene;
 
@@ -42,23 +42,23 @@ export function loadModel(): Promise<Object3D> {
 function extractColors(model: Object3D): void {
 	const colors: Material[] = getColorsArray();
 	model.traverse((child: Object3D): void => {
-		if (isMesh(child)) {
-			child.castShadow = true;
-
-			const material: Material = (child.material as Material).clone();
-			if (isInColors(colors, material)) {
-				return;
-			}
-
-			// Add polygonOffset to be able to see countries outline
-			if (material instanceof MeshStandardMaterial) {
-				material.polygonOffset = true;
-				material.polygonOffsetFactor = 1;
-				material.polygonOffsetUnits = 1;
-			}
-			colors.push(material);
+		if (!isMesh(child)) {
+			return;
 		}
+		child.castShadow = true;
+		const material: Material = (child.material as Material).clone();
+		if (isInColors(colors, material)) {
+			return;
+		}
+		if (material instanceof MeshStandardMaterial) {
+			material.polygonOffset = true;
+			material.polygonOffsetFactor = 1;
+			material.polygonOffsetUnits = 1;
+		}
+		material.needsUpdate = true;
+		colors.push(material);
 	});
+	console.log("Colors: ", colors)
 }
 
 function isInColors(colors: Material[], material: Material): boolean {

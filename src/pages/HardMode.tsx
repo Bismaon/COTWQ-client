@@ -17,7 +17,7 @@ const HardMode: React.FC = () => {
 		navigate(`${location.pathname}/${mode}`);
 	};
 
-	console.debug("Rendering Hard Mode Menu");
+	console.debug("Rendering HardMode.tsx");
 	return (
 		<>
 			{isInHardMenu && (

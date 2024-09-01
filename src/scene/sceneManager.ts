@@ -13,10 +13,7 @@ import {
 } from "../controls/playingState";
 import { cameraFaceTo, setCameraPosition } from "../camera/camera";
 import { Country } from "../country/Country";
-import { changeCountryCellTo } from "../country/countriesTable";
 import {
-	changeCountryStateTo,
-	changeCountryVisibilityTo,
 	createCountryOutline,
 	getConnected,
 	resetCountries,
@@ -24,6 +21,7 @@ import {
 import { isControlsEnabled } from "../controls/controls";
 import { getObjCenter, isMesh } from "../utils/utilities";
 import { XMLParser } from "fast-xml-parser";
+import { createCountryFlagShader } from "../shader/flagShader";
 
 const countries: Countries = new Countries();
 let modelParent: Object3D;
@@ -39,12 +37,11 @@ export async function setupSceneModel(): Promise<void> {
 		water.receiveShadow = true;
 		const globe: Object3D = modelScene.children[0];
 		countries.continents = globe.children;
-		console.debug(countries.continents);
+		console.debug("Continents: ", countries.continents);
 
 		countries.countryArray.push(
-			...(await loadCountriesData("assets/xml/countries_data.xml"))
+			...(await loadCountriesData(`${process.env.PUBLIC_URL}/assets/xml/countries_data.xml`))
 		);
-		console.log(countries.countryArray);
 
 		animate(modelParent);
 	} catch (error: unknown) {
@@ -68,21 +65,20 @@ export function setupModelForGame(
 ): void {
 	// Change all countries not in the continent to unavailable color/state
 	countries.countryArray.forEach((country: Country): void => {
-		if (country.owner === null) {
-			const location: [number, number] = country.location;
-			const locations: [number, number][] = getConnected(
-				country.location
-			);
-			if (continentIndex !== -1 && location[0] !== continentIndex) {
-				changeCountryStateTo("unavailable", locations);
-			} else {
-				if (isHard) {
-					changeCountryVisibilityTo(false, locations);
-				}
-				changeCountryStateTo("unknown", locations);
-			}
-			changeCountryCellTo("invisible", location);
+		if (country.isOwned) {
+			return;
 		}
+		const location: [number, number] = country.location;
+		const locations: [number, number][] = getConnected(country.location);
+		/* if (continentIndex !== -1 && location[0] !== continentIndex) {
+			changeCountryStateTo("unavailable", locations);
+		} else {
+			if (isHard) {
+				changeCountryVisibilityTo(false, locations);
+			}
+			changeCountryStateTo("unknown", locations);
+		}
+		changeCountryCellTo("invisible", location); */
 	});
 	if (continentIndex !== -1) {
 		const continentObj: Object3D = countries.continents[continentIndex];
@@ -143,28 +139,38 @@ async function loadCountriesData(url: string): Promise<Country[]> {
 				throw new Error("Obj is not a mesh");
 			}
 			const meshes = obj as Mesh;
-			createCountryOutline(meshes);
 
+
+			const [PNG, SVG]:[string, string] = [country.flag.png, country.flag.svg]
+			const flagMaterial:Material = createCountryFlagShader(SVG);
 			const countryInstance: Country = new Country(
 				country.name,
 				acceptedNames,
 				territories,
 				location,
 				owner,
-				[country.flag.png, country.flag.svg],
+				SVG,
 				country.currency || null,
 				country.capital || null,
 				languages,
 				meshes,
-				object
+				object,
+				flagMaterial
 			);
-
-			// makes sure the material is set and updated
-			countryInstance.state = "unknown";
+			createCountryOutline(meshes);
+			countryInstance.state="unknown";
+			applyFlagToCountry(countryInstance)
 			return countryInstance;
 		});
 	} catch (error) {
 		console.error("Error parsing country data: ", error);
 		return [];
 	}
+}
+
+function applyFlagToCountry(country: Country):void {
+	const obj = country.meshes;
+	const flagMaterial:Material = country.flagMaterial
+	obj.material = flagMaterial;
+	obj.material.needsUpdate = true;
 }

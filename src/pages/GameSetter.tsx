@@ -81,7 +81,7 @@ const GameSetter: React.FC = () => {
 		navigate(-1);
 	};
 
-	console.debug("Rendering Game Setter");
+	console.debug("Rendering GameSetter.tsx");
 	return (
 		<>
 			<div className="grid-item" id="back">

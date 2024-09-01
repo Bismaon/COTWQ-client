@@ -19,7 +19,7 @@ const ContinentsMode: React.FC = () => {
 		navigate(`${location.pathname}/${mode}`);
 	};
 
-	console.debug("Rendering Continents Mode Menu");
+	console.debug("Rendering ContinentsMode.tsx");
 	return (
 		<>
 			{isInContinentsMenu && (

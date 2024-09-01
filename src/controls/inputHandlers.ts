@@ -23,7 +23,7 @@ import {
 	getCountryMovement,
 } from "../utils/countryUtils";
 
-export function handleTextboxChange(timer: Timer, gameMode: string): void {
+export function handleTextboxChange(timer: Timer, continent: string): void {
 	const answerInput: HTMLInputElement = document.getElementById(
 		"answer-box-input"
 	) as HTMLInputElement;
@@ -37,16 +37,18 @@ export function handleTextboxChange(timer: Timer, gameMode: string): void {
 
 	indexCountry.forEach((index: number): void => {
 		const country: Country = countries.countryArray[index];
-		if (foundSearch(country, gameMode)) {
+		if (country.isFound) {
+			return;
+		}
+		if (foundSearch(country, continent)) {
 			timer.stop();
 			alert(`Congratulations you finished in ${timer.toString()}!`); // make a better message
 		}
-		console.log(answerInput);
 		answerInput.value = "";
 		countryCounterDiv.textContent =
 			String(countries.countriesFound) +
 			"\u00A0/\u00A0" +
-			countryToFind[gameMode] +
+			countryToFind[continent] +
 			" guessed";
 	});
 }
@@ -77,7 +79,7 @@ export function handleGiveUp(
 	continentIndex: number,
 	timer: Timer,
 	isHard: boolean,
-	gameMode: string
+	continent: string
 ): void {
 	const answerContainer: HTMLDivElement = document.getElementById(
 		"answer-box-container"
@@ -93,7 +95,7 @@ export function handleGiveUp(
 	document.getElementById("quiz-controls-table")?.appendChild(restartButton);
 	restartButton.textContent = "Restart";
 	restartButton.onclick = (): void => {
-		restartQuiz(continentIndex, timer, isHard, restartButton, gameMode);
+		restartQuiz(continentIndex, timer, isHard, restartButton, continent);
 	};
 	changeElementsVisibility([pauseStart, giveUp, answerContainer], "hidden");
 
@@ -103,16 +105,17 @@ export function handleGiveUp(
 
 	const countries: Countries = getCountries();
 	countries.countryArray.forEach((country: Country): void => {
-		if (!(country.isFound || country.isOwned)) {
-			const location: [number, number] = country.location;
-			if (continentIndex === -1 || location[0] === continentIndex) {
-				const locations: [number, number][] = getConnected(location);
-
-				animationMultipleLocs(locations);
-				changeCountryVisibilityTo(true, locations);
-				changeCountryCellTo("missed", location);
-			}
+		if (country.isFound || country.isOwned) {
+			return;
 		}
+		const location: [number, number] = country.location;
+		if (!(continentIndex === -1 || location[0] === continentIndex)) {
+			return;
+		}
+		const locations: [number, number][] = getConnected(location);
+		animationMultipleLocs(locations);
+		changeCountryVisibilityTo(true, locations);
+		changeCountryCellTo("missed", location);
 	});
 }
 
@@ -158,7 +161,7 @@ export function restartQuiz(
 	timer: Timer,
 	isHard: boolean,
 	restartButton: HTMLButtonElement,
-	gameMode: string
+	continent: string
 ): void {
 	const countryCounter: HTMLDivElement = document.getElementById(
 		"country-counter"
@@ -171,7 +174,7 @@ export function restartQuiz(
 	countryCounter.textContent =
 		String(countries.countriesFound) +
 		"\u00A0/\u00A0" +
-		countryToFind[gameMode] +
+		countryToFind[continent] +
 		" guessed";
 	setupModelForGame(isHard, continentIndex);
 	timer.reset();
@@ -179,4 +182,60 @@ export function restartQuiz(
 	handlePauseStart(false, timer);
 	pauseStart.style.visibility = "visible";
 	restartButton.remove();
+}
+
+export function handleImageClick(event: MouseEvent) {
+	const imgElement = event.currentTarget as HTMLImageElement;
+
+	if (imgElement.classList.contains("selected")) {
+		imgElement.classList.remove("selected");
+	} else {
+		const previouslySelected = document.querySelector(".selected");
+		if (previouslySelected) {
+			previouslySelected.classList.remove("selected");
+		}
+		imgElement.classList.add("selected");
+	}
+}
+
+export async function handleFlagInput(timer: Timer, continent: string):Promise<void> {
+	const answerInput: HTMLInputElement = document.getElementById(
+		"answer-box-input"
+	) as HTMLInputElement;
+	const countryCounterDiv: HTMLDivElement = document.getElementById(
+		"country-counter"
+	) as HTMLDivElement;
+	let flagSelected: HTMLImageElement | null =
+		document.querySelector(".selected");
+	if (!flagSelected) {
+		flagSelected = document.querySelector("img");
+		if (!flagSelected){
+			return;
+		}
+	}
+
+	const countries: Countries = getCountries();
+	const enteredText: string = processText(answerInput.value);
+	const [first, second]: string[] = flagSelected.alt.split("_");
+
+	const country: Country = countries.getCountryByLocation([Number(first), Number(second)]);
+	if (!country.acceptedNames.includes(enteredText)) {
+		return;
+	}
+
+	country.meshes.material = country.flagMaterial;
+	
+	flagSelected.classList.remove("selected");
+	flagSelected.remove();
+	if (getCountries().isAllFound(continent)) {
+		timer.stop();
+		alert(`Congratulations you finished in ${timer.toString()}!`); // make a better message
+	}
+
+	answerInput.value = "";
+	countryCounterDiv.textContent =
+		String(countries.countriesFound) +
+		"\u00A0/\u00A0" +
+		countryToFind[continent] +
+		" guessed";
 }

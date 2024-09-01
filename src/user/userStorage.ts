@@ -9,9 +9,7 @@ export function checkUserSession(): number {
 	const userId: number = Number(localStorage.getItem("userId"));
 	if (userId) {
 		return userId;
-		// Proceed with user-specific logic
 	} else {
-		// Redirect to login page or show login form
 		return -1;
 	}
 }

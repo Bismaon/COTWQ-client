@@ -7,7 +7,7 @@ import "../stylesheet/style.css";
 const MainMenu: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 
-	console.debug("Rendering Main Menu");
+	console.debug("Rendering MainMenu.tsx");
 	return (
 		<>
 			<div className="grid-item" id="title">

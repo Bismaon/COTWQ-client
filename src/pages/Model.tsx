@@ -1,67 +1,44 @@
-// pages/Model.tsx
+	// pages/Model.tsx
 
-import React, { useEffect, useRef, useState } from "react";
-import "../stylesheet/style.css";
-import "../stylesheet/Model.css";
-import { setupSceneModel } from "../scene/sceneManager";
-import { setupScene } from "../scene/sceneSetup";
-import { loadingManager } from "../utils/loader";
+	import React, { useState } from "react";
+	import "../stylesheet/style.css";
+	import "../stylesheet/Model.css";
+	import { loadingManager } from "../utils/loader";
+	import { useModel } from "./ModelContext";
 
-function Model(): React.JSX.Element {
-	const isSetupModelCalled: React.MutableRefObject<boolean> = useRef(false);
-	const [loadingProgress, setLoadingProgress] = useState(50);
-	const [isLoaded, setIsLoaded] = useState(false);
+	function Model(): React.JSX.Element {
+		const [loadingProgress, setLoadingProgress] = useState(0);
+		const { isModelLoaded } = useModel();
 
-	useEffect((): void => {
-		if (!isSetupModelCalled.current) {
-			setupScene();
-			// Update progress based on loading manager
-			loadingManager.onProgress = (
-				item: string,
-				loaded: number,
-				total: number
-			): void => {
-				setLoadingProgress((loaded / total) * 100);
-			};
+		loadingManager.onProgress = (
+			item: string,
+			loaded: number,
+			total: number
+		): void => {
+			setLoadingProgress((loaded / total) * 100);
+		};
 
-			// When the loading is complete
-			loadingManager.onLoad = (): void => {
-				setIsLoaded(true);
-			};
-
-			setupSceneModel()
-				.then((): void => {
-					console.debug("Scene has been set up successfully");
-				})
-				.catch((error: any): void => {
-					console.error(error);
-				});
-
-			isSetupModelCalled.current = true;
-		}
-	}, []);
-
-	return (
-		<>
-			{!isLoaded && (
-				<div className="grid-item" id="loading-screen">
-					<div className="progress-bar-container">
-						<div
-							className="progress-bar"
-							style={{ width: `${loadingProgress}%` }}
-						>
-							{Math.round(loadingProgress)}%
+		return (
+			<>
+				{!isModelLoaded && (
+					<div className="grid-item" id="loading-screen">
+						<div className="progress-bar-container">
+							<div
+								className="progress-bar"
+								style={{ width: `${loadingProgress}%` }}
+							>
+								{Math.round(loadingProgress)}%
+							</div>
 						</div>
 					</div>
-				</div>
-			)}
-			<canvas
-				className="grid-item"
-				id="modelCanvas"
-				style={{ visibility: isLoaded ? "visible" : "hidden" }}
-			></canvas>
-		</>
-	);
-}
+				)}
+				<canvas
+					className="grid-item"
+					id="modelCanvas"
+					style={{ visibility: isModelLoaded ? "visible" : "hidden" }}
+				></canvas>
+			</>
+		);
+	}
 
-export default Model;
+	export default Model;

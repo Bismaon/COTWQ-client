@@ -32,7 +32,7 @@
     overflow: hidden;
 }
 
-.progress-bar {
+#progress-bar {
     height: 20px;
     background-color: #4caf50;
     text-align: center;

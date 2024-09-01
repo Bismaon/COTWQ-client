@@ -24,31 +24,32 @@ const UserForm: React.FC<UserFormProps> = ({ onSessionChange }) => {
 	}, [userIsSet]);
 
 	useEffect(() => {
-		if (userIsSet && userID !== undefined && !userData) {
-			fetch("/users/fetch-user", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ id: userID }),
-			})
-				.then((response) => {
-					if (response.ok) {
-						return response.json();
-					} else {
-						throw new Error("Failed to fetch user data");
-					}
-				})
-				.then((data) => {
-					console.log(data);
-					setUserData(data);
-					onSessionChange(); // Notify ProfileMenu about session change
-				})
-				.catch((error) => {
-					console.error(error);
-					setError(error.message);
-				});
+		if (!(userIsSet && userID !== undefined && !userData)) {
+			return;
 		}
+		fetch("/users/fetch-user", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ id: userID }),
+		})
+			.then((response) => {
+				if (response.ok) {
+					return response.json();
+				} else {
+					throw new Error("Failed to fetch user data");
+				}
+			})
+			.then((data) => {
+				console.log(data);
+				setUserData(data);
+				onSessionChange(); // Notify ProfileMenu about session change
+			})
+			.catch((error) => {
+				console.error(error);
+				setError(error.message);
+			});
 	}, [userIsSet, userID, userData, onSessionChange]);
 
 	return (

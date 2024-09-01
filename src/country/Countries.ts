@@ -26,7 +26,6 @@ const continentPopulation: number[] = [56, 3, 51, 46, 34, 19, 15];
  */
 export class Countries {
 	private _countriesArray: Country[] = [];
-	private _arraySize: number;
 
 	/**
 	 * Creates an instance of Countries.
@@ -34,7 +33,6 @@ export class Countries {
 	 */
 	constructor() {
 		this._countriesFound = 0;
-		this._arraySize = 0;
 	}
 
 	private _continents: Object3D[] = [];
@@ -75,15 +73,6 @@ export class Countries {
 	 */
 	public get countryArray(): Country[] {
 		return this._countriesArray;
-	}
-
-	/**
-	 * Retrieves the size of the countries array.
-	 *
-	 * @returns {number} - The size of the countries array.
-	 */
-	public get size(): number {
-		return this._arraySize;
 	}
 
 	/**
@@ -159,5 +148,11 @@ export class Countries {
 		// Add local index within the specified continent
 		realIndex += location[1];
 		return realIndex;
+	}
+	public getCountryByObject(object:Object3D):Country{
+		const index = this.countryArray.findIndex(
+			(country: Country): boolean => country.object===object
+		);
+		return this.countryArray[index];
 	}
 }

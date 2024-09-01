@@ -20,7 +20,7 @@ const SizeMode: React.FC = () => {
 		location.pathname.endsWith("/south_america") ||
 		location.pathname.endsWith("/north_america");
 
-	console.debug("Rendering Group Selection");
+	console.debug("Rendering SizeMode.tsx");
 	return (
 		<>
 			{isInSizeMode && (

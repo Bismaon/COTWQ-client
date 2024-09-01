@@ -20,7 +20,7 @@ const GameMode: React.FC = () => {
 		navigate(`${location.pathname}/${mode}`);
 	};
 
-	console.debug("Rendering Game Mode Menu");
+	console.debug("Rendering GameMode.tsx");
 	return (
 		<>
 			{isInGameMode && (

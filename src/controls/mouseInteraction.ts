@@ -1,9 +1,9 @@
 // interaction/mouseInteraction.ts
 import { Intersection, Object3D } from "three";
 import { getIntersect } from "../utils/utilities";
-import { isPlaying } from "./playingState";
-import { getCountries } from "../scene/sceneManager";
 import { Country } from "../country/Country";
+import { getCountries } from "../scene/sceneManager";
+import { isPlaying } from "./playingState";
 
 export function mouseHover(event: MouseEvent): void {
 	const canvas: HTMLCanvasElement = document.getElementById(
@@ -27,7 +27,15 @@ export function mouseHover(event: MouseEvent): void {
 	}
 }
 
-function isValidObject(intersectedObject: Object3D): [boolean, string] {
+export function updateCountryName(countryName: string): void {
+	const countryNameElement: HTMLDivElement = document.getElementById(
+		"country-name-container"
+	) as HTMLDivElement;
+
+	if (!countryNameElement) return; // meh
+	countryNameElement.textContent = countryName;
+}
+export function isValidObject(intersectedObject: Object3D): [boolean, string] {
 	const objName: string = intersectedObject.name;
 	if (objName === "water" || objName === "") return [false, ""];
 
@@ -36,23 +44,11 @@ function isValidObject(intersectedObject: Object3D): [boolean, string] {
 		return [false, ""];
 	}
 
-	const countryArray: Country[] = getCountries().countryArray;
-
-	const countryIndex: number = countryArray.findIndex(
-		(country: Country): boolean => country.object === countryObj
-	);
-	const country: Country = countryArray[countryIndex];
-	console.log(country.isFound);
-	const validity: boolean =
+	const country: Country = getCountries().getCountryByObject(countryObj);
+	const validity =
 		country.isFound || (!isPlaying() && country.state === "error");
 	return [validity, country.name];
 }
 
-function updateCountryName(countryName: string): void {
-	const countryNameElement: HTMLDivElement = document.getElementById(
-		"country-name-container"
-	) as HTMLDivElement;
 
-	if (!countryNameElement) return; // meh
-	countryNameElement.textContent = countryName;
-}
+

@@ -12,6 +12,7 @@ import {
 import { setupModelForGame } from "../../scene/sceneManager";
 import { continentNames, createTable } from "../../country/countriesTable";
 import { countryToFind } from "../../country/Countries";
+import { useModel } from "../ModelContext";
 
 const Names: React.FC<{
 	isHard: boolean;
@@ -23,14 +24,20 @@ const Names: React.FC<{
 	const gameTimer: Timer = new Timer();
 	const gameMode: string =
 		continentIndex === -1 ? "base" : continentNames[continentIndex];
+	const { isModelLoaded } = useModel();
 
 	useEffect(() => {
-		if (!isQuizInit.current) {
-			createTable(); // Ensure createTable is only called once
-			setupModelForGame(isHard, continentIndex);
-			isQuizInit.current = true;
+		if (isQuizInit.current) {
+			return;
 		}
-	}, [continentIndex, isHard]); // Empty dependency array ensures this runs only once
+		if (!isModelLoaded) {
+			return;
+		}
+
+		createTable();
+		setupModelForGame(isHard, continentIndex);
+		isQuizInit.current = true;
+	}, [continentIndex, isHard, isModelLoaded]);
 	return (
 		<>
 			<div className="grid-item" id="quiz-controls">

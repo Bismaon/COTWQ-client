@@ -1,5 +1,5 @@
 // country/Country.ts
-import { Mesh, Object3D } from "three";
+import { Material, Mesh, Object3D } from "three";
 import { getColorsArray } from "../scene/sceneManager";
 
 const colorsDict: { [key: string]: number } = {
@@ -14,10 +14,9 @@ const colorsDict: { [key: string]: number } = {
  * Represents a country.
  */
 export class Country {
-
 	private readonly _capital: string | null;
 	private readonly _currency: string | null;
-	private readonly _flag: [string, string];
+	private readonly _svgFlag: string;
 	private readonly _languages: string[] | null;
 	private readonly _isOwned: boolean;
 	private readonly _meshes: Mesh;
@@ -27,6 +26,7 @@ export class Country {
 	private readonly _name: string;
 	private readonly _acceptedNames: string[];
 	private readonly _owner: [number, number] | null;
+	private readonly _flagMaterial: Material;
 
 	/**
 	 * Creates an instance of Country.
@@ -37,19 +37,20 @@ export class Country {
 		territories: [number, number][] | null,
 		location: [number, number],
 		owner: [number, number] | null,
-		flag: [string, string],
+		svgFlag: string,
 		currency: string | null,
 		capital: string | null,
 		languages: string[] | null,
 		meshes: Mesh,
-		object: Object3D
+		object: Object3D,
+		flagMaterial:Material
 	) {
 		this._name = name;
 		this._acceptedNames = acceptedNames;
 		this._territories = territories;
 		this._location = location;
 		this._owner = owner;
-		this._flag = flag;
+		this._svgFlag = svgFlag;
 		this._currency = currency;
 		this._languages = languages;
 		this._capital = capital;
@@ -59,6 +60,7 @@ export class Country {
 		this._meshes = meshes;
 		this._object = object;
 		this._isOwned = owner !== null;
+		this._flagMaterial = flagMaterial;
 	}
 
 	/**
@@ -153,5 +155,12 @@ export class Country {
 
 	public get isOwned(): boolean {
 		return this._isOwned;
+	}
+	public get svgFlag():string{
+		return this._svgFlag;
+	}
+
+	public get flagMaterial():Material{
+		return this._flagMaterial;
 	}
 }

@@ -15,7 +15,7 @@ const Games: React.FC = () => {
 	// Determine if we are on a specific game mode path
 	const isInGameMode: boolean = location.pathname === "/games";
 
-	console.debug("Rendering Games Menu");
+	console.debug("Rendering Games.tsx");
 	return (
 		<>
 			{isInGameMode && (

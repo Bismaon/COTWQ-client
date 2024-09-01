@@ -20,6 +20,7 @@ const ProfileMenu: React.FC = () => {
 		setSessionChecked((prev) => !prev); // Trigger re-render when session changes
 	};
 
+	console.debug("Rendering Profile.tsx");
 	return (
 		<>
 			<div className="grid-item" id="title">

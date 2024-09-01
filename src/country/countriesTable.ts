@@ -3,6 +3,7 @@
 import { Countries } from "./Countries";
 import { Country } from "./Country";
 import { getCountries } from "../scene/sceneManager";
+import { handleImageClick } from "../controls/inputHandlers";
 
 /** Represents the number of countries in each continent for table layout purposes. */
 const continentCountryCounts: [56, 3, 51, 46, 34, 19, 15] = [
@@ -67,7 +68,7 @@ export function createTable(): void {
 		// Add the countries as subsequent rows.
 		for (let i: number = 0; i < continentCountryCounts[index]; i++) {
 			const country: Country = countries.getCountryByLocation([index, i]);
-			if (country.owner !== null) continue;
+			if (country.isOwned) continue;
 			const row: HTMLTableRowElement = tableBody.insertRow();
 			const cell: HTMLTableCellElement = row.insertCell();
 			cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.name}</div>`;
@@ -97,7 +98,7 @@ export function createTable(): void {
 					index,
 					i,
 				]);
-				if (country.owner !== null) continue;
+				if (country.isOwned) continue;
 				const row: HTMLTableRowElement = tableBody.insertRow();
 				const cell: HTMLTableCellElement = row.insertCell();
 				cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.name}</div>`;
@@ -132,4 +133,29 @@ export function changeCountryCellTo(
 
 	// Change the cell's class based on the state
 	cell.className = `cell ${state}`;
+}
+
+export async function populateFlags() {
+	const flagContainer: HTMLElement | null =
+		document.getElementById("item-list");
+	if (!flagContainer) {
+		return;
+	}
+
+	const countries: Country[] = getCountries().countryArray;
+	const baseURL = `${process.env.PUBLIC_URL}/assets/svg/flags/`;
+	for (const country of countries) {
+		if (country.isOwned) continue; // skip if the country is not independent
+		if (country.name==="Antarctica") continue; //skip Antarctica
+		const flagUrl: string = baseURL + country.svgFlag;
+
+		const imgElement: HTMLImageElement = document.createElement("img");
+		imgElement.src = flagUrl;
+		imgElement.alt = `${country.location[0]}_${country.location[1]}`;
+
+		// Attach click handler
+		imgElement.addEventListener("click", handleImageClick);
+
+		flagContainer.appendChild(imgElement);
+	}
 }

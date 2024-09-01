@@ -57,12 +57,13 @@ export function resetCountries(): void {
 }
 
 export function createCountryOutline(mesh: Mesh): void {
-	if (mesh.geometry) {
-		const edgesGeometry = new EdgesGeometry(mesh.geometry, 45);
-		const edgeMaterial = new LineBasicMaterial({ color: 0x000000 });
-		const edgesMesh = new LineSegments(edgesGeometry, edgeMaterial);
-		mesh.add(edgesMesh);
+	if (!mesh.geometry) {
+		return;
 	}
+	const edgesGeometry = new EdgesGeometry(mesh.geometry, 45);
+	const edgeMaterial = new LineBasicMaterial({ color: 0x000000 });
+	const edgesMesh = new LineSegments(edgesGeometry, edgeMaterial);
+	mesh.add(edgesMesh);
 }
 
 /**
@@ -103,22 +104,21 @@ function triggerCountryFoundAnimation(locations: [number, number][]): void {
 	});
 }
 
-export function foundSearch(country: Country, gameMode: string): boolean {
-	if (!country.isFound) {
-		const location: [number, number] = country.location;
-		const connectedLoc: [number, number][] = getConnected(location);
-		setCountryIsFoundTo(country, true);
-		changeCountryCellTo("found", location);
-		if (!country.isVisible) {
-			changeCountryVisibilityTo(true, connectedLoc);
-		}
-
-		triggerCountryFoundAnimation(connectedLoc);
-		if (isFollowing()) {
-			cameraFaceTo(getObjCenter(country.object));
-		}
+export function foundSearch(country: Country, continent: string): boolean {
+	const location: [number, number] = country.location;
+	const connectedLoc: [number, number][] = getConnected(location);
+	setCountryIsFoundTo(country, true);
+	changeCountryCellTo("found", location);
+	if (!country.isVisible) {
+		changeCountryVisibilityTo(true, connectedLoc);
 	}
-	return getCountries().isAllFound(gameMode);
+
+	triggerCountryFoundAnimation(connectedLoc);
+	if (isFollowing()) {
+		cameraFaceTo(getObjCenter(country.object));
+	}
+
+	return getCountries().isAllFound(continent);
 }
 
 /**
@@ -132,7 +132,6 @@ export function getConnected(location: [number, number]): [number, number][] {
 	const connectedLocations: [number, number][] = [];
 	const country: Country = countries.getCountryByLocation(location);
 
-	// console.log(country.countryObj);
 	const ownerLocation: [number, number] | null = country.owner;
 	if (ownerLocation) {
 		const owner: Country = countries.getCountryByLocation(ownerLocation);
@@ -142,3 +141,5 @@ export function getConnected(location: [number, number]): [number, number][] {
 	}
 	return connectedLocations;
 }
+
+
