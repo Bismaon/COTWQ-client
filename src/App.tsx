@@ -111,6 +111,9 @@ function App() {
 							element={<h2>404 Not Found - B o dau</h2>}
 						/>
 					</Routes>
+					<footer className="grid-item" id="footer">
+						Bismaon 2024
+					</footer>
 				</div>
 			</ModelProvider>
 		</Router>

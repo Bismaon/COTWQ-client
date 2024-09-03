@@ -2,7 +2,7 @@
 import { Intersection, Object3D } from "three";
 import { getIntersect } from "../utils/utilities";
 import { Country } from "../country/Country";
-import { getCountries } from "../scene/sceneManager";
+import { getWorld } from "../scene/sceneManager";
 import { isPlaying } from "./playingState";
 
 export function mouseHover(event: MouseEvent): void {
@@ -44,7 +44,7 @@ export function isValidObject(intersectedObject: Object3D): [boolean, string] {
 		return [false, ""];
 	}
 
-	const country: Country = getCountries().getCountryByObject(countryObj);
+	const country: Country = getWorld().getCountryByObject(countryObj);
 	const validity =
 		country.isFound || (!isPlaying() && country.state === "error");
 	return [validity, country.name];

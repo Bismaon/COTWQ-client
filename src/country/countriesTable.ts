@@ -1,8 +1,8 @@
 // country/countriesTable.ts
 
-import { Countries } from "./Countries";
+import { World } from "./World";
 import { Country } from "./Country";
-import { getCountries } from "../scene/sceneManager";
+import { getWorld } from "../scene/sceneManager";
 import { handleImageClick } from "../controls/inputHandlers";
 
 /** Represents the number of countries in each continent for table layout purposes. */
@@ -38,8 +38,8 @@ const continentFormattedNames: string[] = [
  * @returns {void}
  */
 export function createTable(): void {
-	// Retrieve the Countries object, which contains country data.
-	const countries: Countries = getCountries();
+	// Retrieve the World object, which contains country data.
+	const countries: World = getWorld();
 
 	// Reference to the container div where the tables will be placed.
 	const container: HTMLTableElement = document.getElementById(
@@ -109,44 +109,51 @@ export function createTable(): void {
 
 export function changeCountryCellTo(
 	state: "found" | "missed" | "invisible",
-	[continent, country]: [number, number]
+	countryIndex:number[]
 ): void {
-	if (continent === 1) {
-		console.debug("No antarctic!");
-		return;
-	}
-	// Retrieve the container element where the tables are appended
-	const container: HTMLTableElement = document.getElementById(
-		"country-continent-name-container"
-	) as HTMLTableElement;
+	countryIndex.forEach((index)=>{
+		console.log("Index: ", index)
+		const countryElement:Country = getWorld().countryArray[index];
+		const [continent, country] = countryElement.location;
+		if (continent === 1) {
+			console.debug("No antarctic!");
+			return;
+		}
 
-	// Find the cell with the specific index in the table
-	const cell: HTMLTableCellElement | null = container.querySelector(
-		`div#_${continent}_${country}`
-	);
+		// Retrieve the container element where the tables are appended
+		const container: HTMLTableElement = document.getElementById(
+			"country-continent-name-container"
+		) as HTMLTableElement;
 
-	// console.log(cell);
-	if (!cell) {
-		console.error(`Cell with index _${continent}_${country} not found.`);
-		return;
-	}
+		// Find the cell with the specific index in the table
+		const cell: HTMLTableCellElement | null = container.querySelector(
+			`div#_${continent}_${country}`
+		);
 
-	// Change the cell's class based on the state
-	cell.className = `cell ${state}`;
+		// console.log(cell);
+		if (!cell) {
+			console.error(`Cell with index _${continent}_${country} not found.`);
+			return;
+		}
+
+		// Change the cell's class based on the state
+		cell.className = `cell ${state}`;
+	})
 }
 
-export async function populateFlags() {
+export function populateFlags(continentIndex?:number):void {
 	const flagContainer: HTMLElement | null =
 		document.getElementById("item-list");
 	if (!flagContainer) {
 		return;
 	}
 
-	const countries: Country[] = getCountries().countryArray;
+	const countries: Country[] = getWorld().countryArray;
 	const baseURL = `${process.env.PUBLIC_URL}/assets/svg/flags/`;
 	for (const country of countries) {
 		if (country.isOwned) continue; // skip if the country is not independent
 		if (country.name==="Antarctica") continue; //skip Antarctica
+		if (continentIndex!==-1 && country.location[0]!==continentIndex) continue // skip if the country is not in the wanted continent
 		const flagUrl: string = baseURL + country.svgFlag;
 
 		const imgElement: HTMLImageElement = document.createElement("img");
@@ -158,4 +165,7 @@ export async function populateFlags() {
 
 		flagContainer.appendChild(imgElement);
 	}
+	const firstFlag = document.querySelector("img") as HTMLImageElement;
+
+	firstFlag.classList.add("selected");
 }

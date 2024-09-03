@@ -3,11 +3,11 @@ import "../../stylesheet/style.css";
 import "../../stylesheet/Quiz.css";
 import {
 	cameraFollowCountry,
-	handleFlagInput,
 	handleGiveUp,
 	handlePauseStart,
+	handleTextboxChange,
 } from "../../controls/inputHandlers";
-import { countryToFind } from "../../country/Countries";
+import { countriesCountByRegion } from "../../country/World";
 import { Timer } from "../../utils/Timer";
 import {
 	continentNames,
@@ -25,8 +25,8 @@ const Flags: React.FC<{
 	let isQuizInit = useRef(false);
 	let ongoing: boolean = false;
 	const gameTimer: Timer = new Timer();
-	const continent: string =
-		continentIndex === -1 ? "base" : continentNames[continentIndex];
+	const region: string =
+		continentIndex === -1 ? "all_regions" : continentNames[continentIndex];
 	const { isModelLoaded } = useModel();
 
 	useEffect(() => {
@@ -38,7 +38,7 @@ const Flags: React.FC<{
 		}
 		createTable();
 		setupModelForGame(isHard, continentIndex);
-		populateFlags();
+		populateFlags(continentIndex);
 		isQuizInit.current = true;
 	}, [continentIndex, isHard, isModelLoaded]);
 
@@ -59,7 +59,7 @@ const Flags: React.FC<{
 								continentIndex,
 								gameTimer,
 								isHard,
-								continent
+								region
 							);
 						}}
 					>
@@ -84,14 +84,15 @@ const Flags: React.FC<{
 							id="answer-box-input"
 							name="textbox"
 							onInput={(): void => {
-								handleFlagInput(gameTimer, continent);
+								handleTextboxChange(gameTimer, region, "flag");
 							}}
 							autoComplete="off"
 							autoCorrect="off"
 						/>
 					</div>
 					<div className="quiz-grid-item" id="country-counter">
-						0&nbsp;/&nbsp;{countryToFind[continentIndex]} guessed
+						0&nbsp;/&nbsp;{countriesCountByRegion[continentIndex]}{" "}
+						guessed
 					</div>
 				</div>
 			</div>

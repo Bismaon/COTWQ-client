@@ -28,7 +28,6 @@
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="svg"  type="xs:string" />
-                                        <xs:element name="png"  type="xs:string" />
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>

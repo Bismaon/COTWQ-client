@@ -11,7 +11,7 @@ import {
 } from "../../controls/inputHandlers";
 import { setupModelForGame } from "../../scene/sceneManager";
 import { continentNames, createTable } from "../../country/countriesTable";
-import { countryToFind } from "../../country/Countries";
+import { countriesCountByRegion } from "../../country/World";
 import { useModel } from "../ModelContext";
 
 const Names: React.FC<{
@@ -22,8 +22,8 @@ const Names: React.FC<{
 	let isQuizInit = useRef(false);
 	let ongoing: boolean = false;
 	const gameTimer: Timer = new Timer();
-	const gameMode: string =
-		continentIndex === -1 ? "base" : continentNames[continentIndex];
+	const region: string =
+		continentIndex === -1 ? "all_regions" : continentNames[continentIndex];
 	const { isModelLoaded } = useModel();
 
 	useEffect(() => {
@@ -54,7 +54,7 @@ const Names: React.FC<{
 								continentIndex,
 								gameTimer,
 								isHard,
-								gameMode
+								region
 							);
 						}}
 					>
@@ -79,14 +79,14 @@ const Names: React.FC<{
 							id="answer-box-input"
 							name="textbox"
 							onInput={(): void =>
-								handleTextboxChange(gameTimer, gameMode)
+								handleTextboxChange(gameTimer, region)
 							}
 							autoComplete="off"
 							autoCorrect="off"
 						/>
 					</div>
 					<div className="quiz-grid-item" id="country-counter">
-						0&nbsp;/&nbsp;{countryToFind[gameMode]} guessed
+						0&nbsp;/&nbsp;{countriesCountByRegion[region]} guessed
 					</div>
 				</div>
 			</div>

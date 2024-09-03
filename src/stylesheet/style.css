@@ -145,3 +145,7 @@ h2 {
 .grid-item-list-container img.selected {
     outline: 3px solid #08f; /* Blue outline for the selected image */
 }
+
+footer#footer{
+    grid-column: 1/ -1;
+}

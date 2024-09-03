@@ -1,4 +1,5 @@
 import {
+	ClampToEdgeWrapping,
 	DoubleSide,
 	Material,
 	MeshBasicMaterial,
@@ -13,6 +14,7 @@ export function createCountryFlagShader(svgURL: string): Material {
 
 	// Flip the texture on the Y-axis
 	texture.wrapT = RepeatWrapping;
+	texture.wrapS = ClampToEdgeWrapping;
 	texture.repeat.y = -1;
 	return new MeshBasicMaterial({
 		map: texture,

@@ -1,36 +1,34 @@
 // country/Country.ts
 import { Material, Mesh, Object3D } from "three";
-import { getColorsArray } from "../scene/sceneManager";
 
-const colorsDict: { [key: string]: number } = {
-	unknown: 0,
-	found: 1,
-	selected: 2,
-	error: 3,
-	unavailable: 4,
-	water: 5,
-};
 /**
  * Represents a country.
  */
 export class Country {
+	// Holds the capital of the country as a string
 	private readonly _capital: string | null;
+	// Holds the currency of the country as a string
 	private readonly _currency: string | null;
-	private readonly _svgFlag: string;
 	private readonly _languages: string[] | null;
+	private readonly _svgFlag: string;
+	// true if the country is not independent
 	private readonly _isOwned: boolean;
+	// contains the Object3D Mesh of the country (colors/flag)
 	private readonly _meshes: Mesh;
+	// The object of the country in the model
 	private readonly _object: Object3D;
+	// continent index and index of the country in that continent array
 	private readonly _location: [number, number];
+	// locations of the countries connected to `this`
 	private readonly _territories: [number, number][] | null;
 	private readonly _name: string;
+	// Names that will be accepted when typing the country names in quizzes, is empty if it is not independent
 	private readonly _acceptedNames: string[];
+	// location of the country which is parent to `this`
 	private readonly _owner: [number, number] | null;
+	// Material of the flag resulting from the svg
 	private readonly _flagMaterial: Material;
 
-	/**
-	 * Creates an instance of Country.
-	 */
 	constructor(
 		name: string,
 		acceptedNames: string[],
@@ -43,7 +41,7 @@ export class Country {
 		languages: string[] | null,
 		meshes: Mesh,
 		object: Object3D,
-		flagMaterial:Material
+		flagMaterial: Material
 	) {
 		this._name = name;
 		this._acceptedNames = acceptedNames;
@@ -61,6 +59,20 @@ export class Country {
 		this._object = object;
 		this._isOwned = owner !== null;
 		this._flagMaterial = flagMaterial;
+		this._material = meshes.material as Material;
+	}
+
+	// Current material of the country object
+	private _material:Material;
+
+	public get material(): Material {
+		return this._material;
+	}
+
+	public set material(newMaterial: Material) {
+		newMaterial.needsUpdate = true;
+		this.meshes.material = newMaterial;
+		this._material = newMaterial;
 	}
 
 	/**
@@ -102,9 +114,6 @@ export class Country {
 	}
 
 	public set state(state: string) {
-		const material = getColorsArray()[colorsDict[state]];
-		this._meshes.material = material.clone();
-		//material.needsUpdate = true;
 		this._state = state;
 	}
 
@@ -156,11 +165,12 @@ export class Country {
 	public get isOwned(): boolean {
 		return this._isOwned;
 	}
-	public get svgFlag():string{
+
+	public get svgFlag(): string {
 		return this._svgFlag;
 	}
 
-	public get flagMaterial():Material{
+	public get flagMaterial(): Material {
 		return this._flagMaterial;
 	}
 }

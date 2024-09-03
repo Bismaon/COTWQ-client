@@ -18,7 +18,7 @@ export function loadModel(): Promise<Object3D> {
 	return new Promise((resolve, reject): void => {
 		const loader: GLTFLoader = new GLTFLoader(loadingManager);
 		loader.load(
-			`${process.env.PUBLIC_URL}/assets/models/earth_political_UV_WIP.glb`,
+			`${process.env.PUBLIC_URL}/assets/models/earth_political_UV.glb`,
 			function (gltf: GLTF): void {
 				const model: Object3D = gltf.scene;
 
@@ -45,6 +45,7 @@ function extractColors(model: Object3D): void {
 		if (!isMesh(child)) {
 			return;
 		}
+
 		child.castShadow = true;
 		const material: Material = (child.material as Material).clone();
 		if (isInColors(colors, material)) {
