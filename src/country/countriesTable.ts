@@ -109,11 +109,10 @@ export function createTable(): void {
 
 export function changeCountryCellTo(
 	state: "found" | "missed" | "invisible",
-	countryIndex:number[]
+	countryIndex: number[]
 ): void {
-	countryIndex.forEach((index)=>{
-		console.log("Index: ", index)
-		const countryElement:Country = getWorld().countryArray[index];
+	countryIndex.forEach((index) => {
+		const countryElement: Country = getWorld().countryArray[index];
 		const [continent, country] = countryElement.location;
 		if (continent === 1) {
 			console.debug("No antarctic!");
@@ -132,28 +131,58 @@ export function changeCountryCellTo(
 
 		// console.log(cell);
 		if (!cell) {
-			console.error(`Cell with index _${continent}_${country} not found.`);
+			console.error(
+				`Cell with index _${continent}_${country} not found.`
+			);
 			return;
 		}
 
 		// Change the cell's class based on the state
 		cell.className = `cell ${state}`;
-	})
+	});
 }
 
-export function populateFlags(continentIndex?:number):void {
+function randomizedCountries(
+	countries: Country[],
+	continentIndex: number | undefined
+): Country[] {
+	const filteredCountries: Country[] = countries.filter(
+		(country: Country) => {
+			if (country.isOwned) return false; // skip if the country is not independent
+			if (country.name === "Antarctica") return false; // skip Antarctica
+			if (continentIndex && country.location[0] !== continentIndex)
+				return false; // skip if the country is not in the wanted continent
+			return true;
+		}
+	);
+
+	// Shuffle the filteredCountries array
+	for (let i = filteredCountries.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[filteredCountries[i], filteredCountries[j]] = [
+			filteredCountries[j],
+			filteredCountries[i],
+		];
+	}
+	return filteredCountries;
+}
+
+export function populateFlags(continentIndex?: number): void {
 	const flagContainer: HTMLElement | null =
 		document.getElementById("item-list");
 	if (!flagContainer) {
 		return;
 	}
 
+	// Get the countries and shuffle them
 	const countries: Country[] = getWorld().countryArray;
+	const filteredCountries = randomizedCountries(countries, continentIndex);
+
+	// Base URL for flag images
 	const baseURL = `${process.env.PUBLIC_URL}/assets/svg/flags/`;
-	for (const country of countries) {
-		if (country.isOwned) continue; // skip if the country is not independent
-		if (country.name==="Antarctica") continue; //skip Antarctica
-		if (continentIndex!==-1 && country.location[0]!==continentIndex) continue // skip if the country is not in the wanted continent
+
+	// Create and append flag elements
+	filteredCountries.forEach((country: Country) => {
 		const flagUrl: string = baseURL + country.svgFlag;
 
 		const imgElement: HTMLImageElement = document.createElement("img");
@@ -164,8 +193,11 @@ export function populateFlags(continentIndex?:number):void {
 		imgElement.addEventListener("click", handleImageClick);
 
 		flagContainer.appendChild(imgElement);
-	}
-	const firstFlag = document.querySelector("img") as HTMLImageElement;
+	});
 
-	firstFlag.classList.add("selected");
+	// Set the first flag as selected
+	const firstFlag = document.querySelector("img") as HTMLImageElement;
+	if (firstFlag) {
+		firstFlag.classList.add("selected");
+	}
 }

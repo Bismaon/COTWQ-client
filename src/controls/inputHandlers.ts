@@ -34,7 +34,7 @@ export function handleTextboxChange(
 	const world: World = getWorld();
 	const enteredText: string = processText(answerInput.value);
 	let countryIndex: number[];
-	if (gameType === "flag") {
+	if (gameType === "flags") {
 		let flagSelected: HTMLImageElement | null =
 			document.querySelector(".selected");
 		if (!flagSelected) {
@@ -53,40 +53,52 @@ export function handleTextboxChange(
 		if (!country.acceptedNames.includes(enteredText)) {
 			return;
 		}
+
 		countryIndex = [world.getRealIndex(location)];
 		world.setCountryAndConnectedIsFound(countryIndex[0], true);
 		// countryIndex[0], because only one country can be guessed by flag
-		world.triggerCountryAnimation(countryIndex[0], "flag");
+		world.triggerCountryAnimation(countryIndex[0], "flags");
+		// take the first img tag element in the item-list and make it the selected
+		let nextFlag: HTMLImageElement | null =
+			flagSelected.nextSibling as HTMLImageElement;
+		if (!(nextFlag instanceof HTMLImageElement)) {
+			nextFlag = document.querySelector("img");
+		}
 		// remove the outline of the selected flag and remove it from the list
 		flagSelected.classList.remove("selected");
 		flagSelected.remove();
-		// take the first img tag element in the item-list and make it the selected
-		let nextFlag: HTMLImageElement | null = document.querySelector("img");
 		if (nextFlag) {
 			nextFlag.classList.add("selected");
 		}
+		answerInput.value = "";
+		countryCounterDiv.textContent =
+			String(world.countriesFound) +
+			"\u00A0/\u00A0" +
+			countriesCountByRegion[continent] +
+			" guessed";
 	} else {
 		countryIndex = world.exists(enteredText);
-
+		console.log("Country Index: ", countryIndex);
 		countryIndex.forEach((index: number): void => {
 			const country: Country = world.countryArray[index];
 			if (country.isFound) {
 				return;
 			}
+
 			world.applyFoundEffectsToCountry(index);
+			answerInput.value = "";
+			countryCounterDiv.textContent =
+				String(world.countriesFound) +
+				"\u00A0/\u00A0" +
+				countriesCountByRegion[continent] +
+				" guessed";
 		});
 	}
-	console.log("Country Index: ", countryIndex);
 	changeCountryCellTo("found", countryIndex);
 	if (isFollowing()) {
 		cameraFaceTo(getObjCenter(world.countryArray[countryIndex[0]].object)); // get the first country object for simplicity
 	}
-	answerInput.value = "";
-	countryCounterDiv.textContent =
-		String(world.countriesFound) +
-		"\u00A0/\u00A0" +
-		countriesCountByRegion[continent] +
-		" guessed";
+
 	if (world.isAllFound(continent)) {
 		timer.stop();
 		alert(`Congratulations you finished in ${timer.toString()}!`); // make a better message
@@ -105,7 +117,7 @@ export function handleGiveUp(
 	timer: Timer,
 	isHard: boolean,
 	continent: string,
-	gameType?:string
+	gameType?: string
 ): void {
 	const answerContainer: HTMLDivElement = document.getElementById(
 		"answer-box-container"
@@ -130,7 +142,8 @@ export function handleGiveUp(
 	timer.stop();
 
 	const world: World = getWorld();
-	world.countryArray.forEach((country: Country, index:number): void => {
+
+	world.countryArray.forEach((country: Country, index: number): void => {
 		if (country.isFound || country.isOwned) {
 			return;
 		}
@@ -138,8 +151,11 @@ export function handleGiveUp(
 		if (!(continentIndex === -1 || location[0] === continentIndex)) {
 			return;
 		}
-		world.triggerCountryAnimation(index, "error")
-		world.setCountryAndConnectedIsFound(index, true);
+		world.triggerCountryAnimation(
+			index,
+			gameType === "flags" ? gameType : "error"
+		);
+		world.setCountryVisibility(index, true);
 		changeCountryCellTo("missed", [index]);
 	});
 }
@@ -194,10 +210,10 @@ export function restartQuiz(
 	const pauseStart: HTMLButtonElement = document.getElementById(
 		"quiz-stop-start"
 	) as HTMLButtonElement;
-	const countries: World = getWorld();
-	countries.clearFound();
+	const world: World = getWorld();
+	world.clearFound();
 	countryCounter.textContent =
-		String(countries.countriesFound) +
+		String(world.countriesFound) +
 		"\u00A0/\u00A0" +
 		countriesCountByRegion[continent] +
 		" guessed";
@@ -222,4 +238,4 @@ export function handleImageClick(event: MouseEvent) {
 		imgElement.classList.add("selected");
 	}
 }
-
+//TODO clear answer box function

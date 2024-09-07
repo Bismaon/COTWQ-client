@@ -134,7 +134,6 @@ h2 {
     width: auto;
     height: auto;
     max-width: 100%;
-    max-height: 100%;
     display: block;
     cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
     transition: outline 0.3s ease; /* Smooth transition for outline */

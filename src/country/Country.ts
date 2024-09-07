@@ -70,7 +70,7 @@ export class Country {
 	}
 
 	public set material(newMaterial: Material) {
-		newMaterial.needsUpdate = true;
+		newMaterial.needsUpdate = true; //!TODO not sure this is a good idea works for now
 		this.meshes.material = newMaterial;
 		this._material = newMaterial;
 	}

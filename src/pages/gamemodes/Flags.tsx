@@ -59,7 +59,8 @@ const Flags: React.FC<{
 								continentIndex,
 								gameTimer,
 								isHard,
-								region
+								region,
+								"flag"
 							);
 						}}
 					>
@@ -91,8 +92,7 @@ const Flags: React.FC<{
 						/>
 					</div>
 					<div className="quiz-grid-item" id="country-counter">
-						0&nbsp;/&nbsp;{countriesCountByRegion[continentIndex]}{" "}
-						guessed
+						0&nbsp;/&nbsp;{countriesCountByRegion[region]} guessed
 					</div>
 				</div>
 			</div>

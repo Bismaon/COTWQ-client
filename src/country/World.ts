@@ -151,17 +151,21 @@ export class World {
 	public setCountryIsFound(index: number, found: boolean): void {
 		const country: Country = this._countriesArray[index];
 		country.isFound = found;
-		if (!country.isOwned) this.incrementFound()
+		console.log("Country: ", country);
+		if (!country.isOwned) {
+			this.incrementFound();
+		}
+		console.log("World: ", this);
 	}
 
-	public setCountryAndConnectedIsFound(index: number, found: boolean) {
+	public setCountryAndConnectedIsFound(index: number, found: boolean): void {
 		const countryIndex: number[] = this.getConnectedTerritories(index);
 		countryIndex.forEach((index: number) => {
 			this.setCountryIsFound(index, found);
 		});
 	}
 
-	public setUpCountries(hard: boolean, continentIndex: number) {
+	public setUpCountries(hard: boolean, continentIndex: number): void {
 		this._countriesArray.forEach((country: Country, index: number) => {
 			if (country.isOwned) {
 				return;
@@ -171,8 +175,11 @@ export class World {
 				country.location[0] !== continentIndex
 			) {
 				this.setCountryAndConnectedState(index, "unavailable");
-			} else if (hard) {
-				this.setCountryAndConnectedVisibility(index, false);
+			} else {
+				if (hard) {
+					this.setCountryAndConnectedVisibility(index, false);
+				}
+				this.setCountryAndConnectedState(index, "unknown");
 			}
 			changeCountryCellTo("invisible", [index]);
 		});
@@ -198,9 +205,11 @@ export class World {
 				100
 			);
 			bounceAnimation(countryObj, orgPos, targetPos, () => {
-				if (state === "flag") { // flag quiz type
+				if (state === "flags") {
+					// flag quiz type
 					this.setCountryFlag(index);
-				} else { // normal quiz type
+				} else {
+					// normal quiz type
 					this.setCountryState(index, state);
 				}
 			});

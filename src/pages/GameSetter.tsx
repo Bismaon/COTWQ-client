@@ -2,12 +2,11 @@
 import React from "react";
 import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 import "../stylesheet/style.css";
-import Names from "./gamemodes/Names";
 import Currencies from "./gamemodes/Currencies";
-import Flags from "./gamemodes/Flags";
 import Languages from "./gamemodes/Languages";
 import Capitals from "./gamemodes/Capitals";
 import { resetModel } from "../scene/sceneManager";
+import GlobalGameMode from "./GlobalGameMode";
 
 const GameSetter: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
@@ -35,18 +34,20 @@ const GameSetter: React.FC = () => {
 		switch (gameMode) {
 			case "names":
 				return (
-					<Names
-						isHard={isHardMode}
+					<GlobalGameMode
+						hard={isHardMode}
 						continentIndex={continentIndex}
-						isClassic={isClassic}
+						classic={isClassic}
+						gameType={gameMode}
 					/>
 				);
 			case "flags":
 				return (
-					<Flags
-						isHard={isHardMode}
+					<GlobalGameMode
+						hard={isHardMode}
 						continentIndex={continentIndex}
-						isClassic={isClassic}
+						classic={isClassic}
+						gameType={gameMode}
 					/>
 				);
 			case "currencies":

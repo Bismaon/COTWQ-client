@@ -39,6 +39,7 @@ export async function setupSceneModel(): Promise<void> {
 			))
 		);
 		console.debug("Continents: ", world.continents);
+		console.debug("Countries: ", world.countryArray);
 
 		animate(globalScene);
 	} catch (error: unknown) {
@@ -61,7 +62,7 @@ export function setupModelForGame(
 	continentIndex: number
 ): void {
 	// Change all countries not in the continent to unavailable color/state
-	world.setUpCountries(isHard, continentIndex)
+	world.setUpCountries(isHard, continentIndex);
 	if (continentIndex !== -1) {
 		const continentObj: Object3D = world.continents[continentIndex];
 		cameraFaceTo(getObjCenter(continentObj));
