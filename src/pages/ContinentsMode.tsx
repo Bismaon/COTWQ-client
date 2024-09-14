@@ -7,10 +7,12 @@ import {
 	useNavigate,
 } from "react-router-dom";
 import "../stylesheet/style.css";
+import { useTranslation } from "react-i18next";
 
 const ContinentsMode: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
+	const { t, i18n } = useTranslation();
 
 	const isInContinentsMenu: boolean =
 		location.pathname.endsWith("/continents");
@@ -25,7 +27,7 @@ const ContinentsMode: React.FC = () => {
 			{isInContinentsMenu && (
 				<>
 					<div className="grid-item" id="title">
-						<h1>Countries Of The World Quizzes</h1>
+						<h1>{t("title")}</h1>
 					</div>
 					<div className="grid-item" id="back">
 						<i
@@ -37,37 +39,37 @@ const ContinentsMode: React.FC = () => {
 						className="button grid-item"
 						onClick={() => handleNavigate("africa")}
 					>
-						Africa
+						{t("africa")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={() => handleNavigate("south_america")}
 					>
-						South America
+						{t("southamerica")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={() => handleNavigate("north_america")}
 					>
-						North America
+						{t("northamerica")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={() => handleNavigate("asia")}
 					>
-						Asia
+						{t("asia")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={() => handleNavigate("europe")}
 					>
-						Europe
+						{t("europe")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={() => handleNavigate("oceania")}
 					>
-						Oceania
+						{t("oceania")}
 					</button>
 				</>
 			)}

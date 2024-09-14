@@ -17,16 +17,17 @@ interface ModelContextType {
 
 const ModelContext = createContext<ModelContextType | undefined>(undefined);
 
-export const ModelProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ModelProvider: React.FC<{ children: React.ReactNode }> = ({
+	children,
+}) => {
 	const isSetupModelCalled: React.MutableRefObject<boolean> = useRef(false);
 	const [isModelLoaded, setIsModelLoaded] = useState(false);
 
-
 	useEffect((): void => {
-		if (isSetupModelCalled.current)return;
+		if (isSetupModelCalled.current) return;
 		setupScene();
 		loadingManager.onLoad = (): void => {
-			console.log("Model has been loaded successfully")
+			console.debug("Model has been loaded successfully");
 		};
 		setupSceneModel()
 			.then((): void => {
@@ -36,7 +37,7 @@ export const ModelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 			.catch((error: any): void => {
 				console.error(error);
 			});
-		isSetupModelCalled.current=true;
+		isSetupModelCalled.current = true;
 	}, [setIsModelLoaded]);
 
 	return (

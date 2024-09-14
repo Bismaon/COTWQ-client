@@ -6,10 +6,12 @@ import {
 	useNavigate,
 } from "react-router-dom";
 import "../stylesheet/style.css";
+import { useTranslation } from "react-i18next";
 
 const HardMode: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
+	const { t, i18n } = useTranslation();
 
 	const isInHardMenu: boolean = location.pathname.endsWith("/hard");
 
@@ -23,7 +25,7 @@ const HardMode: React.FC = () => {
 			{isInHardMenu && (
 				<>
 					<div className="grid-item" id="title">
-						<h1>Countries Of The World Quizzes</h1>
+						<h1> {t("title")}</h1>
 					</div>
 					<div className="grid-item" id="back">
 						<i
@@ -36,13 +38,13 @@ const HardMode: React.FC = () => {
 						className="button grid-item"
 						onClick={() => handleNavigate("classic")}
 					>
-						Classic
+						{t("title")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={() => handleNavigate("sequential-random")}
 					>
-						Sequential Random
+						{t("sequential-random")}
 					</button>
 				</>
 			)}

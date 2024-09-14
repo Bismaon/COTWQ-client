@@ -80,19 +80,41 @@ export function getWorld(): World {
 }
 
 function parseCountryData(countryData: any): Country {
-	let territories = countryData.territories?.territory;
-	let languages = countryData.languages?.language;
-	let acceptedNames = countryData.acceptedNames?.name;
+	const lang: string = localStorage.getItem("lang") || "en";
+	let territories = countryData.territories.territory;
+	let languages = countryData.languages.language;
+	let languagesContainer: any = [];
+	let acceptedNamesContainer: any = [];
+	let acceptedNames = countryData.acceptedNames.name;
 	// makes sure territories/languages/acceptedNames are in array form
 	if (typeof territories === "string") {
-		territories = [territories];
+		territories = territories.length === 0 ? null : [territories];
 	}
-	if (typeof languages === "string") {
+
+	if (!Array.isArray(languages) && typeof languages === "object") {
 		languages = [languages];
 	}
-	if (typeof acceptedNames === "string") {
+
+	languages.forEach((language: any) => {
+		if (lang === "en") {
+			languagesContainer.push(language.en);
+		} else if (lang === "fr") {
+			languagesContainer.push(language.fr);
+		}
+	});
+
+	if (typeof acceptedNames === "object" && !Array.isArray(acceptedNames)) {
 		acceptedNames = [acceptedNames];
 	}
+
+	acceptedNames.forEach((name: any) => {
+		if (name.en === "") return;
+		if (lang === "en") {
+			acceptedNamesContainer.push(name.en);
+		} else if (lang === "fr") {
+			acceptedNamesContainer.push(name.fr);
+		}
+	});
 
 	territories = territories?.map(
 		(loc: string) => loc.split(",").map(Number) as [number, number]
@@ -112,21 +134,19 @@ function parseCountryData(countryData: any): Country {
 	}
 	const meshes = obj as Mesh;
 
-	const [PNG, SVG]: [string, string] = [
-		countryData.flag.png,
-		countryData.flag.svg,
-	];
+	const SVG: string = countryData.flag.svg;
+
 	const flagMaterial: Material = createCountryFlagShader(SVG);
 	const country: Country = new Country(
 		countryData.name,
-		acceptedNames,
+		acceptedNamesContainer,
 		territories,
 		location,
 		owner,
 		SVG,
 		countryData.currency || null,
 		countryData.capital || null,
-		languages,
+		languagesContainer,
 		meshes,
 		object,
 		flagMaterial
@@ -154,4 +174,13 @@ async function loadCountriesData(url: string): Promise<Country[]> {
 		console.error("Error parsing country data: ", error);
 		return [];
 	}
+}
+
+export async function changeLanguageForCountry(): Promise<void> {
+	const lang: string = localStorage.getItem("lang") || "en";
+	world.replaceCountries(
+		await loadCountriesData(
+			`${process.env.PUBLIC_URL}/assets/xml/countries_data.xml`
+		)
+	);
 }

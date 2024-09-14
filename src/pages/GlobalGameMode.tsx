@@ -17,6 +17,7 @@ import {
 } from "../country/countriesTable";
 import { countriesCountByRegion } from "../country/World";
 import { useModel } from "./ModelContext";
+import { useTranslation } from "react-i18next";
 
 interface gameModeProps {
 	hard: boolean;
@@ -25,13 +26,6 @@ interface gameModeProps {
 	gameType: string;
 }
 
-const answerPromptText: { [gameType: string]: string } = {
-	flags: "Enter highlighted flag's name here: ",
-	names: "Enter country name here: ",
-	currencies: "Enter currency here",
-	languages: "Enter language here: ",
-	capitals: "Enter country capital here: ",
-};
 const GlobalGameMode: React.FC<gameModeProps> = ({
 	hard,
 	continentIndex,
@@ -44,7 +38,15 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 	const region: string =
 		continentIndex === -1 ? "all_regions" : continentNames[continentIndex];
 	const { isModelLoaded } = useModel();
+	const { t, i18n } = useTranslation();
 
+	const answerPromptText: { [gameType: string]: string } = {
+		flags: t("answerPromptTextFlags"),
+		names: t("answerPromptTextNames"),
+		currencies: t("answerPromptTextCurrencies"),
+		languages: t("answerPromptTextLanguages"),
+		capitals: t("answerPromptTextCapitals"),
+	};
 	function preSetups(gameType: string): void {
 		switch (gameType) {
 			case "names":
@@ -85,7 +87,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 			return;
 		}
 
-		console.log(`Setups for ${gameType}.`);
+		console.debug(`Setups for ${gameType}.`);
 		preSetups(gameType);
 		console.debug("Pre setups completed.");
 		setupModelForGame(hard, continentIndex);
@@ -110,7 +112,8 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 			default:
 				return (
 					<div className="quiz-grid-item" id="country-counter">
-						0&nbsp;/&nbsp;{countriesCountByRegion[region]} guessed
+						0&nbsp;/&nbsp;{countriesCountByRegion[region]}{" "}
+						{t("guessed")}
 					</div>
 				);
 		}
@@ -134,7 +137,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				return (
 					<div className="grid-item" id="quiz-options">
 						<div id="checkbox-container">
-							<label htmlFor="follow">Follow countries:</label>
+							<label htmlFor="follow">{t("follow")}</label>
 							<input
 								type="checkbox"
 								id="follow"
@@ -206,7 +209,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 							);
 						}}
 					>
-						Give Up
+						{t("giveup")}
 					</button>
 					<button
 						className="quiz-grid-item button"
@@ -216,7 +219,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 							handlePauseStart(ongoing, gameTimer);
 						}}
 					>
-						Start
+						{t("start")}
 					</button>
 					<div className="quiz-grid-item" id="answer-box-container">
 						<label id="answer-box-prompt" htmlFor="textbox">

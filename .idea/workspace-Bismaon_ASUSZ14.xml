@@ -1,0 +1,703 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3abfa59b-59e2-4149-8d66-132c2698f19e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ad.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ae.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/af.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ag.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ai.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/al.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/am.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ao.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/aq.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ar.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/as.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/at.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/au.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/aw.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ax.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/az.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ba.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bb.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bd.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/be.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bf.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bg.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bh.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bi.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bj.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bl.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bn.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bq.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/br.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bs.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bt.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bv.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bw.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/by.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/bz.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ca.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cc.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cd.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cf.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cg.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ch.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ci.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ck.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cl.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cn.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/co.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cu.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cv.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cw.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cx.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cy.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/cz.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/de.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/dj.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/dk.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/dm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/do.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/dz.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ec.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ee.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/eg.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/eh.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/er.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/es.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/et.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/fi.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/fj.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/fk.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/fm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/fo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/fr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ga.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gb-eng.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gb-nir.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gb-sct.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gb-wls.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gb.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gd.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ge.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gf.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gg.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gh.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gi.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gl.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gn.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gp.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gq.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gs.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gt.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gu.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gw.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/gy.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/hk.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/hm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/hn.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/hr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ht.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/hu.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/id.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ie.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/il.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/im.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/in.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/io.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/iq.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ir.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/is.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/it.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/je.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/jm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/jo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/jp.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ke.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/kg.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/kh.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ki.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/km.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/kn.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/kp.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/kr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/kw.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ky.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/kz.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/la.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/lb.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/lc.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/li.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/lk.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/lr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ls.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/lt.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/lu.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/lv.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ly.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ma.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mc.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/md.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/me.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mf.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mg.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mh.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mk.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ml.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mn.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mp.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mq.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ms.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mt.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mu.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mv.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mw.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mx.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/my.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/mz.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/na.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/nc.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ne.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/nf.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ng.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ni.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/nl.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/no.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/np.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/nr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/nu.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/nz.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/om.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pa.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pe.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pf.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pg.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ph.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pk.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pl.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pn.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ps.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pt.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/pw.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/py.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/qa.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/re.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ro.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/rs.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ru.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/rw.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sa.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sb.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sc.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sd.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/se.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sg.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sh.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/si.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sj.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sk.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sl.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sn.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/so.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ss.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/st.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sv.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sx.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sy.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/sz.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tc.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/td.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tf.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tg.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/th.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tj.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tk.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tl.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tn.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/to.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tr.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tt.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tv.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tw.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/tz.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ua.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ug.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/um.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/us.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/uy.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/uz.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/va.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/vc.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ve.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/vg.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/vi.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/vn.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/vu.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/wf.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ws.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/xk.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/ye.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/yt.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/za.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/zm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/vectors/flag/zw.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ad.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ae.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/af.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ag.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ai.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/al.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/am.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ao.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/aq.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ar.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/as.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/at.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/au.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/aw.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ax.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/az.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ba.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bd.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/be.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bh.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bi.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bj.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bl.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bq.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/br.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bs.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bv.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bw.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/by.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/bz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ca.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cc.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cd.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ch.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ci.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ck.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cl.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/co.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cv.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cw.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cx.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/cz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/de.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/dj.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/dk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/dm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/do.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/dz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ec.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ee.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/eg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/eh.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/er.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/es.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/et.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/fi.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/fj.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/fk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/fm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/fo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/fr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ga.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gb-eng.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gb-nir.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gb-sct.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gb-wls.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gd.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ge.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gh.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gi.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gl.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gq.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gs.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gw.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/gy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/hk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/hm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/hn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/hr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ht.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/hu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/id.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ie.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/il.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/im.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/in.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/io.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/iq.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ir.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/is.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/it.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/je.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/jm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/jo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/jp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ke.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/kg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/kh.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ki.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/km.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/kn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/kp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/kr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/kw.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ky.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/kz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/la.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/lb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/lc.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/li.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/lk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/lr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ls.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/lt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/lu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/lv.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ly.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ma.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mc.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/md.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/me.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mh.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ml.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mq.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ms.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mv.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mw.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mx.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/my.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/mz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/na.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/nc.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ne.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/nf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ng.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ni.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/nl.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/no.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/np.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/nr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/nu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/nz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/om.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pa.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ph.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pl.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ps.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/pw.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/py.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/qa.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/re.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ro.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/rs.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ru.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/rw.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sa.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sc.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sd.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/se.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sh.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/si.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sj.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sl.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/so.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ss.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/st.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sv.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sx.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/sz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tc.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/td.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/th.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tj.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tl.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/to.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tv.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tw.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/tz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ua.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ug.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/um.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/us.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/uy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/uz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/va.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/vc.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ve.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/vg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/vi.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/vn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/vu.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/wf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ws.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/xk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/ye.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/yt.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/za.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/zm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/png/flags/zw.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controls/inputHandlers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controls/inputHandlers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/country/Country.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/country/Country.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/country/World.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/country/World.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/country/countriesTable.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/country/countriesTable.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/gamemodes/Flags.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/gamemodes/Flags.tsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Bismaon&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Bismaon/COTWQ-client.git&quot;,
+    &quot;accountId&quot;: &quot;125a3da2-289c-468d-bba6-1da414478749&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/scene/sceneManager.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/utils/Timer.ts" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="NamedScopeManager">
+    <scope name="src" pattern="file[COTWQ-client]:src/*" />
+  </component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2kxZuP5orlnjdARcWXImMPBx8F6" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/esteb/OneDrive/Documents/GitHub/COTWQ-client&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\esteb\\OneDrive\\Documents\\GitHub\\COTWQ-client\\node_modules\\prettier&quot;,
+    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\CLion 2023.3.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;ts.rename.search.for.dynamic.occurrences&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\esteb\OneDrive\Documents\GitHub\COTWQ-client\src\pages\user" />
+      <recent name="C:\Users\esteb\OneDrive\Documents\GitHub\COTWQ-client\src\pages" />
+      <recent name="C:\Users\esteb\OneDrive\Documents\GitHub\COTWQ-client\src\pages\gamemodes" />
+    </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="C:\Users\esteb\OneDrive\Documents\GitHub\COTWQ-client\src\utils\utilities.ts" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="MathUtils" />
+    </option>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3abfa59b-59e2-4149-8d66-132c2698f19e" name="Changes" comment="" />
+      <created>1724227410155</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1724227410155</updated>
+      <workItem from="1724227411382" duration="976000" />
+      <workItem from="1724228409296" duration="601000" />
+      <workItem from="1724229079740" duration="2219000" />
+      <workItem from="1724231344963" duration="169000" />
+      <workItem from="1724232440469" duration="19584000" />
+      <workItem from="1724308012137" duration="789000" />
+      <workItem from="1724310456696" duration="413000" />
+      <workItem from="1724310909800" duration="20170000" />
+      <workItem from="1724394397829" duration="71000" />
+      <workItem from="1724394511015" duration="10664000" />
+      <workItem from="1724653018705" duration="9933000" />
+      <workItem from="1724749261206" duration="28346000" />
+      <workItem from="1724828538580" duration="38727000" />
+      <workItem from="1724914075037" duration="13199000" />
+      <workItem from="1724937375469" duration="42000" />
+      <workItem from="1724937428066" duration="12000" />
+      <workItem from="1724939388307" duration="5160000" />
+      <workItem from="1724998849839" duration="11796000" />
+      <workItem from="1725111923036" duration="20877000" />
+      <workItem from="1725189220111" duration="20143000" />
+      <workItem from="1725260845837" duration="21144000" />
+      <workItem from="1725348407660" duration="14430000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticReloadCMake value="true" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="6646f874-1f84-4a9c-a799-53cb26c15852" value="TOOL_WINDOW" />
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="6646f874-1f84-4a9c-a799-53cb26c15852">
+          <value>
+            <State />
+          </value>
+        </entry>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XPathView.XPathProjectComponent">
+    <history />
+    <find-history />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

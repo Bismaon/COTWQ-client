@@ -7,10 +7,12 @@ import {
 	useNavigate,
 } from "react-router-dom";
 import "../stylesheet/style.css";
+import { useTranslation } from "react-i18next";
 
 const GameMode: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
+	const { t, i18n } = useTranslation();
 
 	const isInGameMode =
 		location.pathname.endsWith("/classic") ||
@@ -26,7 +28,7 @@ const GameMode: React.FC = () => {
 			{isInGameMode && (
 				<>
 					<div className="grid-item" id="title">
-						<h1>Countries Of The World Quizzes</h1>
+						<h1>{t("title")}</h1>
 					</div>
 					<div className="grid-item" id="back">
 						<i
@@ -38,31 +40,31 @@ const GameMode: React.FC = () => {
 						className="button grid-item"
 						onClick={() => handleNavigate("names")}
 					>
-						Names
+						{t("names")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={() => handleNavigate("flags")}
 					>
-						Flags
+						{t("flags")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={() => handleNavigate("languages")}
 					>
-						Languages
+						{t("languages")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={() => handleNavigate("currencies")}
 					>
-						Currencies
+						{t("currencies")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={() => navigate("capitals")}
 					>
-						Capitals
+						{t("capitals")}
 					</button>
 				</>
 			)}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { User } from "../../user/User";
 import { checkUserSession } from "../../user/userStorage";
+import { useTranslation } from "react-i18next";
 
 interface UserFormProps {
 	onSessionChange: () => void; // Callback to notify parent about session change
@@ -11,6 +12,7 @@ const UserForm: React.FC<UserFormProps> = ({ onSessionChange }) => {
 	const [userID, setUserID] = useState<number>();
 	const [userData, setUserData] = useState<User | null>(null);
 	const [error, setError] = useState<string>("");
+	const { t, i18n } = useTranslation();
 
 	useEffect(() => {
 		if (!userIsSet) {
@@ -56,10 +58,12 @@ const UserForm: React.FC<UserFormProps> = ({ onSessionChange }) => {
 		<>
 			{userData && (
 				<div className="grid-profile-container">
-					<h2 className="grid-item">User Data</h2>
+					<h2 className="grid-item">{t("userdata")}</h2>
 					<p className="grid-item">ID: {userData.id}</p>
-					<p className="grid-item">Username: {userData.username}</p>
-					<h3 className="grid-item">Highscores:</h3>
+					<p className="grid-item">
+						{t("username")}: {userData.username}
+					</p>
+					<h3 className="grid-item">{t("highscores")}:</h3>
 					<ul className="grid-item">
 						{Object.entries(userData.highscores).map(
 							([game, score]: [string, number]) => (

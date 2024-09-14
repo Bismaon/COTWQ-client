@@ -6,10 +6,12 @@ import {
 	useNavigate,
 } from "react-router-dom";
 import "../stylesheet/style.css";
+import { useTranslation } from "react-i18next";
 
 const SizeMode: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
+	const { t } = useTranslation();
 
 	const isInSizeMode: boolean =
 		location.pathname.endsWith("/normal") ||
@@ -26,7 +28,7 @@ const SizeMode: React.FC = () => {
 			{isInSizeMode && (
 				<>
 					<div className="grid-item" id="title">
-						<h1>Countries Of The World Quizzes</h1>
+						<h1>{t("title")}</h1>
 					</div>
 					<div className="grid-item" id="back">
 						<i
@@ -38,19 +40,19 @@ const SizeMode: React.FC = () => {
 						className="button grid-item"
 						onClick={(): void => navigate("classic")}
 					>
-						Classic
+						{t("classic")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={(): void => navigate("sequential-random")}
 					>
-						Sequential Random
+						{t("sequential-random")}
 					</button>
 					<button
 						className="button grid-item"
 						onClick={(): void => navigate("hard")}
 					>
-						Hard
+						{t("hard")}
 					</button>
 				</>
 			)}

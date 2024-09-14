@@ -6,45 +6,6 @@ import { getRenderer, getScene } from "../scene/sceneSetup";
 import { updateControls } from "../controls/controls";
 
 const group: Group = new Group(); // Contains the current tween updates
-const activeTweens: Tween[] = []; // List of active tweens
-const tweenQueue: Tween[] = []; // Queue of tweens waiting to be processed
-const maxActiveTweens: number = 15; // Maximum number of active tweens
-
-function removeTween(tween: Tween): void {
-	tween.pause();
-
-	// Remove from activeTweens
-	const index = activeTweens.indexOf(tween);
-	if (index > -1) {
-		activeTweens.splice(index, 1);
-	}
-
-	// Remove from group
-	group.remove(tween);
-
-	// Process the queue to start new tweens if there are slots available
-	processQueue();
-}
-function addTween(tween: Tween): void {
-	if (activeTweens.length < maxActiveTweens) {
-		tween.start();
-		activeTweens.push(tween);
-		group.add(tween);
-	} else {
-		tweenQueue.push(tween);
-	}
-}
-
-function processQueue(): void {
-	while (activeTweens.length < maxActiveTweens && tweenQueue.length > 0) {
-		const nextTween = tweenQueue.shift();
-		if (nextTween) {
-			nextTween.start();
-			group.add(nextTween);
-			activeTweens.push(nextTween);
-		}
-	}
-}
 
 export function animate(model: Object3D): void {
 	let lastRenderTime: number = 0;
@@ -87,9 +48,9 @@ export function CameraAnimation(
 			camera.lookAt(lookAtVector);
 		})
 		.onComplete((): void => {
-			removeTween(tweenCam);
+			group.remove(tweenCam);
 		});
-	addTween(tweenCam);
+	group.add(tweenCam.start());
 }
 
 export function bounceAnimation(
@@ -108,9 +69,11 @@ export function bounceAnimation(
 			obj.position.lerpVectors(orgPos, targetPos, t);
 		})
 		.onComplete((): void => {
-			if (callback) callback();
-			addTween(tweenDown);
-			removeTween(tweenUp);
+			setTimeout((): void => {
+				if (callback) callback();
+				group.add(tweenDown.start());
+			}, 250);
+			group.remove(tweenUp);
 		});
 	const tweenDown: Tween = new Tween({ t: 0 })
 		.to({ t: 1 }, halfDuration)
@@ -119,7 +82,7 @@ export function bounceAnimation(
 			obj.position.lerpVectors(targetPos, orgPos, t);
 		})
 		.onComplete((): void => {
-			removeTween(tweenDown);
+			group.remove(tweenDown);
 		});
-	addTween(tweenUp);
+	group.add(tweenUp.start());
 }

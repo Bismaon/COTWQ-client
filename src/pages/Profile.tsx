@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import LoginForm from "./user/LoginForm";
 import { checkUserSession, logoutUser } from "../user/userStorage";
 import UserForm from "./user/UserForm";
+import { useTranslation } from "react-i18next";
 
 const ProfileMenu: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
-	console.debug("Rendering ProfileMenu");
-
+	const { t, i18n } = useTranslation();
 	const [sessionChecked, setSessionChecked] = useState<boolean>(false);
 
 	const handleLogOut = () => {
@@ -24,7 +24,7 @@ const ProfileMenu: React.FC = () => {
 	return (
 		<>
 			<div className="grid-item" id="title">
-				<h1>Countries Of The World Quizzes</h1>
+				<h1>{t("title")}</h1>
 			</div>
 			<div className="grid-item" id="back">
 				<i
@@ -35,7 +35,7 @@ const ProfileMenu: React.FC = () => {
 			<button className="button grid-item">Edit</button>
 			{checkUserSession() !== -1 && (
 				<button className="button grid-item" onClick={handleLogOut}>
-					Logout
+					{t("logout")}
 				</button>
 			)}
 			<div id="profile-box" className="grid-item transparent-box">

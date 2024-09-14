@@ -11,6 +11,8 @@ import ContinentsMode from "./pages/ContinentsMode";
 import SizeMode from "./pages/SizeMode";
 import GameSetter from "./pages/GameSetter";
 import { ModelProvider } from "./pages/ModelContext";
+import Settings from "./pages/Settings";
+import "./translation/i18n";
 
 function App() {
 	return (
@@ -21,6 +23,7 @@ function App() {
 					<Routes>
 						<Route path="/" element={<Menus />} />
 						<Route path="/profile" element={<Profile />} />
+						<Route path="/settings" element={<Settings />} />
 						<Route path="/games" element={<Games />}>
 							<Route path="normal" element={<SizeMode />}>
 								<Route path="classic" element={<GameMode />}>

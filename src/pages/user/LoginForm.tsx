@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { checkUserSession, loginUser } from "../../user/userStorage";
 import CreateAccountForm from "./CreateAccountForm";
 import UserForm from "./UserForm";
+import { useTranslation } from "react-i18next";
 
 interface LoginFormProps {
 	onSessionChange: () => void; // Callback to notify parent about session change
@@ -14,6 +15,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
+	const { t, i18n } = useTranslation();
 
 	if (showCreateAccountForm) {
 		return <CreateAccountForm onSessionChange={onSessionChange} />;
@@ -54,7 +56,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 				setLogged(true);
 				onSessionChange(); // Notify ProfileMenu about session change
 				console.debug("User logged in: ", id);
-				alert("LOGGED IN SUCCESSFULLY!");
+				alert(t("successfullLogin"));
 			} else {
 				const errorText: string = await response.text();
 				setError(`Failed to login: ${errorText}`);
@@ -72,7 +74,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 			onSubmit={handleLogin}
 		>
 			<label className="grid-item" htmlFor="username">
-				Username:
+				{t("username")}
 			</label>
 			<div className="grid-item inputDiv">
 				<input
@@ -90,7 +92,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 			</div>
 
 			<label className="grid-item" htmlFor="password">
-				Password:
+				{t("password")}
 			</label>
 			<div className="grid-item inputDiv">
 				<input
@@ -123,10 +125,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 					className="button"
 					onClick={() => setShowCreateAccountForm(true)}
 				>
-					Don't have an account
+					{t("noAccount")}
 				</button>
 				<button className="button" type="submit">
-					Login
+					{t("login")}
 				</button>
 			</div>
 

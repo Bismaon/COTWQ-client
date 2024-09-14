@@ -5,6 +5,7 @@ import { Object3D, Vector3 } from "three";
 import { getCountryMovement, getStateMaterial } from "../utils/countryUtils";
 import { changeCountryCellTo } from "./countriesTable";
 import { bounceAnimation } from "../utils/animation";
+import { isAcceptedName } from "../controls/inputHandlers";
 
 export const countriesCountByRegion: { [region: string]: number } = {
 	africa: 53,
@@ -23,13 +24,18 @@ export const countriesCountByRegion: { [region: string]: number } = {
 const continentPopulation: number[] = [56, 3, 51, 46, 34, 19, 15];
 
 export class World {
-	private readonly _countriesArray: Country[];
 	private readonly _continents: Object3D[];
 
 	constructor() {
 		this._countriesFound = 0;
-		this._countriesArray = [];
+		this._countryArray = [];
 		this._continents = [];
+	}
+
+	private _countryArray: Country[];
+
+	public get countryArray(): Country[] {
+		return this._countryArray;
 	}
 
 	public get continents(): Object3D[] {
@@ -42,8 +48,8 @@ export class World {
 		return this._countriesFound;
 	}
 
-	public get countryArray(): Country[] {
-		return this._countriesArray;
+	replaceCountries(newCountry: Country[]) {
+		this._countryArray = newCountry;
 	}
 
 	public incrementFound(): void {
@@ -55,9 +61,10 @@ export class World {
 	}
 
 	public exists(name: string): number[] {
-		return this._countriesArray
+		return this._countryArray
 			.map((obj: Country, index: number): number =>
-				obj.state === "unknown" && obj.acceptedNames.includes(name)
+				obj.state === "unknown" &&
+				isAcceptedName(obj.acceptedNames, name)
 					? index
 					: -1
 			)
@@ -65,7 +72,7 @@ export class World {
 	}
 
 	public clearFound(): void {
-		this._countriesArray.forEach((country: Country): void => {
+		this._countryArray.forEach((country: Country): void => {
 			if (country.isFound) {
 				country.isFound = false;
 			}
@@ -74,7 +81,7 @@ export class World {
 	}
 
 	public getCountryByLocation(location: [number, number]): Country {
-		return this._countriesArray[this.getRealIndex(location)];
+		return this._countryArray[this.getRealIndex(location)];
 	}
 
 	public getRealIndex(location: number[]): number {
@@ -92,7 +99,8 @@ export class World {
 
 	public getCountryByObject(object: Object3D): Country {
 		const index = this.countryArray.findIndex(
-			(country: Country): boolean => country.object === object
+			(country: Country): boolean =>
+				country.object === object || country.object === object.parent
 		);
 		return this.countryArray[index];
 	}
@@ -104,7 +112,7 @@ export class World {
 		});
 	}
 	public setCountryState(index: number, state: string): void {
-		const country: Country = this._countriesArray[index];
+		const country: Country = this._countryArray[index];
 		country.state = state;
 		country.material = getStateMaterial(state);
 	}
@@ -117,7 +125,7 @@ export class World {
 	}
 
 	public setCountryFlag(index: number): void {
-		const country: Country = this._countriesArray[index];
+		const country: Country = this._countryArray[index];
 		country.material = country.flagMaterial;
 	}
 
@@ -132,12 +140,12 @@ export class World {
 	}
 
 	public setCountryVisibility(index: number, visibility: boolean): void {
-		const country: Country = this._countriesArray[index];
+		const country: Country = this._countryArray[index];
 		country.isVisible = visibility;
 	}
 
 	public applyFoundEffectsToCountry(index: number): void {
-		const mainCountry: Country = this._countriesArray[index];
+		const mainCountry: Country = this._countryArray[index];
 		if (!mainCountry.isVisible) {
 			// Hard mode
 			this.setCountryAndConnectedVisibility(index, true);
@@ -149,7 +157,7 @@ export class World {
 	}
 
 	public setCountryIsFound(index: number, found: boolean): void {
-		const country: Country = this._countriesArray[index];
+		const country: Country = this._countryArray[index];
 		country.isFound = found;
 		console.log("Country: ", country);
 		if (!country.isOwned) {
@@ -166,7 +174,7 @@ export class World {
 	}
 
 	public setUpCountries(hard: boolean, continentIndex: number): void {
-		this._countriesArray.forEach((country: Country, index: number) => {
+		this._countryArray.forEach((country: Country, index: number) => {
 			if (country.isOwned) {
 				return;
 			}
@@ -186,19 +194,17 @@ export class World {
 	}
 
 	public resetCountries(): void {
-		this._countriesArray.forEach(
-			(country: Country, index: number): void => {
-				if (country.isOwned) return;
-				this.setCountryAndConnectedVisibility(index, true);
-				this.setCountryAndConnectedState(index, "unknown");
-			}
-		);
+		this._countryArray.forEach((country: Country, index: number): void => {
+			if (country.isOwned) return;
+			this.setCountryAndConnectedVisibility(index, true);
+			this.setCountryAndConnectedState(index, "unknown");
+		});
 	}
 
 	public triggerCountryAnimation(index: number, state: string): void {
 		const countriesIndex: number[] = this.getConnectedTerritories(index);
 		countriesIndex.forEach((index: number): void => {
-			const country: Country = this._countriesArray[index];
+			const country: Country = this._countryArray[index];
 			const countryObj: Object3D = country.object;
 			const [orgPos, targetPos]: Vector3[] = getCountryMovement(
 				countryObj,
@@ -217,7 +223,7 @@ export class World {
 	}
 
 	private getConnectedTerritories(index: number): number[] {
-		let baseCountry: Country = this._countriesArray[index];
+		let baseCountry: Country = this._countryArray[index];
 		if (baseCountry.owner !== null) {
 			baseCountry = this.getCountryByLocation(baseCountry.owner);
 		}

@@ -45,10 +45,10 @@ export function isValidObject(intersectedObject: Object3D): [boolean, string] {
 	}
 
 	const country: Country = getWorld().getCountryByObject(countryObj);
+	console.log("Country Name: ", country.name);
+	console.log("Country: ", country);
+	console.log("------------------------------------");
 	const validity =
 		country.isFound || (!isPlaying() && country.state === "error");
 	return [validity, country.name];
 }
-
-
-

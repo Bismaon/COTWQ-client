@@ -50,14 +50,18 @@ export function handleTextboxChange(
 			Number(first),
 			Number(second),
 		]);
-		if (!country.acceptedNames.includes(enteredText)) {
+		if (!isAcceptedName(country.acceptedNames, enteredText)) {
 			return;
 		}
 
 		countryIndex = [world.getRealIndex(location)];
-		world.setCountryAndConnectedIsFound(countryIndex[0], true);
+		const index: number = countryIndex[0];
+		if (!world.countryArray[index].isVisible) {
+			world.setCountryAndConnectedVisibility(index, true);
+		}
+		world.setCountryAndConnectedIsFound(index, true);
 		// countryIndex[0], because only one country can be guessed by flag
-		world.triggerCountryAnimation(countryIndex[0], "flags");
+		world.triggerCountryAnimation(index, "flags");
 		// take the first img tag element in the item-list and make it the selected
 		let nextFlag: HTMLImageElement | null =
 			flagSelected.nextSibling as HTMLImageElement;
@@ -105,6 +109,16 @@ export function handleTextboxChange(
 	}
 }
 
+export function isAcceptedName(
+	acceptedNames: string[],
+	enteredText: string
+): boolean {
+	const normalizedEnteredText = processText(enteredText);
+
+	return acceptedNames.some(
+		(name) => processText(name) === normalizedEnteredText
+	);
+}
 export function cameraFollowCountry(
 	event: React.ChangeEvent<HTMLInputElement>
 ): void {

@@ -16,6 +16,8 @@ import {
 export function processText(name: string): string {
 	name = name
 		.toLowerCase()
+		.normalize("NFD") // Normalize to NFD form to separate accents
+		.replace(/[\u0300-\u036f]/g, "") // Remove diacritics (accents)
 		.replace(/\(.*?\)/g, "")
 		.replace(/\s+/g, "");
 	return name;

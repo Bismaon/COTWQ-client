@@ -4,6 +4,7 @@ import "../../stylesheet/profile.css";
 import { checkUserSession, loginUser } from "../../user/userStorage";
 import LoginForm from "./LoginForm";
 import UserForm from "./UserForm";
+import { useTranslation } from "react-i18next";
 
 interface CreateAccountFormProps {
 	onSessionChange: () => void; // Callback to notify parent about session change
@@ -17,6 +18,7 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 	const [logged, setLogged] = useState(false);
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
+	const { t, i18n } = useTranslation();
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
@@ -85,7 +87,7 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 			onSubmit={handleCreateAccount}
 		>
 			<label className="grid-item" htmlFor="email">
-				Email address:
+				{t("email")}
 			</label>
 			<div className="grid-item inputDiv">
 				<input
@@ -102,7 +104,7 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 			</div>
 
 			<label className="grid-item" htmlFor="username">
-				Username:
+				{t("username")}
 			</label>
 			<div className="grid-item inputDiv">
 				<input
@@ -120,7 +122,7 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 			</div>
 
 			<label className="grid-item" htmlFor="password1">
-				Password:
+				{t("password")}
 			</label>
 			<div className="grid-item inputDiv">
 				<input
@@ -171,10 +173,10 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 					className="button"
 					onClick={() => setShowLoginForm(true)}
 				>
-					Already have an account
+					{t("hasAccount")}
 				</button>
 				<button className="button" type="submit">
-					Create Account
+					{t("noAccount")}
 				</button>
 			</div>
 			{error && <p style={{ color: "red" }}>{error}</p>}
