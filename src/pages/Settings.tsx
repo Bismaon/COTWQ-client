@@ -7,19 +7,25 @@ import { useTranslation } from "react-i18next";
 const Settings: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	console.debug("Rendering Settings.tsx");
+
 	const { t, i18n } = useTranslation();
 
-	function handleLanguageChange(event: any): void {
-		const language = event.target.value;
-		localStorage.setItem("lang", language);
+	function handleSaveSettings(): void {
+		// language
+		const languageSelector = document.getElementById(
+			"language-selector"
+		) as HTMLSelectElement;
+		const language: string = languageSelector.value;
 		i18n.changeLanguage(language).then(() => {
 			console.debug("Lang changed for site done");
 		});
-		changeLanguageForCountry().then(() => {
+		changeLanguageForCountry(language).then(() => {
 			console.debug("Lang changed for countries done");
 		});
 		document.documentElement.lang = language;
-		// TODO change website words to new lang
+		//other setting
+
+		//other setting
 	}
 
 	return (
@@ -34,10 +40,20 @@ const Settings: React.FC = () => {
 				></i>
 			</div>
 			<div id="settings-box" className="grid-item transparent-box">
-				<select id="language-selector" onChange={handleLanguageChange}>
-					<option value="en">{t("english")}</option>
-					<option value="fr">{t("french")}</option>
+				<p className="grid-item">{t("language-select")}:</p>
+				<select className="grid-item" id="language-selector">
+					<option value="en">English</option>
+					<option value="fr">Français</option>
 				</select>
+				<button
+					onClick={(): void => {
+						handleSaveSettings();
+					}}
+					id="save-settings"
+					className="grid-item"
+				>
+					{t("save-settings")}
+				</button>
 			</div>
 		</>
 	);

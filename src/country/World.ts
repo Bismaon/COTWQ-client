@@ -17,6 +17,11 @@ export const countriesCountByRegion: { [region: string]: number } = {
 	south_america: 12,
 	all_regions: 191,
 };
+export interface Currency {
+	name: string;
+	locations: number[];
+	found: boolean;
+}
 
 /**
  * Number of country Object in each continent array
@@ -25,17 +30,36 @@ const continentPopulation: number[] = [56, 3, 51, 46, 34, 19, 15];
 
 export class World {
 	private readonly _continents: Object3D[];
+	private readonly _languageArray: { [language: string]: boolean };
+	private readonly _capitalArray: { [capital: string]: boolean };
 
 	constructor() {
 		this._countriesFound = 0;
 		this._countryArray = [];
 		this._continents = [];
+		this._currencyArray = [];
+		this._languageArray = {};
+		this._capitalArray = {};
+	}
+
+	private _currencyArray: Currency[];
+
+	public get currencyArray(): Currency[] {
+		return this._currencyArray;
 	}
 
 	private _countryArray: Country[];
 
 	public get countryArray(): Country[] {
 		return this._countryArray;
+	}
+
+	public get languageArray(): { [language: string]: boolean } {
+		return this._languageArray;
+	}
+
+	public get capitalArray(): { [capital: string]: boolean } {
+		return this._capitalArray;
 	}
 
 	public get continents(): Object3D[] {
@@ -48,7 +72,7 @@ export class World {
 		return this._countriesFound;
 	}
 
-	replaceCountries(newCountry: Country[]) {
+	public replaceCountries(newCountry: Country[]) {
 		this._countryArray = newCountry;
 	}
 
@@ -153,7 +177,7 @@ export class World {
 		this.setCountryAndConnectedIsFound(index, true);
 		changeCountryCellTo("found", [index]);
 
-		this.triggerCountryAnimation(index, "found");
+		this.triggerCountryAnimation(index, "found", true);
 	}
 
 	public setCountryIsFound(index: number, found: boolean): void {
@@ -173,7 +197,11 @@ export class World {
 		});
 	}
 
-	public setUpCountries(hard: boolean, continentIndex: number): void {
+	public setUpCountries(
+		hard: boolean,
+		continentIndex: number,
+		gameType: string
+	): void {
 		this._countryArray.forEach((country: Country, index: number) => {
 			if (country.isOwned) {
 				return;
@@ -189,7 +217,9 @@ export class World {
 				}
 				this.setCountryAndConnectedState(index, "unknown");
 			}
-			changeCountryCellTo("invisible", [index]);
+			if (gameType !== "currencies") {
+				changeCountryCellTo("invisible", [index]);
+			}
 		});
 	}
 
@@ -201,8 +231,17 @@ export class World {
 		});
 	}
 
-	public triggerCountryAnimation(index: number, state: string): void {
-		const countriesIndex: number[] = this.getConnectedTerritories(index);
+	public triggerCountryAnimation(
+		index: number,
+		state: string,
+		complete: boolean
+	): void {
+		let countriesIndex: number[];
+		if (complete) {
+			countriesIndex = this.getConnectedTerritories(index);
+		} else {
+			countriesIndex = [index];
+		}
 		countriesIndex.forEach((index: number): void => {
 			const country: Country = this._countryArray[index];
 			const countryObj: Object3D = country.object;

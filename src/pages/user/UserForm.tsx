@@ -12,7 +12,7 @@ const UserForm: React.FC<UserFormProps> = ({ onSessionChange }) => {
 	const [userID, setUserID] = useState<number>();
 	const [userData, setUserData] = useState<User | null>(null);
 	const [error, setError] = useState<string>("");
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		if (!userIsSet) {

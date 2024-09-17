@@ -3,8 +3,6 @@
   "classic": "Classic",
   "sequential-random": "Sequential Random",
   "hard": "Hard",
-  "english": "English",
-  "french": "French",
   "games": "Games",
   "highscores": "High scores",
   "settings": "Settings",
@@ -20,7 +18,7 @@
   "continents": "Continents",
   "answerPromptTextFlags": "Enter highlighted flag's name here: ",
   "answerPromptTextNames": "Enter country name here: ",
-  "answerPromptTextCurrencies": "Enter currency here",
+  "answerPromptTextCurrencies": "Enter currency here: ",
   "answerPromptTextLanguages": "Enter language here: ",
   "answerPromptTextCapitals": "Enter country capital here: ",
   "africa": "Africa",
@@ -38,9 +36,11 @@
   "createAccount": "Create Account",
   "logout": "Logout",
   "guessed": "guessed",
-  "follow": "Follow countries:",
+  "follow": "Follow countries",
   "normal": "Normal",
-  "email": "Email address:",
+  "email": "Email address",
   "successfullLogin": "LOGGED IN SUCCESSFULLY!",
-  "userdata": "User Data"
+  "userdata": "User Data",
+  "language-select": "Preferred language",
+  "save-settings": "Save settings"
 }

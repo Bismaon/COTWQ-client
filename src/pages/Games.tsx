@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 const Games: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 
 	// Determine if we are on a specific game mode path
 	const isInGameMode: boolean = location.pathname === "/games";

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 const MainMenu: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 	console.debug("Rendering MainMenu.tsx");
 	return (
 		<>

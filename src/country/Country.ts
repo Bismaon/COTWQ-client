@@ -63,7 +63,7 @@ export class Country {
 	}
 
 	// Current material of the country object
-	private _material:Material;
+	private _material: Material;
 
 	public get material(): Material {
 		return this._material;
@@ -172,5 +172,11 @@ export class Country {
 
 	public get flagMaterial(): Material {
 		return this._flagMaterial;
+	}
+	public get currency(): string | null {
+		return this._currency;
+	}
+	public get capital(): string | null {
+		return this._capital;
 	}
 }

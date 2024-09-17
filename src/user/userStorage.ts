@@ -7,9 +7,12 @@ export function loginUser(userID: number): void {
 // Retrieve user ID when needed
 export function checkUserSession(): number {
 	const userId: number = Number(localStorage.getItem("userId"));
+	console.log(userId);
 	if (userId) {
+		console.log("true");
 		return userId;
 	} else {
+		console.log("false");
 		return -1;
 	}
 }

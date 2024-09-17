@@ -8,8 +8,8 @@ import { useTranslation } from "react-i18next";
 
 const ProfileMenu: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
-	const { t, i18n } = useTranslation();
-	const [sessionChecked, setSessionChecked] = useState<boolean>(false);
+	const { t } = useTranslation();
+	const [, setSessionChecked] = useState<boolean>(false);
 
 	const handleLogOut = () => {
 		logoutUser();
@@ -32,9 +32,15 @@ const ProfileMenu: React.FC = () => {
 					onClick={(): void => navigate(-1)}
 				></i>
 			</div>
-			<button className="button grid-item">Edit</button>
+			<button className="button grid-item" id="edit">
+				Edit
+			</button>
 			{checkUserSession() !== -1 && (
-				<button className="button grid-item" onClick={handleLogOut}>
+				<button
+					className="button grid-item"
+					id="logout"
+					onClick={handleLogOut}
+				>
 					{t("logout")}
 				</button>
 			)}

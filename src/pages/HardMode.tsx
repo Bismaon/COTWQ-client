@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 const HardMode: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 
 	const isInHardMenu: boolean = location.pathname.endsWith("/hard");
 

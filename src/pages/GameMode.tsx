@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 const GameMode: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 
 	const isInGameMode =
 		location.pathname.endsWith("/classic") ||

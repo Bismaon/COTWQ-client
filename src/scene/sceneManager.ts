@@ -1,6 +1,6 @@
 // scene/sceneManager.ts
 import { Material, Mesh, Object3D, Vector3 } from "three";
-import { World } from "../country/World";
+import { Currency, World } from "../country/World";
 import { loadModel } from "../utils/loader";
 import { animate } from "../utils/animation";
 import {
@@ -40,7 +40,7 @@ export async function setupSceneModel(): Promise<void> {
 		);
 		console.debug("Continents: ", world.continents);
 		console.debug("Countries: ", world.countryArray);
-
+		console.debug("Currency Array: ", world.currencyArray);
 		animate(globalScene);
 	} catch (error: unknown) {
 		console.error("An error occurred while loading the model:", error);
@@ -59,10 +59,11 @@ export function resetModel(): void {
 
 export function setupModelForGame(
 	isHard: boolean,
-	continentIndex: number
+	continentIndex: number,
+	gameType: string
 ): void {
 	// Change all countries not in the continent to unavailable color/state
-	world.setUpCountries(isHard, continentIndex);
+	world.setUpCountries(isHard, continentIndex, gameType);
 	if (continentIndex !== -1) {
 		const continentObj: Object3D = world.continents[continentIndex];
 		cameraFaceTo(getObjCenter(continentObj));
@@ -137,20 +138,46 @@ function parseCountryData(countryData: any): Country {
 	const SVG: string = countryData.flag.svg;
 
 	const flagMaterial: Material = createCountryFlagShader(SVG);
+	const name: string = setLangName(lang, countryData.name);
+	const currency: any = countryData.currency;
 	const country: Country = new Country(
-		countryData.name,
+		name,
 		acceptedNamesContainer,
 		territories,
 		location,
 		owner,
 		SVG,
-		countryData.currency || null,
-		countryData.capital || null,
+		currency,
+		countryData.capital,
 		languagesContainer,
 		meshes,
 		object,
 		flagMaterial
 	);
+	const currencyArray = world.currencyArray;
+
+	if (currency !== "") {
+		const exists = currencyArray.some(
+			(currency1) => currency1.name === currency
+		);
+		if (!exists) {
+			currencyArray.push({
+				name: currency,
+				locations: [world.getRealIndex(location)],
+				found: false,
+			});
+		} else {
+			const currencyIndex = currencyArray.findIndex(
+				(currency1: Currency) => {
+					return currency1.name === currency;
+				}
+			);
+			currencyArray[currencyIndex].locations.push(
+				world.getRealIndex(location)
+			);
+		}
+	}
+
 	createCountryOutline(meshes);
 	country.material = getStateMaterial(country.state);
 	return country;
@@ -176,11 +203,19 @@ async function loadCountriesData(url: string): Promise<Country[]> {
 	}
 }
 
-export async function changeLanguageForCountry(): Promise<void> {
-	const lang: string = localStorage.getItem("lang") || "en";
+export async function changeLanguageForCountry(lang: string): Promise<void> {
+	localStorage.setItem("lang", lang);
 	world.replaceCountries(
 		await loadCountriesData(
 			`${process.env.PUBLIC_URL}/assets/xml/countries_data.xml`
 		)
 	);
+}
+function setLangName(lang: string, name: any): any {
+	switch (lang) {
+		case "en":
+			return name.en;
+		case "fr":
+			return name.fr;
+	}
 }

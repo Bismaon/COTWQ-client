@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 const ContinentsMode: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 
 	const isInContinentsMenu: boolean =
 		location.pathname.endsWith("/continents");

@@ -15,7 +15,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 
 	if (showCreateAccountForm) {
 		return <CreateAccountForm onSessionChange={onSessionChange} />;

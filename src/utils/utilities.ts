@@ -3,15 +3,20 @@ import { getScene } from "../scene/sceneSetup";
 import {
 	Box3,
 	BufferGeometry,
+	Color,
 	Intersection,
 	Line,
 	LineBasicMaterial,
+	Material,
 	Mesh,
+	MeshStandardMaterial,
 	Object3D,
 	Raycaster,
 	Vector2,
 	Vector3,
 } from "three";
+import { getWorld } from "../scene/sceneManager";
+import { Currency } from "../country/World";
 
 export function processText(name: string): string {
 	name = name
@@ -77,4 +82,36 @@ export function getObjCenter(obj: Object3D): Vector3 {
 	const objCenter: Vector3 = new Vector3();
 	objBox.getCenter(objCenter);
 	return objCenter;
+}
+
+export function getGradientColor(percentage: number) {
+	let hue = (percentage / 100) * 120;
+	return `hsl(${hue}, 100%, 50%)`;
+}
+export function changeCountryOfCurrency(
+	currencyName: string,
+	state: string
+): void {
+	const world = getWorld();
+	const currencyIndex = world.currencyArray.findIndex(
+		(currency: Currency): boolean => {
+			return currencyName === currency.name;
+		}
+	);
+	world.currencyArray[currencyIndex].locations.forEach((index: number) => {
+		world.countryArray[index].state = state;
+		world.triggerCountryAnimation(index, state, false);
+	});
+}
+
+// Function to apply gradient color to a material
+function makeMaterialWithGradient(percentage: number): Material {
+	// Get the color in HSL and convert it to a THREE.js color
+	const colorString = getGradientColor(percentage);
+	const color = new Color(colorString);
+
+	// Create a material and set the color
+	return new MeshStandardMaterial({
+		color: color,
+	});
 }

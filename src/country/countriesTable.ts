@@ -1,9 +1,10 @@
 // country/countriesTable.ts
 
-import { World } from "./World";
+import { Currency, World } from "./World";
 import { Country } from "./Country";
 import { getWorld } from "../scene/sceneManager";
 import { handleImageClick } from "../controls/inputHandlers";
+import { TFunction } from "i18next";
 
 /** Represents the number of countries in each continent for table layout purposes. */
 const continentCountryCounts: [56, 3, 51, 46, 34, 19, 15] = [
@@ -200,4 +201,84 @@ export function populateFlags(continentIndex?: number): void {
 	if (firstFlag) {
 		firstFlag.classList.add("selected");
 	}
+}
+
+export function createCurrencyTable(
+	t: TFunction<"translation", undefined>
+): void {
+	// Retrieve the World object, which contains country data.
+	const world: World = getWorld();
+	// Reference to the container div where the tables will be placed.
+	const container: HTMLTableElement = document.getElementById(
+		"country-continent-name-container"
+	) as HTMLTableElement;
+
+	let table: HTMLTableElement = document.createElement("table");
+	table.className = "grid-currency-item";
+	table.ariaColSpan = "1";
+
+	// Create the table body.
+	let tableBody: HTMLTableSectionElement = table.createTBody();
+
+	// Add the continent name as the first row.
+	const titleRow: HTMLTableRowElement = tableBody.insertRow();
+	const titleCell: HTMLTableCellElement = titleRow.insertCell();
+	titleCell.colSpan = 2; // Ensuring the cell takes full width of the column.
+	titleCell.innerHTML =
+		`<div class="currency-title">` + t("currency") + `</div>`;
+	world.currencyArray.forEach((currency: Currency, index: number): void => {
+		if (index % 15 === 0) {
+			table = document.createElement("table");
+			table.className = "grid-currency-item";
+			table.ariaColSpan = "1";
+			tableBody = table.createTBody();
+
+			const titleRow: HTMLTableRowElement = tableBody.insertRow();
+			const titleCell: HTMLTableCellElement = titleRow.insertCell();
+			titleCell.colSpan = 2; // Ensuring the cell takes full width of the column.
+			titleCell.innerHTML =
+				`<div class="currency-title">` + t("currency") + `</div>`;
+			container.appendChild(table);
+		}
+		const row: HTMLTableRowElement = tableBody.insertRow();
+		const currencyCell: HTMLTableCellElement = row.insertCell();
+		currencyCell.innerHTML = `<div class="cell invisible" id="${currency.name}">${currency.name}</div>`;
+
+		const countryName: string[] = [];
+		currency.locations.forEach((index: number): void => {
+			countryName.push(world.countryArray[index].name);
+		});
+		const associatedNames: string = countryName.join(", ");
+		const textCell: HTMLTableCellElement = row.insertCell();
+		textCell.innerHTML = `<div class="cell-text">${associatedNames}</div>`;
+	});
+
+	container.appendChild(table);
+}
+
+export function changeCurrenciesCell(
+	state: "found" | "missed" | "invisible"
+): void {
+	const currencyArray: Currency[] = getWorld().currencyArray;
+
+	currencyArray.forEach((currency: Currency): void => {
+		changeCurrencyCell(state, currency.name);
+	});
+}
+
+export function changeCurrencyCell(
+	state: "found" | "missed" | "invisible",
+	currency: string
+): void {
+	// Find the cell with the specific index in the table
+	const cell: HTMLElement | null = document.getElementById(currency);
+
+	// console.log(cell);
+	if (!cell) {
+		console.error(`Cell with ID ${currency} not found.`);
+		return;
+	}
+
+	// Change the cell's class based on the state
+	cell.className = `cell ${state}`;
 }

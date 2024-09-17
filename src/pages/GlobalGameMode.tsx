@@ -9,9 +9,11 @@ import {
 	handlePauseStart,
 	handleTextboxChange,
 } from "../controls/inputHandlers";
-import { setupModelForGame } from "../scene/sceneManager";
+import { getWorld, setupModelForGame } from "../scene/sceneManager";
 import {
+	changeCurrenciesCell,
 	continentNames,
+	createCurrencyTable,
 	createTable,
 	populateFlags,
 } from "../country/countriesTable";
@@ -56,7 +58,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				createTable();
 				break;
 			case "currencies":
-				// setup for currencies
+				createCurrencyTable(t);
 				break;
 			case "languages":
 				// setup for currencies
@@ -74,6 +76,9 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 			case "flags":
 				populateFlags();
 				break;
+			case "currencies":
+				changeCurrenciesCell("invisible");
+				break;
 			default:
 				break;
 		}
@@ -90,17 +95,19 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		console.debug(`Setups for ${gameType}.`);
 		preSetups(gameType);
 		console.debug("Pre setups completed.");
-		setupModelForGame(hard, continentIndex);
+		setupModelForGame(hard, continentIndex, gameType);
 		postSetups(gameType);
 		console.debug("Post setups completed.");
 		isQuizInit.current = true;
 	}, [continentIndex, gameType, hard, isModelLoaded]);
 	function renderQuizCounter(gameType: string): React.JSX.Element {
+		const world = getWorld();
 		switch (gameType) {
 			case "currencies":
 				return (
 					<div className="quiz-grid-item" id="currency-counter">
-						0&nbsp;/&nbsp; NOT IMPLEMENTED YET guessed
+						0&nbsp;/&nbsp;
+						{world.currencyArray.length} {t("guessed")}
 					</div>
 				);
 			case "languages":
@@ -145,7 +152,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 								onChange={cameraFollowCountry}
 							></input>
 						</div>
-						<div id="country-name-container"></div>
+						<div id="quiz-feedback-container"></div>
 					</div>
 				);
 		}
@@ -157,7 +164,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				return (
 					<div className="grid-item" id="country-continent">
 						<div
-							className="grid-continent"
+							className="grid-currency"
 							id="country-continent-name-container"
 						></div>
 					</div>
@@ -226,6 +233,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 							{answerPromptText[gameType]}
 						</label>
 						<input
+							autoFocus={true}
 							type="text"
 							id="answer-box-input"
 							name="textbox"
