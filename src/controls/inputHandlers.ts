@@ -1,8 +1,12 @@
 // controls/inputHandlers.ts
 import { Timer } from "../utils/Timer";
-import { countriesCountByRegion, Currency, World } from "../country/World";
 import {
-	changeCountryOfCurrency,
+	countriesCountByRegion,
+	CountryAttribute,
+	World,
+} from "../country/World";
+import {
+	changeCountryOfCountryAttribute,
 	changeElementsVisibility,
 	getObjCenter,
 	processText,
@@ -17,17 +21,41 @@ import {
 	toggleIsPlaying,
 } from "./playingState";
 import { isControlsEnabled } from "./controls";
-import {
-	changeCountryCellTo,
-	changeCurrencyCell,
-} from "../country/countriesTable";
+import { changeCACell, changeCountryCellTo } from "../country/countriesTable";
 import { cameraFaceTo } from "../camera/camera";
 
-function allCurrencyFound(world: World): boolean {
-	const foundArray = world.currencyArray.filter((currency: Currency) => {
-		return currency.found;
+function textboxChangeLanguages(
+	world: World,
+	enteredText: string,
+	answerInput: HTMLInputElement,
+	timer: Timer
+): void {
+	const counter = document.getElementById(
+		"language-counter"
+	) as HTMLDivElement;
+	const languages: CountryAttribute[] = world.languageArray;
+	languages.forEach((language: CountryAttribute, index: number) => {
+		if (processText(language.name) === enteredText) {
+			if (!language.found) {
+				language.found = true;
+				changeCACell("found", language, index);
+				changeCountryOfCountryAttribute(index, "languages", "language");
+
+				answerInput.value = "";
+				counter.textContent =
+					String(world.getFoundCA("language").length) +
+					"\u00A0/\u00A0" +
+					languages.length +
+					" guessed"; // TODO CHANGE WITH TRANSLATION
+			}
+			return;
+		}
 	});
-	return foundArray.length === world.currencyArray.length;
+	if (world.allCountryAttributeFound("currency")) {
+		timer.stop();
+		alert(`Congratulations you finished in ${timer.toString()}!`);
+	}
+	return;
 }
 
 function textboxChangeCurrencies(
@@ -39,21 +67,16 @@ function textboxChangeCurrencies(
 	const counter = document.getElementById(
 		"currency-counter"
 	) as HTMLDivElement;
-	const currencyArray: Currency[] = world.currencyArray;
-	currencyArray.forEach((currency: Currency) => {
+	const currencyArray: CountryAttribute[] = world.currencyArray;
+	currencyArray.forEach((currency: CountryAttribute, index: number) => {
 		if (processText(currency.name) === enteredText) {
 			if (!currency.found) {
 				currency.found = true;
-				changeCurrencyCell("found", currency.name);
-				changeCountryOfCurrency(currency.name, "found");
+				changeCACell("found", currency, index);
+				changeCountryOfCountryAttribute(index, "found", "currency");
 				answerInput.value = "";
-				const foundArray = currencyArray.filter(
-					(currency: Currency) => {
-						return currency.found;
-					}
-				);
 				counter.textContent =
-					String(foundArray.length) +
+					String(world.getFoundCA("currency").length) +
 					"\u00A0/\u00A0" +
 					currencyArray.length +
 					" guessed"; // TODO CHANGE WITH TRANSLATION
@@ -61,7 +84,7 @@ function textboxChangeCurrencies(
 			return;
 		}
 	});
-	if (allCurrencyFound(world)) {
+	if (world.allCountryAttributeFound("currency")) {
 		timer.stop();
 		alert(`Congratulations you finished in ${timer.toString()}!`);
 	}
@@ -193,6 +216,8 @@ export function handleTextboxChange(
 		);
 	} else if (gameType === "currencies") {
 		textboxChangeCurrencies(world, enteredText, answerInput, timer);
+	} else if (gameType === "languages") {
+		textboxChangeLanguages(world, enteredText, answerInput, timer);
 	} else {
 		textboxChangeNames(
 			world,
@@ -215,6 +240,7 @@ export function isAcceptedName(
 		(name) => processText(name) === normalizedEnteredText
 	);
 }
+
 export function cameraFollowCountry(
 	event: React.ChangeEvent<HTMLInputElement>
 ): void {
@@ -222,13 +248,14 @@ export function cameraFollowCountry(
 	if (isFollowing() === !checkbox.checked) toggleIsFollowing();
 }
 
-function setCountryOfCurrency(
+function setCountryOfCA(
 	world: World,
-	currency: Currency,
+	countryAttribute: CountryAttribute,
+	index: number,
 	continentIndex: number,
 	state: string
 ): void {
-	const locations: number[] = currency.locations;
+	const locations: number[] = countryAttribute.locations;
 	locations.forEach((index: number) => {
 		const country = world.countryArray[index];
 		if (continentIndex !== -1 && country.location[0] !== continentIndex) {
@@ -237,7 +264,7 @@ function setCountryOfCurrency(
 
 		world.triggerCountryAnimation(index, state, false);
 		world.setCountryVisibility(index, true);
-		changeCurrencyCell("missed", currency.name);
+		changeCACell("missed", countryAttribute, index);
 	});
 }
 
@@ -284,11 +311,21 @@ export function handleGiveUp(
 
 	if (gameType === "currencies") {
 		const currencyArray = world.currencyArray;
-		currencyArray.forEach((currency: Currency) => {
+		currencyArray.forEach((currency: CountryAttribute, index: number) => {
 			if (currency.found) {
 				return;
 			}
-			setCountryOfCurrency(world, currency, continentIndex, "error");
+			setCountryOfCA(world, currency, index, continentIndex, "error");
+		});
+	} else if (gameType === "languages") {
+		const languageArray = world.languageArray;
+		languageArray.forEach((language: CountryAttribute, index: number) => {
+			if (language.found) {
+				return;
+			}
+			changeCACell("missed", language, index);
+
+			setCountryOfCA(world, language, index, continentIndex, "error");
 		});
 	} else {
 		world.countryArray.forEach((country: Country, index: number): void => {
@@ -326,6 +363,9 @@ export function handlePauseStart(ongoing: boolean, timer: Timer): void {
 	if (!counter) {
 		counter = document.getElementById("currency-counter") as HTMLDivElement;
 	}
+	if (!counter) {
+		counter = document.getElementById("language-counter") as HTMLDivElement;
+	}
 	const timerCell: HTMLDivElement = document.getElementById(
 		"timer"
 	) as HTMLDivElement;
@@ -358,37 +398,39 @@ export function restartQuiz(
 	continent: string,
 	gameType: string
 ): void {
-	let counter: HTMLDivElement = document.getElementById(
-		"country-counter"
-	) as HTMLDivElement;
-	if (!counter) {
-		counter = document.getElementById("currency-counter") as HTMLDivElement;
-	}
 	const pauseStart: HTMLButtonElement = document.getElementById(
 		"quiz-stop-start"
 	) as HTMLButtonElement;
 	const world: World = getWorld();
-	world.currencyArray.forEach((currency: Currency): void => {
-		currency.found = false;
-	});
-	world.clearFound();
-	const foundArray: Currency[] = world.currencyArray.filter(
-		(currency: Currency) => {
-			return currency.found;
-		}
-	);
+
 	if (gameType === "currencies") {
+		world.currencyArray.forEach((currency: CountryAttribute): void => {
+			currency.found = false;
+		});
+		let counter = document.getElementById(
+			"currency-counter"
+		) as HTMLDivElement;
+
 		counter.textContent =
-			String(foundArray.length) +
-			"\u00A0/\u00A0" +
-			world.currencyArray.length +
-			" guessed";
+			"0\u00A0/\u00A0" + world.currencyArray.length + " guessed";
+	} else if (gameType === "languages") {
+		world.languageArray.forEach((language: CountryAttribute): void => {
+			language.found = false;
+		});
+		let counter = document.getElementById(
+			"language-counter"
+		) as HTMLDivElement;
+
+		counter.textContent =
+			"0\u00A0/\u00A0" + world.languageArray.length + " guessed";
 	} else {
+		world.clearFound();
+
+		let counter: HTMLDivElement = document.getElementById(
+			"country-counter"
+		) as HTMLDivElement;
 		counter.textContent =
-			String(world.countriesFound) +
-			"\u00A0/\u00A0" +
-			countriesCountByRegion[continent] +
-			" guessed";
+			"0\u00A0/\u00A0" + countriesCountByRegion[continent] + " guessed";
 	}
 
 	setupModelForGame(isHard, continentIndex, gameType);
@@ -412,4 +454,5 @@ export function handleImageClick(event: MouseEvent) {
 		imgElement.classList.add("selected");
 	}
 }
+
 //TODO clear answer box function

@@ -10,6 +10,7 @@ const group: Group = new Group(); // Contains the current tween updates
 export function animate(model: Object3D): void {
 	let lastRenderTime: number = 0;
 	const renderer: WebGLRenderer = getRenderer();
+
 	function _animate(currentTime: number): void {
 		if (isRotating()) {
 			model.rotation.y += 0.0005;

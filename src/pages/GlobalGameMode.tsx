@@ -11,9 +11,10 @@ import {
 } from "../controls/inputHandlers";
 import { getWorld, setupModelForGame } from "../scene/sceneManager";
 import {
-	changeCurrenciesCell,
+	changeCACells,
 	continentNames,
 	createCurrencyTable,
+	createLanguageTable,
 	createTable,
 	populateFlags,
 } from "../country/countriesTable";
@@ -49,6 +50,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		languages: t("answerPromptTextLanguages"),
 		capitals: t("answerPromptTextCapitals"),
 	};
+
 	function preSetups(gameType: string): void {
 		switch (gameType) {
 			case "names":
@@ -61,7 +63,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				createCurrencyTable(t);
 				break;
 			case "languages":
-				// setup for currencies
+				createLanguageTable(t);
 				break;
 			case "capitals":
 				// setup for currencies
@@ -77,7 +79,10 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				populateFlags();
 				break;
 			case "currencies":
-				changeCurrenciesCell("invisible");
+				changeCACells("invisible", "currency");
+				break;
+			case "languages":
+				changeCACells("invisible", "language");
 				break;
 			default:
 				break;
@@ -100,6 +105,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		console.debug("Post setups completed.");
 		isQuizInit.current = true;
 	}, [continentIndex, gameType, hard, isModelLoaded]);
+
 	function renderQuizCounter(gameType: string): React.JSX.Element {
 		const world = getWorld();
 		switch (gameType) {
@@ -113,7 +119,8 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 			case "languages":
 				return (
 					<div className="quiz-grid-item" id="language-counter">
-						0&nbsp;/&nbsp; NOT IMPLEMENTED YET guessed
+						0&nbsp;/&nbsp;
+						{world.languageArray.length} {t("guessed")}
 					</div>
 				);
 			default:
@@ -162,9 +169,18 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		switch (gameType) {
 			case "currencies":
 				return (
-					<div className="grid-item" id="country-continent">
+					<div className="grid-item" id="currency-continent">
 						<div
 							className="grid-currency"
+							id="country-continent-name-container"
+						></div>
+					</div>
+				);
+			case "languages":
+				return (
+					<div className="grid-item" id="language-continent">
+						<div
+							className="grid-language"
 							id="country-continent-name-container"
 						></div>
 					</div>

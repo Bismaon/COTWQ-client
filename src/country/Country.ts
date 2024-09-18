@@ -1,9 +1,6 @@
 // country/Country.ts
 import { Material, Mesh, Object3D } from "three";
 
-/**
- * Represents a country.
- */
 export class Country {
 	// Holds the capital of the country as a string
 	private readonly _capital: string | null;
@@ -60,6 +57,10 @@ export class Country {
 		this._isOwned = owner !== null;
 		this._flagMaterial = flagMaterial;
 		this._material = meshes.material as Material;
+	}
+
+	public get languages() {
+		return this._languages;
 	}
 
 	// Current material of the country object
@@ -173,9 +174,11 @@ export class Country {
 	public get flagMaterial(): Material {
 		return this._flagMaterial;
 	}
+
 	public get currency(): string | null {
 		return this._currency;
 	}
+
 	public get capital(): string | null {
 		return this._capital;
 	}

@@ -35,6 +35,7 @@ export function updateCountryName(countryName: string): void {
 	if (!countryNameElement) return; // meh
 	countryNameElement.textContent = countryName;
 }
+
 export function isValidObject(intersectedObject: Object3D): [boolean, string] {
 	const objName: string = intersectedObject.name;
 	if (objName === "water" || objName === "") return [false, ""];

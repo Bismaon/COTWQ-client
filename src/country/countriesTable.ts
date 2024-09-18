@@ -1,6 +1,6 @@
 // country/countriesTable.ts
 
-import { Currency, World } from "./World";
+import { CountryAttribute, World } from "./World";
 import { Country } from "./Country";
 import { getWorld } from "../scene/sceneManager";
 import { handleImageClick } from "../controls/inputHandlers";
@@ -226,10 +226,150 @@ export function createCurrencyTable(
 	titleCell.colSpan = 2; // Ensuring the cell takes full width of the column.
 	titleCell.innerHTML =
 		`<div class="currency-title">` + t("currency") + `</div>`;
-	world.currencyArray.forEach((currency: Currency, index: number): void => {
-		if (index % 15 === 0) {
+	let countryPerColumn = 0;
+	world.currencyArray.forEach(
+		(currency: CountryAttribute, index: number): void => {
+			const locations = currency.locations;
+			if ((countryPerColumn + locations.length) % 26 === 1) {
+				console.log("Currency: ", currency.name);
+				table = document.createElement("table");
+				table.className = "grid-currency-item";
+				table.ariaColSpan = "1";
+				tableBody = table.createTBody();
+
+				const titleRow: HTMLTableRowElement = tableBody.insertRow();
+				const titleCell: HTMLTableCellElement = titleRow.insertCell();
+				titleCell.colSpan = 2; // Ensuring the cell takes full width of the column.
+				titleCell.innerHTML =
+					`<div class="currency-title">` + t("currency") + `</div>`;
+				container.appendChild(table);
+				countryPerColumn = 0;
+			}
+
+			// Insert the first row with the currency name and the first country
+			const firstRow: HTMLTableRowElement = tableBody.insertRow();
+			const currencyCell: HTMLTableCellElement = firstRow.insertCell();
+			currencyCell.rowSpan = locations.length; // Span across the number of locations
+			currencyCell.innerHTML = `<div class="cell" id="${currency.name}">${currency.name}</div>`;
+
+			const firstCountryCell: HTMLTableCellElement =
+				firstRow.insertCell();
+			firstCountryCell.innerHTML = `<div class="cell-text">${world.countryArray[locations[0]].name}</div>`;
+
+			// Insert additional rows for the remaining countries
+			for (let i = 1; i < locations.length; i++) {
+				const row: HTMLTableRowElement = tableBody.insertRow();
+				const countryCell: HTMLTableCellElement = row.insertCell();
+				countryCell.innerHTML = `<div class="cell-text">${world.countryArray[locations[i]].name}</div>`;
+			}
+			countryPerColumn += locations.length;
+		}
+	);
+
+	container.appendChild(table);
+}
+
+export function changeCACells(
+	state: "found" | "missed" | "invisible",
+	type: string
+): void {
+	switch (type) {
+		case "currency":
+			const currencyArray: CountryAttribute[] = getWorld().currencyArray;
+
+			currencyArray.forEach((currency: CountryAttribute, index): void => {
+				changeCACell(state, currency, index);
+			});
+			break;
+		case "language":
+			const languageArray: CountryAttribute[] = getWorld().languageArray;
+
+			languageArray.forEach((language: CountryAttribute, index): void => {
+				changeCACell(state, language, index);
+			});
+			break;
+		default:
+			console.error(`Country attribute of type ${type} unknown`);
+	}
+}
+
+export function changeCACell(
+	state: "found" | "missed" | "invisible",
+	countryAttribute: CountryAttribute,
+	index: number
+): void {
+	// Find the cell with the specific index in the table
+	switch (countryAttribute.type) {
+		case "currency":
+			const cell = document.getElementById(countryAttribute.name);
+			// console.log(cell);
+			if (!cell) {
+				console.error(
+					`Cell with ID ${countryAttribute.name} not found.`
+				);
+				return;
+			}
+
+			// Change the cell's class based on the state
+			cell.className = `cell ${state}`;
+			break;
+		case "language":
+			const cells = document.getElementsByClassName(`_${index}`);
+			console.log(cells);
+			if (!cells) {
+				console.error(`Cell with index ${index} not found.`);
+				return;
+			}
+
+			for (let i = 0; i < cells.length; i++) {
+				const cell = cells[i];
+				cell.className = `cell _${index} ${state}`;
+			}
+			break;
+		default:
+			console.log(
+				`Country attribute of type ${countryAttribute.type} unknown`
+			);
+			return;
+	}
+}
+
+export function createLanguageTable(
+	t: TFunction<"translation", undefined>
+): void {
+	// Retrieve the World object, which contains country data.
+	const world: World = getWorld();
+	// Reference to the container div where the tables will be placed.
+	const container: HTMLTableElement = document.getElementById(
+		"country-continent-name-container"
+	) as HTMLTableElement;
+
+	let table: HTMLTableElement = document.createElement("table");
+	table.className = "grid-language-item";
+	table.ariaColSpan = "1";
+
+	// Create the table body.
+	let tableBody: HTMLTableSectionElement = table.createTBody();
+
+	// Add the table title as the first row.
+	const titleRow: HTMLTableRowElement = tableBody.insertRow();
+	const titleCell: HTMLTableCellElement = titleRow.insertCell();
+	titleCell.colSpan = 2; // Ensuring the cell takes full width of the column.
+	titleCell.innerHTML =
+		`<div class="language-title">` + t("language") + `</div>`;
+
+	let languagePerColumn = 0;
+
+	world.countryArray.forEach((country: Country): void => {
+		const languages = country.languages;
+		if (!languages || languages.length === 0) return;
+
+		// Add a new table every 10 languages to avoid overflow
+		languagePerColumn += languages.length;
+
+		if (languagePerColumn >= 50) {
 			table = document.createElement("table");
-			table.className = "grid-currency-item";
+			table.className = "grid-language-item";
 			table.ariaColSpan = "1";
 			tableBody = table.createTBody();
 
@@ -237,48 +377,37 @@ export function createCurrencyTable(
 			const titleCell: HTMLTableCellElement = titleRow.insertCell();
 			titleCell.colSpan = 2; // Ensuring the cell takes full width of the column.
 			titleCell.innerHTML =
-				`<div class="currency-title">` + t("currency") + `</div>`;
+				`<div class="language-title">` + t("language") + `</div>`;
 			container.appendChild(table);
+			languagePerColumn = 0;
 		}
-		const row: HTMLTableRowElement = tableBody.insertRow();
-		const currencyCell: HTMLTableCellElement = row.insertCell();
-		currencyCell.innerHTML = `<div class="cell invisible" id="${currency.name}">${currency.name}</div>`;
 
-		const countryName: string[] = [];
-		currency.locations.forEach((index: number): void => {
-			countryName.push(world.countryArray[index].name);
-		});
-		const associatedNames: string = countryName.join(", ");
-		const textCell: HTMLTableCellElement = row.insertCell();
-		textCell.innerHTML = `<div class="cell-text">${associatedNames}</div>`;
+		// Insert the first row with the country name and the first language
+		const firstRow: HTMLTableRowElement = tableBody.insertRow();
+
+		const countryCell: HTMLTableCellElement = firstRow.insertCell();
+		countryCell.innerHTML = `<div class="cell-text">${country.name}</div>`;
+		countryCell.rowSpan = languages.length; // Span for the number of languages
+
+		// Insert the first language into the same row
+		const firstLanguageCell: HTMLTableCellElement = firstRow.insertCell();
+		firstLanguageCell.innerHTML = `<div class="cell _${world.languageArray.findIndex(
+			(l: CountryAttribute) => {
+				return l.name === languages[0];
+			}
+		)}">${languages[0]}</div>`;
+
+		// Insert additional rows for the remaining languages
+		for (let i = 1; i < languages.length; i++) {
+			const languageRow: HTMLTableRowElement = tableBody.insertRow();
+			const languageCell: HTMLTableCellElement = languageRow.insertCell();
+			languageCell.innerHTML = `<div class="cell _${world.languageArray.findIndex(
+				(l: CountryAttribute) => {
+					return l.name === languages[i];
+				}
+			)}">${languages[i]}</div>`;
+		}
 	});
 
 	container.appendChild(table);
-}
-
-export function changeCurrenciesCell(
-	state: "found" | "missed" | "invisible"
-): void {
-	const currencyArray: Currency[] = getWorld().currencyArray;
-
-	currencyArray.forEach((currency: Currency): void => {
-		changeCurrencyCell(state, currency.name);
-	});
-}
-
-export function changeCurrencyCell(
-	state: "found" | "missed" | "invisible",
-	currency: string
-): void {
-	// Find the cell with the specific index in the table
-	const cell: HTMLElement | null = document.getElementById(currency);
-
-	// console.log(cell);
-	if (!cell) {
-		console.error(`Cell with ID ${currency} not found.`);
-		return;
-	}
-
-	// Change the cell's class based on the state
-	cell.className = `cell ${state}`;
 }

@@ -5,7 +5,7 @@
     grid-column: 3/6;
     padding: 0;
     aspect-ratio: 1;
-    z-index:1;
+    z-index: 1;
 }
 
 .grid-profile-container {
@@ -54,6 +54,7 @@
     margin-left: 10px;
     font-size: 16px;
 }
+
 .status-icon {
     margin-left: 10px;
     font-size: 16px;
@@ -65,13 +66,13 @@
     text-align: center;
 }
 
-.button#edit{
+.button#edit {
     grid-row: 2;
     grid-column: 1/span 2;
 }
 
-.button#logout{
+.button#logout {
     grid-row: 3;
     grid-column: 1/span 2;
 
- }
+}

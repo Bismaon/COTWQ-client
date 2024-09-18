@@ -2828,8 +2828,8 @@
         </currency>
         <languages>
             <language>
-                <en>Mandarin Chinese</en>
-                <fr>Chinois mandarin</fr>
+                <en>Mandarin</en>
+                <fr>Mandarin</fr>
             </language>
         </languages>
         <capital>
@@ -4174,8 +4174,8 @@
         </currency>
         <languages>
             <language>
-                <en>Mandarin Chinese</en>
-                <fr>Chinois mandarin</fr>
+                <en>Mandarin</en>
+                <fr>Mandarin</fr>
             </language>
         </languages>
         <capital>
@@ -7916,7 +7916,7 @@
     </country>
     <country>
         <name>
-            <en>fr Polynesia (FR)
+            <en>Polynesia (FR)
             </en>
             <fr>Polynésie française (FR)</fr>
         </name>

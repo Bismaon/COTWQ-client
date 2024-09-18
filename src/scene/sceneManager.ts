@@ -1,6 +1,6 @@
 // scene/sceneManager.ts
 import { Material, Mesh, Object3D, Vector3 } from "three";
-import { Currency, World } from "../country/World";
+import { World } from "../country/World";
 import { loadModel } from "../utils/loader";
 import { animate } from "../utils/animation";
 import {
@@ -40,7 +40,8 @@ export async function setupSceneModel(): Promise<void> {
 		);
 		console.debug("Continents: ", world.continents);
 		console.debug("Countries: ", world.countryArray);
-		console.debug("Currency Array: ", world.currencyArray);
+		console.debug("Currencys: ", world.currencyArray);
+		console.debug("Languages: ", world.languageArray);
 		animate(globalScene);
 	} catch (error: unknown) {
 		console.error("An error occurred while loading the model:", error);
@@ -80,12 +81,23 @@ export function getWorld(): World {
 	return world;
 }
 
+function getAllForLang(elements: any): string[] {
+	const lang = getLang();
+	const container: string[] = [];
+	elements.forEach((element: any) => {
+		if (element.en === "") return;
+		if (lang === "en") {
+			container.push(element.en);
+		} else if (lang === "fr") {
+			container.push(element.fr);
+		}
+	});
+	return container;
+}
+
 function parseCountryData(countryData: any): Country {
-	const lang: string = localStorage.getItem("lang") || "en";
 	let territories = countryData.territories.territory;
 	let languages = countryData.languages.language;
-	let languagesContainer: any = [];
-	let acceptedNamesContainer: any = [];
 	let acceptedNames = countryData.acceptedNames.name;
 	// makes sure territories/languages/acceptedNames are in array form
 	if (typeof territories === "string") {
@@ -96,26 +108,13 @@ function parseCountryData(countryData: any): Country {
 		languages = [languages];
 	}
 
-	languages.forEach((language: any) => {
-		if (lang === "en") {
-			languagesContainer.push(language.en);
-		} else if (lang === "fr") {
-			languagesContainer.push(language.fr);
-		}
-	});
+	const languagesContainer = getAllForLang(languages);
 
 	if (typeof acceptedNames === "object" && !Array.isArray(acceptedNames)) {
 		acceptedNames = [acceptedNames];
 	}
 
-	acceptedNames.forEach((name: any) => {
-		if (name.en === "") return;
-		if (lang === "en") {
-			acceptedNamesContainer.push(name.en);
-		} else if (lang === "fr") {
-			acceptedNamesContainer.push(name.fr);
-		}
-	});
+	const acceptedNamesContainer = getAllForLang(acceptedNames);
 
 	territories = territories?.map(
 		(loc: string) => loc.split(",").map(Number) as [number, number]
@@ -138,7 +137,7 @@ function parseCountryData(countryData: any): Country {
 	const SVG: string = countryData.flag.svg;
 
 	const flagMaterial: Material = createCountryFlagShader(SVG);
-	const name: string = setLangName(lang, countryData.name);
+	const name: string = setLangName(countryData.name);
 	const currency: any = countryData.currency;
 	const country: Country = new Country(
 		name,
@@ -154,29 +153,12 @@ function parseCountryData(countryData: any): Country {
 		object,
 		flagMaterial
 	);
-	const currencyArray = world.currencyArray;
-
-	if (currency !== "") {
-		const exists = currencyArray.some(
-			(currency1) => currency1.name === currency
-		);
-		if (!exists) {
-			currencyArray.push({
-				name: currency,
-				locations: [world.getRealIndex(location)],
-				found: false,
-			});
-		} else {
-			const currencyIndex = currencyArray.findIndex(
-				(currency1: Currency) => {
-					return currency1.name === currency;
-				}
-			);
-			currencyArray[currencyIndex].locations.push(
-				world.getRealIndex(location)
-			);
-		}
-	}
+	world.addMissingCountryAttributeSingle("currency", currency, location);
+	world.addMissingCountryAttributeLong(
+		"language",
+		languagesContainer,
+		location
+	);
 
 	createCountryOutline(meshes);
 	country.material = getStateMaterial(country.state);
@@ -211,7 +193,13 @@ export async function changeLanguageForCountry(lang: string): Promise<void> {
 		)
 	);
 }
-function setLangName(lang: string, name: any): any {
+
+function getLang(): string {
+	return localStorage.getItem("lang") || "en";
+}
+
+function setLangName(name: any): any {
+	const lang = getLang();
 	switch (lang) {
 		case "en":
 			return name.en;

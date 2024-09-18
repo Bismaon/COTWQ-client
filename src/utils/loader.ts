@@ -59,7 +59,7 @@ function extractColors(model: Object3D): void {
 		material.needsUpdate = true;
 		colors.push(material);
 	});
-	console.log("Colors: ", colors)
+	console.log("Colors: ", colors);
 }
 
 function isInColors(colors: Material[], material: Material): boolean {
