@@ -40,8 +40,29 @@ export async function setupSceneModel(): Promise<void> {
 		);
 		console.debug("Continents: ", world.continents);
 		console.debug("Countries: ", world.countryArray);
-		console.debug("Currencys: ", world.currencyArray);
+		console.debug("Currencies: ", world.currencyArray);
+		// for (let i = 0; i < world.continents.length; i++) {
+		// 	console.debug(
+		// 		`Currency ${i}: `,
+		// 		world.currencyArray.filter(
+		// 			(currency: CountryAttribute): boolean => {
+		// 				return currency.region.includes(i);
+		// 			}
+		// 		).length
+		// 	);
+		// }
 		console.debug("Languages: ", world.languageArray);
+		// for (let i = 0; i < world.continents.length; i++) {
+		// 	console.debug(
+		// 		`Language ${i}: `,
+		// 		world.languageArray.filter(
+		// 			(language: CountryAttribute): boolean => {
+		// 				return language.region.includes(i);
+		// 			}
+		// 		).length
+		// 	);
+		// }
+
 		animate(globalScene);
 	} catch (error: unknown) {
 		console.error("An error occurred while loading the model:", error);
@@ -96,9 +117,9 @@ function getAllForLang(elements: any): string[] {
 }
 
 function parseCountryData(countryData: any): Country {
-	let territories = countryData.territories.territory;
-	let languages = countryData.languages.language;
-	let acceptedNames = countryData.acceptedNames.name;
+	let territories: any = countryData.territories.territory;
+	let languages: any = countryData.languages.language;
+	let acceptedNames: any = countryData.acceptedNames.name;
 	// makes sure territories/languages/acceptedNames are in array form
 	if (typeof territories === "string") {
 		territories = territories.length === 0 ? null : [territories];
@@ -108,16 +129,17 @@ function parseCountryData(countryData: any): Country {
 		languages = [languages];
 	}
 
-	const languagesContainer = getAllForLang(languages);
+	const languagesContainer: string[] = getAllForLang(languages);
 
 	if (typeof acceptedNames === "object" && !Array.isArray(acceptedNames)) {
 		acceptedNames = [acceptedNames];
 	}
 
-	const acceptedNamesContainer = getAllForLang(acceptedNames);
+	const acceptedNamesContainer: string[] = getAllForLang(acceptedNames);
 
 	territories = territories?.map(
-		(loc: string) => loc.split(",").map(Number) as [number, number]
+		(loc: string): [number, number] =>
+			loc.split(",").map(Number) as [number, number]
 	);
 
 	const owner: [number, number] | null = countryData.ownedLocation
@@ -153,11 +175,17 @@ function parseCountryData(countryData: any): Country {
 		object,
 		flagMaterial
 	);
-	world.addMissingCountryAttributeSingle("currency", currency, location);
+	world.addMissingCountryAttributeSingle(
+		"currency",
+		currency,
+		location,
+		owner !== null
+	);
 	world.addMissingCountryAttributeLong(
 		"language",
 		languagesContainer,
-		location
+		location,
+		owner !== null
 	);
 
 	createCountryOutline(meshes);

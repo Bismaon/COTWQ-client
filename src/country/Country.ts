@@ -9,7 +9,7 @@ export class Country {
 	private readonly _languages: string[] | null;
 	private readonly _svgFlag: string;
 	// true if the country is not independent
-	private readonly _isOwned: boolean;
+	private readonly _owned: boolean;
 	// contains the Object3D Mesh of the country (colors/flag)
 	private readonly _meshes: Mesh;
 	// The object of the country in the model
@@ -49,12 +49,12 @@ export class Country {
 		this._currency = currency;
 		this._languages = languages;
 		this._capital = capital;
-		this._isFound = false;
+		this._found = false;
 		this._state = "unknown";
-		this._isVisible = true;
+		this._visible = true;
 		this._meshes = meshes;
 		this._object = object;
-		this._isOwned = owner !== null;
+		this._owned = owner !== null;
 		this._flagMaterial = flagMaterial;
 		this._material = meshes.material as Material;
 	}
@@ -118,33 +118,33 @@ export class Country {
 		this._state = state;
 	}
 
-	private _isFound: boolean;
+	private _found: boolean;
 
 	/**
 	 * Get the found status of the country.
 	 * @returns {boolean} True if the country is found, otherwise false.
 	 */
-	public get isFound(): boolean {
-		return this._isFound;
+	public get found(): boolean {
+		return this._found;
 	}
 
 	/**
 	 * Set the found status of the country.
 	 * @param {boolean} isFound - The found status to set.
 	 */
-	public set isFound(isFound: boolean) {
-		this._isFound = isFound;
+	public set found(isFound: boolean) {
+		this._found = isFound;
 	}
 
-	private _isVisible: boolean;
+	private _visible: boolean;
 
-	public get isVisible(): boolean {
-		return this._isVisible;
+	public get visible(): boolean {
+		return this._visible;
 	}
 
-	public set isVisible(visibility: boolean) {
+	public set visible(visibility: boolean) {
 		this._object.visible = visibility;
-		this._isVisible = visibility;
+		this._visible = visibility;
 	}
 
 	public get meshes(): Mesh {
@@ -163,8 +163,8 @@ export class Country {
 		return this._name;
 	}
 
-	public get isOwned(): boolean {
-		return this._isOwned;
+	public get owned(): boolean {
+		return this._owned;
 	}
 
 	public get svgFlag(): string {

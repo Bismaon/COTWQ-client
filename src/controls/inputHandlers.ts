@@ -3,6 +3,8 @@ import { Timer } from "../utils/Timer";
 import {
 	countriesCountByRegion,
 	CountryAttribute,
+	currencyByRegion,
+	languageByRegion,
 	World,
 } from "../country/World";
 import {
@@ -21,117 +23,45 @@ import {
 	toggleIsPlaying,
 } from "./playingState";
 import { isControlsEnabled } from "./controls";
-import { changeCACell, changeCountryCellTo } from "../country/countriesTable";
+import {
+	changeCACell,
+	changeCACells,
+	changeCountryCellTo,
+	clearFlags,
+	populateFlags,
+} from "../country/countriesTable";
 import { cameraFaceTo } from "../camera/camera";
-
-function textboxChangeLanguages(
-	world: World,
-	enteredText: string,
-	answerInput: HTMLInputElement,
-	timer: Timer
-): void {
-	const counter = document.getElementById(
-		"language-counter"
-	) as HTMLDivElement;
-	const languages: CountryAttribute[] = world.languageArray;
-	languages.forEach((language: CountryAttribute, index: number) => {
-		if (processText(language.name) === enteredText) {
-			if (!language.found) {
-				language.found = true;
-				changeCACell("found", language, index);
-				changeCountryOfCountryAttribute(index, "languages", "language");
-
-				answerInput.value = "";
-				counter.textContent =
-					String(world.getFoundCA("language").length) +
-					"\u00A0/\u00A0" +
-					languages.length +
-					" guessed"; // TODO CHANGE WITH TRANSLATION
-			}
-			return;
-		}
-	});
-	if (world.allCountryAttributeFound("currency")) {
-		timer.stop();
-		alert(`Congratulations you finished in ${timer.toString()}!`);
-	}
-	return;
-}
-
-function textboxChangeCurrencies(
-	world: World,
-	enteredText: string,
-	answerInput: HTMLInputElement,
-	timer: Timer
-): void {
-	const counter = document.getElementById(
-		"currency-counter"
-	) as HTMLDivElement;
-	const currencyArray: CountryAttribute[] = world.currencyArray;
-	currencyArray.forEach((currency: CountryAttribute, index: number) => {
-		if (processText(currency.name) === enteredText) {
-			if (!currency.found) {
-				currency.found = true;
-				changeCACell("found", currency, index);
-				changeCountryOfCountryAttribute(index, "found", "currency");
-				answerInput.value = "";
-				counter.textContent =
-					String(world.getFoundCA("currency").length) +
-					"\u00A0/\u00A0" +
-					currencyArray.length +
-					" guessed"; // TODO CHANGE WITH TRANSLATION
-			}
-			return;
-		}
-	});
-	if (world.allCountryAttributeFound("currency")) {
-		timer.stop();
-		alert(`Congratulations you finished in ${timer.toString()}!`);
-	}
-	return;
-}
 
 function textboxChangeFlags(
 	world: World,
 	enteredText: string,
 	answerInput: HTMLInputElement,
 	counter: HTMLDivElement,
-	continent: string,
-	timer: Timer
+	timer: Timer,
+	region: string,
+	sequentialRandom: boolean
 ): void {
 	let flagSelected: HTMLImageElement | null =
-		document.querySelector(".selected");
-	if (!flagSelected) {
-		flagSelected = document.querySelector("img"); // Compare to the first flag in the flag list
-		if (!flagSelected) {
-			return;
-		}
-	}
+		document.querySelector(".selected") || document.querySelector("img");
+	if (!flagSelected) return;
+
 	const [first, second]: string[] = flagSelected.alt.split("_");
 	const location: [number, number] = [Number(first), Number(second)];
 
-	const country: Country = world.getCountryByLocation([
-		Number(first),
-		Number(second),
-	]);
-	if (!isAcceptedName(country.acceptedNames, enteredText)) {
-		return;
-	}
+	const country: Country = world.getCountryByLocation(location);
+	if (!isAcceptedName(country.acceptedNames, enteredText)) return;
 
-	const countryIndex = [world.getRealIndex(location)];
+	const countryIndex: number[] = [world.getRealIndex(location)];
 	const index: number = countryIndex[0];
-	if (!world.countryArray[index].isVisible) {
+	if (!world.countryArray[index].visible) {
 		world.setCountryAndConnectedVisibility(index, true);
 	}
 	world.setCountryAndConnectedIsFound(index, true);
-	// countryIndex[0], because only one country can be guessed by flag
 	world.triggerCountryAnimation(index, "flags", true);
+
 	// take the first img tag element in the item-list and make it the selected
-	let nextFlag: HTMLImageElement | null =
-		flagSelected.nextSibling as HTMLImageElement;
-	if (!(nextFlag instanceof HTMLImageElement)) {
-		nextFlag = document.querySelector("img");
-	}
+	const nextFlag: HTMLImageElement | null = getNextFlag(flagSelected);
+	if (nextFlag) nextFlag.classList.add("selected");
 	// remove the outline of the selected flag and remove it from the list
 	flagSelected.classList.remove("selected");
 	flagSelected.remove();
@@ -139,93 +69,253 @@ function textboxChangeFlags(
 		nextFlag.classList.add("selected");
 	}
 	answerInput.value = "";
-
-	counter.textContent =
-		String(world.countriesFound) +
-		"\u00A0/\u00A0" +
-		countriesCountByRegion[continent] +
-		" guessed"; // TODO CHANGE WITH TRANSLATION
+	updateCounter(
+		counter,
+		world.countriesFound,
+		countriesCountByRegion[region]
+	);
 	changeCountryCellTo("found", countryIndex);
 	if (isFollowing()) {
 		cameraFaceTo(getObjCenter(world.countryArray[countryIndex[0]].object)); // get the first country object for simplicity
 	}
 
-	if (world.isAllFound(continent)) {
+	if (world.isAllFound(region)) {
 		timer.stop();
 		alert(`Congratulations you finished in ${timer.toString()}!`); // make a better message
 	}
-	return;
 }
 
 function textboxChangeNames(
 	world: World,
 	enteredText: string,
 	answerInput: HTMLInputElement,
-	countryCounterDiv: HTMLDivElement,
-	continent: string,
-	timer: Timer
+	counter: HTMLDivElement,
+	timer: Timer,
+	region: string,
+	sequentialRandom: boolean
 ): void {
-	const countryIndex = world.exists(enteredText);
+	const countryIndex: number[] = world.exists(enteredText);
+	const country: Country = world.countryArray[countryIndex[0]];
+	if (countryIndex.length === 0) {
+		return; // not a country
+	}
 	countryIndex.forEach((index: number): void => {
 		const country: Country = world.countryArray[index];
-		if (country.isFound) {
+		if (country.found) {
 			return;
 		}
-
+		if (sequentialRandom && country.state !== "selected") {
+			return;
+		}
+		if (sequentialRandom) {
+			world.sequentialRandomArray.splice(world.sequentialRandomIndex, 1);
+			world.nextInSeqArr();
+			const nextCountry: Country =
+				world.sequentialRandomArray[world.sequentialRandomIndex];
+			const nextIndex: number = world.getRealIndex(nextCountry.location);
+			world.setCountryAndConnectedState(nextIndex, "selected");
+			world.setCountryAndConnectedVisibility(nextIndex, true);
+			cameraFaceTo(getObjCenter(nextCountry.object));
+		}
 		world.applyFoundEffectsToCountry(index);
 		answerInput.value = "";
-		countryCounterDiv.textContent =
-			String(world.countriesFound) +
-			"\u00A0/\u00A0" +
-			countriesCountByRegion[continent] +
-			" guessed";
+		updateCounter(
+			counter,
+			world.countriesFound,
+			countriesCountByRegion[region]
+		);
 	});
-	changeCountryCellTo("found", countryIndex);
 	if (isFollowing()) {
-		cameraFaceTo(getObjCenter(world.countryArray[countryIndex[0]].object)); // get the first country object for simplicity
+		cameraFaceTo(getObjCenter(country.object)); // get the first country object for simplicity
 	}
 
-	if (world.isAllFound(continent)) {
+	if (world.isAllFound(region)) {
 		timer.stop();
 		alert(`Congratulations you finished in ${timer.toString()}!`); // make a better message
 	}
 }
 
+function textBoxChangeCapitals(
+	world: World,
+	enteredText: string,
+	answerInput: HTMLInputElement,
+	counter: HTMLDivElement,
+	timer: Timer,
+	region: string,
+	sequentialRandom: boolean
+): void {
+	const countryArray: Country[] = world.countryArray;
+	countryArray.forEach((country: Country, index: number): void => {
+		if (!country.capital || country.owned) return;
+		if (processText(country.capital) === enteredText) {
+			if (!country.found) {
+				country.found = true;
+				world.applyFoundEffectsToCountry(index);
+
+				answerInput.value = "";
+				updateCounter(
+					counter,
+					world.countriesFound,
+					countriesCountByRegion[region]
+				);
+			}
+			return;
+		}
+	});
+	if (world.isAllFound(region)) {
+		timer.stop();
+		alert(`Congratulations you finished in ${timer.toString()}!`);
+	}
+	return;
+}
+function textBoXChangeLanguages(
+	world: World,
+	enteredText: string,
+	answerInput: HTMLInputElement,
+	counter: HTMLDivElement,
+	timer: Timer,
+	region: string,
+	sequentialRandom: boolean
+) {
+	const languageArray: CountryAttribute[] = world.languageArray;
+	const regionNumber: number = getRegionByNumber(region);
+	const type = "language";
+	const regionCount: number = languageByRegion[regionNumber];
+	textboxChangeCA(
+		world,
+		enteredText,
+		answerInput,
+		counter,
+		timer,
+		regionNumber,
+		languageArray,
+		type,
+		regionCount
+	);
+}
+function textBoXChangeCurrencies(
+	world: World,
+	enteredText: string,
+	answerInput: HTMLInputElement,
+	counter: HTMLDivElement,
+	timer: Timer,
+	region: string
+): void {
+	const currencyArray: CountryAttribute[] = world.currencyArray;
+	const regionNumber: number = getRegionByNumber(region);
+	const type = "currency";
+	const regionCount: number = currencyByRegion[regionNumber];
+	textboxChangeCA(
+		world,
+		enteredText,
+		answerInput,
+		counter,
+		timer,
+		regionNumber,
+		currencyArray,
+		type,
+		regionCount
+	);
+}
+function textboxChangeCA(
+	world: World,
+	enteredText: string,
+	answerInput: HTMLInputElement,
+	counter: HTMLDivElement,
+	timer: Timer,
+	region: number,
+	array: CountryAttribute[],
+	type: "language" | "currency",
+	regionCount: number
+): void {
+	array.forEach((attribute: CountryAttribute, index: number): void => {
+		if (
+			processText(attribute.name) !== enteredText ||
+			attribute.found ||
+			!attribute.region.includes(region)
+		) {
+			return;
+		}
+		attribute.found = true;
+		changeCACell("found", attribute, index);
+		changeCountryOfCountryAttribute(index, "found", type, region);
+		answerInput.value = "";
+		updateCounter(counter, world.getFoundCA(type).length, regionCount);
+	});
+
+	if (world.allCountryAttributeFound(type, region)) {
+		timer.stop();
+		alert(`Congratulations you finished in ${timer.toString()}!`);
+	}
+}
+
+const regionMap: { [key: string]: number } = {
+	africa: 0,
+	asia: 2,
+	antarctica: 1,
+	europe: 3,
+	north_america: 4,
+	oceania: 5,
+	south_america: 6,
+	all_regions: 7,
+};
+function getNextFlag(flagSelected: HTMLImageElement): HTMLImageElement | null {
+	return (
+		(flagSelected.nextElementSibling as HTMLImageElement) ||
+		document.querySelector("img")
+	);
+}
+export function getRegionByNumber(region: string): number {
+	return regionMap[region] ?? -1;
+}
+function updateCounter(
+	counter: HTMLDivElement,
+	foundCount: number,
+	totalCount: number
+): void {
+	counter.textContent = `${foundCount}\u00A0/\u00A0${totalCount} guessed`;
+}
+
 export function handleTextboxChange(
 	timer: Timer,
-	continent: string,
-	gameType: string
+	gameType: string,
+	region: string,
+	sequentialRandom: boolean
 ): void {
 	const answerInput: HTMLInputElement = document.getElementById(
 		"answer-box-input"
 	) as HTMLInputElement;
-	const countryCounterDiv: HTMLDivElement = document.getElementById(
-		"country-counter"
+	if (!answerInput) {
+		console.error(`Input Element is missing: "answer-box-input"`);
+		return;
+	}
+	const counter: HTMLDivElement = document.getElementById(
+		"counter"
 	) as HTMLDivElement;
-
+	if (!counter) {
+		console.error(`Div Element is missing: "counter"`);
+		return;
+	}
 	const world: World = getWorld();
 	const enteredText: string = processText(answerInput.value);
-	if (gameType === "flags") {
-		textboxChangeFlags(
+	const gameTypeHandlers: { [key: string]: Function } = {
+		flags: textboxChangeFlags,
+		currencies: textBoXChangeCurrencies,
+		languages: textBoXChangeLanguages,
+		capitals: textBoxChangeCapitals,
+		names: textboxChangeNames,
+	};
+	const handler = gameTypeHandlers[gameType];
+	if (handler) {
+		console.log(`Entering handler for ${gameType}`);
+		handler(
 			world,
 			enteredText,
 			answerInput,
-			countryCounterDiv,
-			continent,
-			timer
-		);
-	} else if (gameType === "currencies") {
-		textboxChangeCurrencies(world, enteredText, answerInput, timer);
-	} else if (gameType === "languages") {
-		textboxChangeLanguages(world, enteredText, answerInput, timer);
-	} else {
-		textboxChangeNames(
-			world,
-			enteredText,
-			answerInput,
-			countryCounterDiv,
-			continent,
-			timer
+			counter,
+			timer,
+			region,
+			sequentialRandom
 		);
 	}
 }
@@ -234,11 +324,11 @@ export function isAcceptedName(
 	acceptedNames: string[],
 	enteredText: string
 ): boolean {
-	const normalizedEnteredText = processText(enteredText);
+	const normalizedEnteredText: string = processText(enteredText);
 
-	return acceptedNames.some(
-		(name) => processText(name) === normalizedEnteredText
-	);
+	return acceptedNames.some((name: string): boolean => {
+		return processText(name) === normalizedEnteredText;
+	});
 }
 
 export function cameraFollowCountry(
@@ -251,20 +341,20 @@ export function cameraFollowCountry(
 function setCountryOfCA(
 	world: World,
 	countryAttribute: CountryAttribute,
-	index: number,
-	continentIndex: number,
-	state: string
+	indexCA: number,
+	state: string,
+	region: number
 ): void {
 	const locations: number[] = countryAttribute.locations;
-	locations.forEach((index: number) => {
-		const country = world.countryArray[index];
-		if (continentIndex !== -1 && country.location[0] !== continentIndex) {
+	locations.forEach((index: number): void => {
+		const country: Country = world.countryArray[index];
+		if (country.owned || (region !== 7 && country.location[0] !== region)) {
 			return;
 		}
 
-		world.triggerCountryAnimation(index, state, false);
+		world.triggerCountryAnimation(index, state, true);
 		world.setCountryVisibility(index, true);
-		changeCACell("missed", countryAttribute, index);
+		changeCACell("missed", countryAttribute, indexCA);
 	});
 }
 
@@ -272,11 +362,18 @@ export function handleGiveUp(
 	continentIndex: number,
 	timer: Timer,
 	isHard: boolean,
-	continent: string,
-	gameType: string
+	region: string,
+	gameType: string,
+	sequentialRandom: boolean
 ): void {
+	const chevrons: HTMLCollection =
+		document.getElementsByClassName("chevron") || [];
+
 	const answerContainer: HTMLDivElement = document.getElementById(
 		"answer-box-container"
+	) as HTMLDivElement;
+	const hintAnswerContainer: HTMLDivElement = document.getElementById(
+		"hint-answer-container"
 	) as HTMLDivElement;
 	const giveUp: HTMLButtonElement = document.getElementById(
 		"give-up-btn"
@@ -294,14 +391,18 @@ export function handleGiveUp(
 			timer,
 			isHard,
 			restartButton,
-			continent,
+			region,
 			gameType
 		);
 	};
-	console.log(pauseStart);
-	console.log(giveUp);
-	console.log(answerContainer);
-	changeElementsVisibility([pauseStart, giveUp, answerContainer], "hidden");
+	if (isHard) {
+		changeElementsVisibility([hintAnswerContainer], "visible");
+	}
+	const elements: HTMLElement[] = [pauseStart, giveUp, answerContainer];
+	for (let i = 0; i < chevrons.length; i++) {
+		elements.push(chevrons[i] as HTMLElement);
+	}
+	changeElementsVisibility(elements, "hidden");
 
 	toggleIsPlaying();
 	isControlsEnabled(true);
@@ -309,73 +410,91 @@ export function handleGiveUp(
 
 	const world: World = getWorld();
 
+	console.debug(`Giving up, cleaning for ${gameType}`);
+	const regionNumber: number = getRegionByNumber(region);
 	if (gameType === "currencies") {
-		const currencyArray = world.currencyArray;
-		currencyArray.forEach((currency: CountryAttribute, index: number) => {
-			if (currency.found) {
-				return;
+		const currencyArray: CountryAttribute[] = world.currencyArray;
+		currencyArray.forEach(
+			(currency: CountryAttribute, index: number): void => {
+				if (
+					currency.found ||
+					(regionNumber !== 7 &&
+						currency.region.includes(regionNumber))
+				) {
+					return;
+				}
+				setCountryOfCA(world, currency, index, "error", regionNumber);
 			}
-			setCountryOfCA(world, currency, index, continentIndex, "error");
-		});
+		);
+		return;
 	} else if (gameType === "languages") {
-		const languageArray = world.languageArray;
-		languageArray.forEach((language: CountryAttribute, index: number) => {
-			if (language.found) {
-				return;
-			}
-			changeCACell("missed", language, index);
+		const languageArray: CountryAttribute[] = world.languageArray;
+		languageArray.forEach(
+			(language: CountryAttribute, index: number): void => {
+				if (
+					language.found ||
+					(regionNumber !== 7 &&
+						language.region.includes(regionNumber))
+				) {
+					return;
+				}
 
-			setCountryOfCA(world, language, index, continentIndex, "error");
-		});
-	} else {
-		world.countryArray.forEach((country: Country, index: number): void => {
-			if (country.isFound || country.isOwned) {
-				return;
+				setCountryOfCA(world, language, index, "error", regionNumber);
 			}
-			const location: [number, number] = country.location;
-			if (!(continentIndex === -1 || location[0] === continentIndex)) {
-				return;
-			}
-			world.triggerCountryAnimation(
-				index,
-				gameType === "flags" ? gameType : "error",
-				true
-			);
-			world.setCountryVisibility(index, true);
-			changeCountryCellTo("missed", [index]);
-		});
+		);
+		return;
 	}
+	world.countryArray.forEach((country: Country, index: number): void => {
+		if (country.found || country.owned) {
+			return;
+		}
+		const location: [number, number] = country.location;
+		if (!(continentIndex === -1 || location[0] === continentIndex)) {
+			return;
+		}
+		world.setCountryAndConnectedVisibility(index, true);
+
+		world.triggerCountryAnimation(
+			index,
+			gameType === "flags" ? gameType : "error",
+			true
+		);
+		changeCountryCellTo("missed", [index]);
+	});
 }
 
 export function handlePauseStart(ongoing: boolean, timer: Timer): void {
+	const htmlElements: HTMLElement[] = [];
 	const stopStartButton: HTMLButtonElement = document.getElementById(
 		"quiz-stop-start"
 	) as HTMLButtonElement;
+	htmlElements.push(stopStartButton);
 	const answerContainer: HTMLDivElement = document.getElementById(
 		"answer-box-container"
 	) as HTMLDivElement;
+	htmlElements.push(answerContainer);
 	const giveUp: HTMLButtonElement = document.getElementById(
 		"give-up-btn"
 	) as HTMLButtonElement;
-	let counter: HTMLDivElement = document.getElementById(
-		"country-counter"
+	htmlElements.push(giveUp);
+	const counter: HTMLDivElement = document.getElementById(
+		"counter"
 	) as HTMLDivElement;
-	if (!counter) {
-		counter = document.getElementById("currency-counter") as HTMLDivElement;
-	}
-	if (!counter) {
-		counter = document.getElementById("language-counter") as HTMLDivElement;
-	}
+	htmlElements.push(counter);
 	const timerCell: HTMLDivElement = document.getElementById(
 		"timer"
 	) as HTMLDivElement;
+	htmlElements.push(timerCell);
+	const chevrons: HTMLCollectionOf<Element> =
+		document.getElementsByClassName("chevron");
+	for (let i: number = 0; i < chevrons.length; i++) {
+		const chevron: Element = chevrons[i];
+		htmlElements.push(chevron as HTMLElement);
+	}
 	timer.setTimerElement(timerCell);
 
-	const visible: "visible" | "hidden" = ongoing ? "visible" : "hidden";
-	changeElementsVisibility(
-		[answerContainer, timerCell, giveUp, counter],
-		visible
-	);
+	const visibility: "visible" | "hidden" = ongoing ? "visible" : "hidden";
+	changeElementsVisibility(htmlElements, visibility);
 
 	if (ongoing !== isPlaying()) {
 		toggleIsPlaying();
@@ -391,13 +510,16 @@ export function handlePauseStart(ongoing: boolean, timer: Timer): void {
 }
 
 export function restartQuiz(
-	continentIndex: number,
+	regionNumber: number,
 	timer: Timer,
 	isHard: boolean,
 	restartButton: HTMLButtonElement,
-	continent: string,
+	region: string,
 	gameType: string
 ): void {
+	const counter: HTMLDivElement = document.getElementById(
+		"counter"
+	) as HTMLDivElement;
 	const pauseStart: HTMLButtonElement = document.getElementById(
 		"quiz-stop-start"
 	) as HTMLButtonElement;
@@ -407,33 +529,26 @@ export function restartQuiz(
 		world.currencyArray.forEach((currency: CountryAttribute): void => {
 			currency.found = false;
 		});
-		let counter = document.getElementById(
-			"currency-counter"
-		) as HTMLDivElement;
 
 		counter.textContent =
-			"0\u00A0/\u00A0" + world.currencyArray.length + " guessed";
+			"0\u00A0/\u00A0" + currencyByRegion[regionNumber] + " guessed";
 	} else if (gameType === "languages") {
 		world.languageArray.forEach((language: CountryAttribute): void => {
 			language.found = false;
 		});
-		let counter = document.getElementById(
-			"language-counter"
-		) as HTMLDivElement;
-
+		changeCACells("invisible", "language");
 		counter.textContent =
-			"0\u00A0/\u00A0" + world.languageArray.length + " guessed";
+			"0\u00A0/\u00A0" + languageByRegion[regionNumber] + " guessed";
 	} else {
+		clearFlags();
+		populateFlags(regionNumber);
 		world.clearFound();
 
-		let counter: HTMLDivElement = document.getElementById(
-			"country-counter"
-		) as HTMLDivElement;
 		counter.textContent =
-			"0\u00A0/\u00A0" + countriesCountByRegion[continent] + " guessed";
+			"0\u00A0/\u00A0" + countriesCountByRegion[region] + " guessed";
 	}
 
-	setupModelForGame(isHard, continentIndex, gameType);
+	setupModelForGame(isHard, regionNumber, gameType);
 	timer.reset();
 	toggleIsPlaying();
 	handlePauseStart(false, timer);
@@ -441,13 +556,14 @@ export function restartQuiz(
 	restartButton.remove();
 }
 
-export function handleImageClick(event: MouseEvent) {
+export function handleImageClick(event: MouseEvent): void {
 	const imgElement = event.currentTarget as HTMLImageElement;
 
 	if (imgElement.classList.contains("selected")) {
 		imgElement.classList.remove("selected");
 	} else {
-		const previouslySelected = document.querySelector(".selected");
+		const previouslySelected: Element | null =
+			document.querySelector(".selected");
 		if (previouslySelected) {
 			previouslySelected.classList.remove("selected");
 		}
@@ -455,4 +571,4 @@ export function handleImageClick(event: MouseEvent) {
 	}
 }
 
-//TODO clear answer box function
+//TODO because of countries that are owned somehow going through

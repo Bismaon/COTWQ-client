@@ -38,7 +38,7 @@ const HardMode: React.FC = () => {
 						className="button grid-item"
 						onClick={() => handleNavigate("classic")}
 					>
-						{t("title")}
+						{t("classic")}
 					</button>
 					<button
 						className="button grid-item"

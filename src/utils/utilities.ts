@@ -2,11 +2,8 @@ import { getCamera } from "../camera/camera";
 import { getScene } from "../scene/sceneSetup";
 import {
 	Box3,
-	BufferGeometry,
 	Color,
 	Intersection,
-	Line,
-	LineBasicMaterial,
 	Material,
 	Mesh,
 	MeshStandardMaterial,
@@ -16,14 +13,17 @@ import {
 	Vector3,
 } from "three";
 import { getWorld } from "../scene/sceneManager";
+import { Country } from "../country/Country";
+import { World } from "../country/World";
 
 export function processText(name: string): string {
 	name = name
 		.toLowerCase()
 		.normalize("NFD") // Normalize to NFD form to separate accents
 		.replace(/[\u0300-\u036f]/g, "") // Remove diacritics (accents)
-		.replace(/\(.*?\)/g, "")
-		.replace(/\s+/g, "");
+		.replace(/\(.*?\)/g, "") // Remove text inside parentheses
+		.replace(/[-,.'"_]/g, "") // Remove hyphens, commas, periods, apostrophes, quotes, and underscores
+		.replace(/\s+/g, ""); // Remove all spaces
 	return name;
 }
 
@@ -31,36 +31,8 @@ export function getIntersect(mouseX: number, mouseY: number): Intersection[] {
 	const raycaster = new Raycaster();
 	const mouseVector = new Vector2(mouseX, mouseY);
 	raycaster.setFromCamera(mouseVector, getCamera());
-	//visualizeRay(raycaster)
+	// visualizeRay(raycaster)
 	return raycaster.intersectObjects(getScene().children, true);
-}
-
-function visualizeRay(raycaster: Raycaster, length: number = 100) {
-	const rayDirection = raycaster.ray.direction
-		.clone()
-		.normalize()
-		.multiplyScalar(length);
-	const rayOrigin = raycaster.ray.origin.clone();
-
-	// Create a geometry for the ray
-	const geometry = new BufferGeometry().setFromPoints([
-		rayOrigin,
-		rayOrigin.clone().add(rayDirection),
-	]);
-
-	// Create a line material
-	const material = new LineBasicMaterial({ color: 0xff0000 });
-
-	// Create the line
-	const line = new Line(geometry, material);
-
-	// Add the line to the scene
-	getScene().add(line);
-
-	// Optionally, remove the line after a short delay
-	setTimeout(() => {
-		getScene().remove(line);
-	}, 2000); // Remove after 2 seconds
 }
 
 export function isMesh(obj: any): obj is Mesh {
@@ -71,7 +43,7 @@ export function changeElementsVisibility(
 	elementArray: HTMLElement[],
 	visibility: "hidden" | "visible"
 ): void {
-	elementArray.forEach((element: HTMLElement) => {
+	elementArray.forEach((element: HTMLElement): void => {
 		element.style.visibility = visibility;
 	});
 }
@@ -83,6 +55,18 @@ export function getObjCenter(obj: Object3D): Vector3 {
 	return objCenter;
 }
 
+export function getCombinedCenter(objects: Object3D[]): Vector3 {
+	const combinedBox: Box3 = new Box3();
+
+	objects.forEach((obj: Object3D): void => {
+		combinedBox.expandByObject(obj);
+	});
+
+	const combinedCenter: Vector3 = new Vector3();
+	combinedBox.getCenter(combinedCenter);
+	return combinedCenter;
+}
+
 export function getGradientColor(percentage: number) {
 	let hue = (percentage / 100) * 120;
 	return `hsl(${hue}, 100%, 50%)`;
@@ -91,29 +75,39 @@ export function getGradientColor(percentage: number) {
 export function changeCountryOfCountryAttribute(
 	indexCA: number,
 	state: string,
-	type: string
+	type: string,
+	region: number
 ): void {
-	const world = getWorld();
+	const world: World = getWorld();
+	let countryAttribute;
 	switch (type) {
 		case "currency":
-			world.currencyArray[indexCA].locations.forEach((index: number) => {
-				world.countryArray[index].state = state;
-				world.triggerCountryAnimation(index, state, false);
-			});
+			countryAttribute = world.currencyArray[indexCA];
 			break;
 		case "language":
-			world.languageArray[indexCA].locations.forEach((index: number) => {
-				world.countryArray[index].state = state;
-				world.triggerCountryAnimation(index, state, false);
-			});
+			state = type;
+			countryAttribute = world.languageArray[indexCA];
 			break;
+		default:
+			return;
 	}
+	countryAttribute.locations.forEach((index: number): void => {
+		const country: Country = world.countryArray[index];
+		if (country.owned || (region !== 7 && country.location[0] !== region)) {
+			return;
+		}
+		country.state = state;
+		if (!country.visible) {
+			world.setCountryAndConnectedVisibility(index, true);
+		}
+		world.triggerCountryAnimation(index, state, false);
+	});
 }
 
 // Function to apply gradient color to a material
 export function makeMaterialWithGradient(percentage: number): Material {
 	// Get the color in HSL and convert it to a THREE.js color
-	const colorString = getGradientColor(percentage);
+	const colorString: string = getGradientColor(percentage);
 	const color = new Color(colorString);
 
 	// Create a material and set the color

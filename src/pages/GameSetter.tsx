@@ -26,14 +26,15 @@ const GameSetter: React.FC = () => {
 				? continentNames.indexOf(pathSegments[hasContinents + 1])
 				: -1;
 		const isHardMode: boolean = pathSegments.includes("hard");
-		const isClassic: boolean = pathSegments.includes("classic");
+		const sequentialRandom: boolean =
+			pathSegments.includes("sequential-random");
 		const gameMode: string = pathSegments[pathSegments.length - 1];
 		return (
 			<GlobalGameMode
 				hard={isHardMode}
 				continentIndex={continentIndex}
 				gameType={gameMode}
-				classic={isClassic}
+				sequentialRandom={sequentialRandom}
 			/>
 		);
 	}

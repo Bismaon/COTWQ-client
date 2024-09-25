@@ -18,12 +18,15 @@ export const countriesCountByRegion: { [region: string]: number } = {
 	south_america: 12,
 	all_regions: 191,
 };
+export const currencyByRegion: number[] = [41, 0, 46, 20, 16, 9, 12, 146];
+export const languageByRegion: number[] = [40, 0, 40, 41, 4, 13, 8, 136];
 
 export interface CountryAttribute {
 	type: string;
 	name: string;
 	locations: number[];
 	found: boolean;
+	region: number[];
 }
 
 /**
@@ -34,6 +37,7 @@ const continentPopulation: number[] = [56, 3, 51, 46, 34, 19, 15];
 export class World {
 	private readonly _continents: Object3D[];
 	private readonly _languageArray: CountryAttribute[];
+	private readonly _currencyArray: CountryAttribute[];
 
 	constructor() {
 		this._countriesFound = 0;
@@ -41,9 +45,29 @@ export class World {
 		this._continents = [];
 		this._currencyArray = [];
 		this._languageArray = [];
+		this._sequentialRandomArray = [];
+		this._sequentialRandomIndex = 0;
 	}
 
-	private _currencyArray: CountryAttribute[];
+	private _sequentialRandomArray: any[];
+
+	public get sequentialRandomArray(): any[] {
+		return this._sequentialRandomArray;
+	}
+
+	public set sequentialRandomArray(value: any[]) {
+		this._sequentialRandomArray = value;
+	}
+
+	private _sequentialRandomIndex: number;
+
+	public get sequentialRandomIndex(): number {
+		return this._sequentialRandomIndex;
+	}
+
+	public set sequentialRandomIndex(value: number) {
+		this._sequentialRandomIndex = value;
+	}
 
 	public get currencyArray(): CountryAttribute[] {
 		return this._currencyArray;
@@ -84,18 +108,15 @@ export class World {
 	public exists(name: string): number[] {
 		return this._countryArray
 			.map((obj: Country, index: number): number =>
-				obj.state === "unknown" &&
-				isAcceptedName(obj.acceptedNames, name)
-					? index
-					: -1
+				isAcceptedName(obj.acceptedNames, name) ? index : -1
 			)
 			.filter((index: number): boolean => index !== -1);
 	}
 
 	public clearFound(): void {
 		this._countryArray.forEach((country: Country): void => {
-			if (country.isFound) {
-				country.isFound = false;
+			if (country.found) {
+				country.found = false;
 			}
 		});
 		this._countriesFound = 0;
@@ -163,12 +184,12 @@ export class World {
 
 	public setCountryVisibility(index: number, visibility: boolean): void {
 		const country: Country = this._countryArray[index];
-		country.isVisible = visibility;
+		country.visible = visibility;
 	}
 
 	public applyFoundEffectsToCountry(index: number): void {
 		const mainCountry: Country = this._countryArray[index];
-		if (!mainCountry.isVisible) {
+		if (!mainCountry.visible) {
 			// Hard mode
 			this.setCountryAndConnectedVisibility(index, true);
 		}
@@ -180,8 +201,8 @@ export class World {
 
 	public setCountryIsFound(index: number, found: boolean): void {
 		const country: Country = this._countryArray[index];
-		country.isFound = found;
-		if (!country.isOwned) {
+		country.found = found;
+		if (!country.owned) {
 			this.incrementFound();
 		}
 	}
@@ -199,7 +220,7 @@ export class World {
 		gameType: string
 	): void {
 		this._countryArray.forEach((country: Country, index: number) => {
-			if (country.isOwned) {
+			if (country.owned) {
 				return;
 			}
 			if (
@@ -208,20 +229,20 @@ export class World {
 			) {
 				this.setCountryAndConnectedState(index, "unavailable");
 			} else {
+				if (gameType !== "currencies" && gameType !== "languages") {
+					changeCountryCellTo("invisible", [index]);
+				}
 				if (hard) {
 					this.setCountryAndConnectedVisibility(index, false);
 				}
 				this.setCountryAndConnectedState(index, "unknown");
-			}
-			if (gameType !== "currencies" && gameType !== "languages") {
-				changeCountryCellTo("invisible", [index]);
 			}
 		});
 	}
 
 	public resetCountries(): void {
 		this._countryArray.forEach((country: Country, index: number): void => {
-			if (country.isOwned) return;
+			if (country.owned) return;
 			this.setCountryAndConnectedVisibility(index, true);
 			this.setCountryAndConnectedState(index, "unknown");
 		});
@@ -232,46 +253,27 @@ export class World {
 		state: string,
 		complete: boolean
 	): void {
-		let percentage: number = 0;
-		let countriesIndex: number[];
-		if (complete) {
-			countriesIndex = this.getConnectedTerritories(index);
-		} else {
-			countriesIndex = [index];
-		}
-		countriesIndex.forEach((index: number): void => {
-			const country: Country = this._countryArray[index];
+		const countriesIndex: number[] = complete
+			? this.getConnectedTerritories(index)
+			: [index];
+
+		countriesIndex.forEach((countryIndex: number): void => {
+			const country: Country = this._countryArray[countryIndex];
 			const countryObj: Object3D = country.object;
 			const [orgPos, targetPos]: Vector3[] = getCountryMovement(
 				countryObj,
 				100
 			);
-			if (state === "languages") {
-				if (!country.languages) return;
-				country.languages.forEach((lang: string) => {
-					const langIndex = this._languageArray.findIndex(
-						(l: CountryAttribute) => {
-							return l.name === lang;
-						}
-					);
-					if (this._languageArray[langIndex].found) {
-						percentage++;
-					}
-				});
-				percentage = (percentage / country.languages.length) * 100;
-			}
-			bounceAnimation(countryObj, orgPos, targetPos, () => {
-				switch (state) {
-					case "flags":
-						this.setCountryFlag(index);
-						break;
-					case "languages":
-						country.material = makeMaterialWithGradient(percentage);
-						break;
-					default:
-						this.setCountryState(index, state);
-						break;
-				}
+
+			// If the state is 'languages', calculate the percentage of found languages.
+			const percentage: number =
+				state === "language"
+					? this.calculateLanguagePercentage(country)
+					: 0;
+
+			// Execute bounce animation, and apply the state-specific logic after completion.
+			bounceAnimation(countryObj, orgPos, targetPos, (): void => {
+				this.applyState(countryIndex, state, percentage);
 			});
 		});
 	}
@@ -279,13 +281,15 @@ export class World {
 	public addMissingCountryAttributeLong(
 		type: string,
 		attributeArray: any[],
-		location: [number, number]
+		location: [number, number],
+		owned: boolean
 	): void {
-		attributeArray.forEach((attributeName: any) => {
+		attributeArray.forEach((attributeName: any): void => {
 			this.addMissingCountryAttributeSingle(
 				type,
 				attributeName,
-				location
+				location,
+				owned
 			);
 		});
 	}
@@ -293,7 +297,8 @@ export class World {
 	public addMissingCountryAttributeSingle(
 		type: string,
 		attributeName: any,
-		location: [number, number]
+		location: [number, number],
+		owned: boolean
 	): void {
 		if (attributeName === "") {
 			return;
@@ -310,34 +315,45 @@ export class World {
 				console.error(`Country attribute of ${type} unknown.`);
 				return;
 		}
-		const attributeIndex = countryAttributes.findIndex(
-			(attribute: CountryAttribute) => {
+		const attributeIndex: number = countryAttributes.findIndex(
+			(attribute: CountryAttribute): boolean => {
 				return attribute.name === attributeName;
 			}
 		);
+		const countryIndex: number = this.getRealIndex(location);
+		const region: number[] = owned ? [7] : [location[0]];
+
 		if (attributeIndex === -1) {
+			if (region[0] !== 7) {
+				region.push(7);
+			}
 			countryAttributes.push({
 				type: type,
 				name: attributeName,
-				locations: [this.getRealIndex(location)],
+				locations: [countryIndex],
 				found: false,
+				region: region,
 			});
 		} else {
-			countryAttributes[attributeIndex].locations.push(
-				this.getRealIndex(location)
-			);
+			const countryAttribute: CountryAttribute =
+				countryAttributes[attributeIndex];
+			if (!countryAttribute.region.includes(region[0])) {
+				countryAttribute.region.push(region[0]);
+			}
+
+			countryAttribute.locations.push(this.getRealIndex(location));
 		}
 	}
 
-	public allCountryAttributeFound(type: string): boolean {
+	public allCountryAttributeFound(type: string, region: number): boolean {
 		switch (type) {
 			case "currency":
 				return (
-					this.getFoundCA(type).length === this._currencyArray.length
+					this.getFoundCA(type).length === currencyByRegion[region]
 				);
 			case "language":
 				return (
-					this.getFoundCA(type).length === this._currencyArray.length
+					this.getFoundCA(type).length === languageByRegion[region]
 				);
 			default:
 				console.error(`Country attribute of type ${type} unknown.`);
@@ -365,6 +381,50 @@ export class World {
 			default:
 				console.error(`Country attribute of type ${type} unknown.`);
 				return [];
+		}
+	}
+
+	public nextInSeqArr(): void {
+		this._sequentialRandomIndex =
+			(this.sequentialRandomIndex + 1) %
+			this._sequentialRandomArray.length;
+	}
+
+	public prevInSeqArr(): void {
+		this._sequentialRandomIndex =
+			(this.sequentialRandomIndex -
+				1 +
+				this._sequentialRandomArray.length) %
+			this._sequentialRandomArray.length;
+	}
+
+	// Helper method to calculate the percentage of found languages
+	private calculateLanguagePercentage(country: Country): number {
+		if (!country.languages) return 0;
+
+		const foundLanguages: number = country.languages.filter(
+			(lang: string) =>
+				this._languageArray.find(
+					(l: CountryAttribute): boolean => l.name === lang && l.found
+				)
+		).length;
+
+		return (foundLanguages / country.languages.length) * 100;
+	}
+
+	// Helper method to apply state logic after animation
+	private applyState(index: number, state: string, percentage: number): void {
+		switch (state) {
+			case "flags":
+				this.setCountryFlag(index);
+				break;
+			case "language":
+				this._countryArray[index].material =
+					makeMaterialWithGradient(percentage);
+				break;
+			default:
+				this.setCountryState(index, state);
+				break;
 		}
 	}
 

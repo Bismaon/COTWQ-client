@@ -1,30 +1,83 @@
-/* Quiz Control styling */
+/* Global Grid Layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15%, 1fr));
+    gap: 5%;
+    margin: 20px;
+}
+
+.grid-table-item {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+}
+.cell{
+    border-left: 1px solid white;
+
+}
+.grid-table-item td,
+.grid-table-item th {
+    padding: 0;
+    border-spacing: 0;
+    margin: 0;
+    height: 100%; /* Ensure cells take full height */
+    vertical-align: top; /* Ensure vertical alignment */
+    word-wrap: break-word;
+}
+
+.grid-table-item tr {
+    border: 1px solid white;
+    height: 100%; /* Ensure rows take full height */
+}
+
+.grid-table-item .cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: auto;
+    min-height: auto;
+    max-height: 150px;
+    max-width: 200px;
+}
+
+.grid-table-item .table-title {
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    background-color: #f0f0f0;
+    color: #000;
+}
+
+/* Quiz Control Styling */
 #quiz-controls {
     grid-row: 1;
-    grid-column: 3/6;
+    grid-column: 3 / 6;
 }
 
 #quiz-options {
     grid-row: 1;
-    grid-column: 6/8;
+    grid-column: 6 / 8;
 }
 
 #quiz-items {
-    grid-row: 2/6;
-    grid-column: 6/8;
+    grid-row: 2 / 6;
+    grid-column: 6 / 8;
 }
 
 #empty {
-    grid-column: 1/3;
-    grid-row: 2/7;
+    grid-column: 1 / 3;
+    grid-row: 2 / 7;
 }
 
-
+/* Quiz Grid */
 .quiz-grid-container {
     display: grid;
     max-height: 118px;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 1fr); /* Adjust rows as needed */
+    grid-template-rows: repeat(2, 1fr);
 }
 
 .quiz-grid-item {
@@ -39,7 +92,7 @@
 }
 
 #quiz-stop-start {
-    grid-row: 1/3;
+    grid-row: 1 / 3;
     grid-column: 2;
     height: auto;
     width: auto;
@@ -66,11 +119,12 @@
     width: auto;
 }
 
+/* Answer Box */
 #answer-box-container {
     visibility: hidden;
     text-align: left;
     grid-row: 1;
-    grid-column: 3/6;
+    grid-column: 3 / 6;
 }
 
 #answer-box-input {
@@ -81,37 +135,101 @@
     color: #f0f0f0;
 }
 
-#country-counter {
+/* Counter */
+#counter {
     visibility: hidden;
     text-align: left;
     grid-row: 2;
-    grid-column: 3/5;
+    grid-column: 3 / 5;
     color: #f0f0f0;
     margin: 0;
 }
 
-#checkbox-container {
-    color: #f0f0f0;
-}
-
+/* Checkbox & Country Name */
+#checkbox-container,
 #country-name-container {
     color: #f0f0f0;
 }
 
-#currency-counter {
-    visibility: hidden;
-    text-align: left;
-    grid-row: 2;
-    grid-column: 3/5;
-    color: #f0f0f0;
-    margin: 0;
+/* Hint Answer Container */
+.cell.found {
+    color: #66ff66;
 }
 
-#language-counter {
+.cell.missed {
+    color: #ff6666;
+}
+
+img.cell.invisible{
     visibility: hidden;
-    text-align: left;
-    grid-row: 2;
-    grid-column: 3/5;
+}
+.cell.invisible {
+    color: rgba(0, 0, 0, 0);
+    user-select: none;
+}
+.cell-text {
+    background-color: transparent;
+    padding: 5px;
+    text-align: center;
     color: #f0f0f0;
-    margin: 0;
+    min-width: fit-content;
+    min-height: fit-content;
+}
+/* Continent Section */
+#hint-answer {
+    grid-row: 6 / auto;
+    grid-column: 1 / 8;
+}
+
+/* Continent Table Styling */
+.table-title#africa {
+    background-color: #ef0d0d;
+    color: #fff;
+    border-color: #ef0d0d !important;
+}
+
+.table-title#north_america {
+    background-color: #ef790d;
+    color: #fff;
+    border-color: #ef790d !important;
+}
+
+.table-title#south_america {
+    background-color: #15b42f;
+    color: #fff;
+    border-color: #15b42f !important;
+}
+
+.table-title#asia {
+    background-color: #a60def;
+    color: #fff;
+    border-color: #a60def !important;
+}
+
+.table-title#oceania {
+    background-color: #d0b111;
+    color: #fff;
+    border-color: #d0b111 !important;
+}
+
+.table-title#europe {
+    background-color: #0d75ef;
+    color: #fff;
+    border-color: #0d75ef !important;
+}
+
+/* Empty Space */
+#empty-space {
+    user-select: none;
+    color: transparent;
+    padding: 5px;
+    visibility: hidden;
+}
+
+.chevron{
+    visibility: hidden;
+    border: 1px solid white;
+    color: #f9f9f9;
+    padding: 5px;
+    border-radius: 3px;
 }

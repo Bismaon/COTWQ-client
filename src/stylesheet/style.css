@@ -1,4 +1,4 @@
-/* style.css */
+/* Global styles */
 * {
     font-family: Arial, Helvetica, monospace;
     text-rendering: optimizeLegibility;
@@ -57,17 +57,16 @@ body {
     max-height: 125px;
     text-align: center;
     padding: 20px;
-    /*border: 2px solid white; !*Border for isVisible*!*/
 }
 
 .grid-item.button {
-    grid-column: 1/span 2;
+    grid-column: 1 / span 2;
 }
 
-/* Title section */
+/* Titles and headings */
 #title {
     grid-row: 1;
-    grid-column: 3/span 3;
+    grid-column: 3 / span 3;
 }
 
 #back {
@@ -119,7 +118,7 @@ h2 {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, 1fr);
     gap: 10px;
-    max-height: calc(4 * 100px + 3 * 10px); /* Adjust based on your design */
+    max-height: calc(4 * 100px + 3 * 10px);
     overflow-y: auto;
     padding: 10px;
     align-items: center;
@@ -136,20 +135,20 @@ h2 {
     height: auto;
     max-width: 100%;
     display: block;
-    cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
-    transition: outline 0.3s ease; /* Smooth transition for outline */
+    cursor: pointer;
+    transition: outline 0.3s ease;
     outline: 3px solid transparent;
 }
 
-/* Style for the selected image */
 .grid-item-list-container img.selected {
-    outline: 3px solid #08f; /* Blue outline for the selected image */
+    outline: 3px solid #08f;
 }
 
 footer#footer {
-    grid-column: 1/ -1;
+    grid-column: 1 / -1;
 }
 
+/* Settings Box */
 #settings-box {
     width: 100%;
     max-height: fit-content;
@@ -188,130 +187,4 @@ footer#footer {
     grid-row: -2;
     max-height: fit-content;
     min-height: fit-content;
-}
-
-.grid-currency-item {
-    border-collapse: collapse;
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-/* Remove default padding and spacing */
-.grid-currency-item td, .grid-currency-item th {
-    height: 100%;
-    padding: 0;
-    border-spacing: 0;
-    margin: 0;
-}
-
-/* Style for each country row */
-.grid-currency-item tr {
-    border: 1px solid white;
-}
-
-.grid-currency-item .cell {
-    height: 100%; /* Ensure the div takes full height of the cell */
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    width: 100%; /* Ensure it takes full width of the cell */
-}
-
-.grid-currency-item .currency-title {
-    font-weight: bold;
-    text-align: center;
-    padding: 5px;
-    background-color: #f0f0f0;
-    color: #000000;
-}
-
-.grid-currency {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15%, 1fr));
-    gap: 5%;
-    margin: 20px;
-}
-
-.cell-text {
-    border-left: 1px solid white; /* Optional: border only on the right */
-
-    background-color: transparent;
-    padding: 5px;
-    text-align: center;
-    color: #f0f0f0;
-    min-width: fit-content;
-    min-height: fit-content;
-}
-
-table {
-    table-layout: fixed; /* Ensures that the table respects cell height */
-    width: 100%; /* Optional: Ensure table takes the full width */
-}
-
-#currency-continent {
-    grid-row: 6/auto;
-    grid-column: 1/8;
-}
-
-#language-continent {
-    grid-row: 6/auto;
-    grid-column: 1/8;
-}
-
-.grid-language-item {
-    border-collapse: collapse;
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-/* Remove default padding and spacing */
-.grid-language-item td, .grid-language-item th {
-    height: 100%;
-    padding: 0;
-    border-spacing: 0;
-    margin: 0;
-}
-
-/* Style for each country row */
-.grid-language-item tr {
-    border: 1px solid white;
-}
-
-.grid-language-item .cell {
-    height: 100%; /* Ensure the div takes full height of the cell */
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    width: 100%; /* Ensure it takes full width of the cell */
-}
-
-.grid-language-item .language-title {
-    font-weight: bold;
-    text-align: center;
-    padding: 5px;
-    background-color: #f0f0f0;
-    color: #000000;
-}
-
-.grid-language {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15%, 1fr));
-    gap: 5%;
-    margin: 20px;
-}
-
-#country-continent-name-container .found {
-    color: #66FF66;
-}
-
-#country-continent-name-container .missed {
-    color: #FF6666;
-}
-
-/* Optional: Hide cells with specific class if needed */
-#country-continent-name-container .invisible {
-    color: rgba(0, 0, 0, 0);
-    user-select: none;
 }

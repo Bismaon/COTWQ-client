@@ -47,6 +47,6 @@ export function isValidObject(intersectedObject: Object3D): [boolean, string] {
 
 	const country: Country = getWorld().getCountryByObject(countryObj);
 	const validity =
-		country.isFound || (!isPlaying() && country.state === "error");
+		country.found || (!isPlaying() && country.state === "error");
 	return [validity, country.name];
 }

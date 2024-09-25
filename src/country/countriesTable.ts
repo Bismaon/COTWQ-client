@@ -5,6 +5,7 @@ import { Country } from "./Country";
 import { getWorld } from "../scene/sceneManager";
 import { handleImageClick } from "../controls/inputHandlers";
 import { TFunction } from "i18next";
+import { Simulate } from "react-dom/test-utils";
 
 /** Represents the number of countries in each continent for table layout purposes. */
 const continentCountryCounts: [56, 3, 51, 46, 34, 19, 15] = [
@@ -32,82 +33,6 @@ const continentFormattedNames: string[] = [
 	"South America",
 ];
 
-/**
- * Creates and populates separate tables for each continent.
- * Each table starts with the continent name, followed by the countries within that continent.
- *
- * @returns {void}
- */
-export function createTable(): void {
-	// Retrieve the World object, which contains country data.
-	const countries: World = getWorld();
-
-	// Reference to the container div where the tables will be placed.
-	const container: HTMLTableElement = document.getElementById(
-		"country-continent-name-container"
-	) as HTMLTableElement;
-
-	// Iterate over each continent to create a separate table.
-	continentNames.forEach((continent: string, index: number): void => {
-		// Skip "Antarctic" as per requirements.
-		if (continent === "antarctic" || continent === "south_america") return;
-
-		// Create a new table element for the current continent.
-		const table: HTMLTableElement = document.createElement("table");
-		table.className = "grid-continent-item";
-		table.ariaColSpan = "1";
-
-		// Create the table body.
-		const tableBody: HTMLTableSectionElement = table.createTBody();
-
-		// Add the continent name as the first row.
-		const continentRow: HTMLTableRowElement = tableBody.insertRow();
-		const continentCell: HTMLTableCellElement = continentRow.insertCell();
-		continentCell.colSpan = 1; // Ensuring the cell takes full width of the column.
-		continentCell.innerHTML = `<div class="continent-name" id=${continent.toLowerCase()}>${continentFormattedNames[index]}</div>`;
-
-		// Add the countries as subsequent rows.
-		for (let i: number = 0; i < continentCountryCounts[index]; i++) {
-			const country: Country = countries.getCountryByLocation([index, i]);
-			if (country.isOwned) continue;
-			const row: HTMLTableRowElement = tableBody.insertRow();
-			const cell: HTMLTableCellElement = row.insertCell();
-			cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.name}</div>`;
-		}
-
-		// Append the table to the container div.
-		container.appendChild(table);
-		if (continent === "oceania") {
-			index++; // South America
-			continent = continentNames[index];
-			// Add the continent name as the first row.
-
-			const emptyRow: HTMLTableRowElement = tableBody.insertRow();
-			const emptyCell: HTMLTableCellElement = emptyRow.insertCell();
-			emptyCell.colSpan = 1;
-			emptyCell.innerHTML = "<div id='empty-space'>EMPTY</div>";
-
-			const continentRow: HTMLTableRowElement = tableBody.insertRow();
-			const continentCell: HTMLTableCellElement =
-				continentRow.insertCell();
-			continentCell.colSpan = 1; // Ensuring the cell takes full width of the column.
-			continentCell.innerHTML = `<div class="continent-name" id=${continent.toLowerCase()}>${continentFormattedNames[index]}</div>`;
-
-			// Add the countries as subsequent rows.
-			for (let i: number = 0; i < continentCountryCounts[index]; i++) {
-				const country: Country = countries.getCountryByLocation([
-					index,
-					i,
-				]);
-				if (country.isOwned) continue;
-				const row: HTMLTableRowElement = tableBody.insertRow();
-				const cell: HTMLTableCellElement = row.insertCell();
-				cell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.name}</div>`;
-			}
-		}
-	});
-}
-
 export function changeCountryCellTo(
 	state: "found" | "missed" | "invisible",
 	countryIndex: number[]
@@ -116,21 +41,14 @@ export function changeCountryCellTo(
 		const countryElement: Country = getWorld().countryArray[index];
 		const [continent, country] = countryElement.location;
 		if (continent === 1) {
-			console.debug("No antarctic!");
 			return;
 		}
 
-		// Retrieve the container element where the tables are appended
-		const container: HTMLTableElement = document.getElementById(
-			"country-continent-name-container"
-		) as HTMLTableElement;
-
 		// Find the cell with the specific index in the table
-		const cell: HTMLTableCellElement | null = container.querySelector(
-			`div#_${continent}_${country}`
+		const cell: HTMLElement | null = document.getElementById(
+			`_${continent}_${country}`
 		);
 
-		// console.log(cell);
 		if (!cell) {
 			console.error(
 				`Cell with index _${continent}_${country} not found.`
@@ -143,32 +61,42 @@ export function changeCountryCellTo(
 	});
 }
 
-function randomizedCountries(
+export function shuffleArray(array: any[]): any[] {
+	const copiedArray: any[] = array.slice();
+	for (let i: number = array.length - 1; i > 0; i--) {
+		const j: number = Math.floor(Math.random() * (i + 1));
+		[copiedArray[i], copiedArray[j]] = [copiedArray[j], copiedArray[i]];
+	}
+	return copiedArray;
+}
+
+export function randomizedCountries(
 	countries: Country[],
-	continentIndex: number | undefined
+	continentIndex: number
 ): Country[] {
 	const filteredCountries: Country[] = countries.filter(
-		(country: Country) => {
-			if (country.isOwned) return false; // skip if the country is not independent
+		(country: Country): boolean => {
+			if (country.owned) return false; // skip if the country is not independent
 			if (country.name === "Antarctica") return false; // skip Antarctica
-			if (continentIndex && country.location[0] !== continentIndex)
+			if (continentIndex !== -1 && country.location[0] !== continentIndex)
 				return false; // skip if the country is not in the wanted continent
 			return true;
 		}
 	);
-
 	// Shuffle the filteredCountries array
-	for (let i = filteredCountries.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[filteredCountries[i], filteredCountries[j]] = [
-			filteredCountries[j],
-			filteredCountries[i],
-		];
-	}
-	return filteredCountries;
+	return shuffleArray(filteredCountries);
 }
 
-export function populateFlags(continentIndex?: number): void {
+export function clearFlags(): void {
+	const flagContainer: HTMLElement | null =
+		document.getElementById("item-list");
+	if (!flagContainer) {
+		return;
+	}
+	flagContainer.innerHTML = ""; // Clears all children
+}
+
+export function populateFlags(continentIndex: number): void {
 	const flagContainer: HTMLElement | null =
 		document.getElementById("item-list");
 	if (!flagContainer) {
@@ -177,7 +105,11 @@ export function populateFlags(continentIndex?: number): void {
 
 	// Get the countries and shuffle them
 	const countries: Country[] = getWorld().countryArray;
-	const filteredCountries = randomizedCountries(countries, continentIndex);
+	const filteredCountries: Country[] = randomizedCountries(
+		countries,
+		continentIndex
+	);
+	console.log("Filtered countries: ", filteredCountries);
 
 	// Base URL for flag images
 	const baseURL = `${process.env.PUBLIC_URL}/assets/svg/flags/`;
@@ -203,72 +135,6 @@ export function populateFlags(continentIndex?: number): void {
 	}
 }
 
-export function createCurrencyTable(
-	t: TFunction<"translation", undefined>
-): void {
-	// Retrieve the World object, which contains country data.
-	const world: World = getWorld();
-	// Reference to the container div where the tables will be placed.
-	const container: HTMLTableElement = document.getElementById(
-		"country-continent-name-container"
-	) as HTMLTableElement;
-
-	let table: HTMLTableElement = document.createElement("table");
-	table.className = "grid-currency-item";
-	table.ariaColSpan = "1";
-
-	// Create the table body.
-	let tableBody: HTMLTableSectionElement = table.createTBody();
-
-	// Add the continent name as the first row.
-	const titleRow: HTMLTableRowElement = tableBody.insertRow();
-	const titleCell: HTMLTableCellElement = titleRow.insertCell();
-	titleCell.colSpan = 2; // Ensuring the cell takes full width of the column.
-	titleCell.innerHTML =
-		`<div class="currency-title">` + t("currency") + `</div>`;
-	let countryPerColumn = 0;
-	world.currencyArray.forEach(
-		(currency: CountryAttribute, index: number): void => {
-			const locations = currency.locations;
-			if ((countryPerColumn + locations.length) % 26 === 1) {
-				console.log("Currency: ", currency.name);
-				table = document.createElement("table");
-				table.className = "grid-currency-item";
-				table.ariaColSpan = "1";
-				tableBody = table.createTBody();
-
-				const titleRow: HTMLTableRowElement = tableBody.insertRow();
-				const titleCell: HTMLTableCellElement = titleRow.insertCell();
-				titleCell.colSpan = 2; // Ensuring the cell takes full width of the column.
-				titleCell.innerHTML =
-					`<div class="currency-title">` + t("currency") + `</div>`;
-				container.appendChild(table);
-				countryPerColumn = 0;
-			}
-
-			// Insert the first row with the currency name and the first country
-			const firstRow: HTMLTableRowElement = tableBody.insertRow();
-			const currencyCell: HTMLTableCellElement = firstRow.insertCell();
-			currencyCell.rowSpan = locations.length; // Span across the number of locations
-			currencyCell.innerHTML = `<div class="cell" id="${currency.name}">${currency.name}</div>`;
-
-			const firstCountryCell: HTMLTableCellElement =
-				firstRow.insertCell();
-			firstCountryCell.innerHTML = `<div class="cell-text">${world.countryArray[locations[0]].name}</div>`;
-
-			// Insert additional rows for the remaining countries
-			for (let i = 1; i < locations.length; i++) {
-				const row: HTMLTableRowElement = tableBody.insertRow();
-				const countryCell: HTMLTableCellElement = row.insertCell();
-				countryCell.innerHTML = `<div class="cell-text">${world.countryArray[locations[i]].name}</div>`;
-			}
-			countryPerColumn += locations.length;
-		}
-	);
-
-	container.appendChild(table);
-}
-
 export function changeCACells(
 	state: "found" | "missed" | "invisible",
 	type: string
@@ -277,16 +143,20 @@ export function changeCACells(
 		case "currency":
 			const currencyArray: CountryAttribute[] = getWorld().currencyArray;
 
-			currencyArray.forEach((currency: CountryAttribute, index): void => {
-				changeCACell(state, currency, index);
-			});
+			for (let i: number = 0; i < currencyArray.length; i++) {
+				const currency: CountryAttribute = currencyArray[i];
+
+				changeCACell(state, currency, i);
+			}
 			break;
 		case "language":
 			const languageArray: CountryAttribute[] = getWorld().languageArray;
 
-			languageArray.forEach((language: CountryAttribute, index): void => {
-				changeCACell(state, language, index);
-			});
+			languageArray.forEach(
+				(language: CountryAttribute, index: number): void => {
+					changeCACell(state, language, index);
+				}
+			);
 			break;
 		default:
 			console.error(`Country attribute of type ${type} unknown`);
@@ -298,116 +168,147 @@ export function changeCACell(
 	countryAttribute: CountryAttribute,
 	index: number
 ): void {
+	let cells;
 	// Find the cell with the specific index in the table
 	switch (countryAttribute.type) {
 		case "currency":
-			const cell = document.getElementById(countryAttribute.name);
-			// console.log(cell);
-			if (!cell) {
-				console.error(
-					`Cell with ID ${countryAttribute.name} not found.`
-				);
+			cells = document.getElementsByClassName(`_${index}`);
+
+			if (!cells) {
+				console.error(`Cell with ID ${index} not found.`);
 				return;
 			}
 
 			// Change the cell's class based on the state
-			cell.className = `cell ${state}`;
+			for (let i: number = 0; i < cells.length; i++) {
+				const cell: Element = cells[i];
+				cell.className = `cell _${index} ${state}`;
+			}
+
 			break;
 		case "language":
-			const cells = document.getElementsByClassName(`_${index}`);
-			console.log(cells);
+			cells = document.getElementsByClassName(`_${index}`);
 			if (!cells) {
-				console.error(`Cell with index ${index} not found.`);
+				console.error(`Cell with index _${index} not found.`);
 				return;
 			}
 
-			for (let i = 0; i < cells.length; i++) {
-				const cell = cells[i];
+			for (let i: number = 0; i < cells.length; i++) {
+				const cell: Element = cells[i];
 				cell.className = `cell _${index} ${state}`;
 			}
 			break;
 		default:
-			console.log(
+			console.error(
 				`Country attribute of type ${countryAttribute.type} unknown`
 			);
 			return;
 	}
 }
 
-export function createLanguageTable(
-	t: TFunction<"translation", undefined>
-): void {
-	// Retrieve the World object, which contains country data.
+export function createTableFromType(
+	type: string,
+	t: TFunction<"translation">,
+	region: string,
+	hard: boolean
+) {
 	const world: World = getWorld();
-	// Reference to the container div where the tables will be placed.
+
 	const container: HTMLTableElement = document.getElementById(
-		"country-continent-name-container"
+		"hint-answer-container"
 	) as HTMLTableElement;
 
-	let table: HTMLTableElement = document.createElement("table");
-	table.className = "grid-language-item";
-	table.ariaColSpan = "1";
+	if (hard) {
+		container.style.visibility = "hidden";
+	}
+	continentNames.forEach((continent: string, index: number): void => {
+		if (
+			continent === "antarctic" ||
+			(region !== "all_regions" && continent !== region)
+		)
+			return;
 
-	// Create the table body.
-	let tableBody: HTMLTableSectionElement = table.createTBody();
+		// Create a new table element for the current continent.
+		const table: HTMLTableElement = document.createElement("table");
+		table.className = "grid-table-item";
+		table.ariaColSpan = "1";
 
-	// Add the table title as the first row.
-	const titleRow: HTMLTableRowElement = tableBody.insertRow();
-	const titleCell: HTMLTableCellElement = titleRow.insertCell();
-	titleCell.colSpan = 2; // Ensuring the cell takes full width of the column.
-	titleCell.innerHTML =
-		`<div class="language-title">` + t("language") + `</div>`;
+		// Create the table body.
+		const tableBody: HTMLTableSectionElement = table.createTBody();
 
-	let languagePerColumn = 0;
+		// Add the continent name as the first row.
+		const continentRow: HTMLTableRowElement = tableBody.insertRow();
+		const continentCell: HTMLTableCellElement = continentRow.insertCell();
+		continentCell.colSpan = 2; // Ensuring the cell takes full width of the column.
+		continentCell.innerHTML = `<div class="table-title" id=${continent.toLowerCase()}>${continentFormattedNames[index]}</div>`;
 
-	world.countryArray.forEach((country: Country): void => {
-		const languages = country.languages;
-		if (!languages || languages.length === 0) return;
-
-		// Add a new table every 10 languages to avoid overflow
-		languagePerColumn += languages.length;
-
-		if (languagePerColumn >= 50) {
-			table = document.createElement("table");
-			table.className = "grid-language-item";
-			table.ariaColSpan = "1";
-			tableBody = table.createTBody();
-
-			const titleRow: HTMLTableRowElement = tableBody.insertRow();
-			const titleCell: HTMLTableCellElement = titleRow.insertCell();
-			titleCell.colSpan = 2; // Ensuring the cell takes full width of the column.
-			titleCell.innerHTML =
-				`<div class="language-title">` + t("language") + `</div>`;
-			container.appendChild(table);
-			languagePerColumn = 0;
-		}
-
-		// Insert the first row with the country name and the first language
-		const firstRow: HTMLTableRowElement = tableBody.insertRow();
-
-		const countryCell: HTMLTableCellElement = firstRow.insertCell();
-		countryCell.innerHTML = `<div class="cell-text">${country.name}</div>`;
-		countryCell.rowSpan = languages.length; // Span for the number of languages
-
-		// Insert the first language into the same row
-		const firstLanguageCell: HTMLTableCellElement = firstRow.insertCell();
-		firstLanguageCell.innerHTML = `<div class="cell _${world.languageArray.findIndex(
-			(l: CountryAttribute) => {
-				return l.name === languages[0];
+		// Add the countries as subsequent rows.
+		for (let i: number = 0; i < continentCountryCounts[index]; i++) {
+			const country: Country = world.getCountryByLocation([index, i]);
+			const languages: string[] | null = country.languages;
+			const currency: string | null = country.currency;
+			if (country.owned || !languages || !currency) {
+				continue;
 			}
-		)}">${languages[0]}</div>`;
+			const countryRow: HTMLTableRowElement = tableBody.insertRow();
+			const countryCell: HTMLTableCellElement = countryRow.insertCell();
+			if (type === "names") {
+				countryCell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.name}</div>`;
+			} else {
+				countryCell.innerHTML = `<div class="cell-text">${country.name}</div>`;
+			}
 
-		// Insert additional rows for the remaining languages
-		for (let i = 1; i < languages.length; i++) {
-			const languageRow: HTMLTableRowElement = tableBody.insertRow();
-			const languageCell: HTMLTableCellElement = languageRow.insertCell();
-			languageCell.innerHTML = `<div class="cell _${world.languageArray.findIndex(
-				(l: CountryAttribute) => {
-					return l.name === languages[i];
-				}
-			)}">${languages[i]}</div>`;
+			// contains language|currency|capital
+			let infoCell: HTMLTableCellElement;
+			switch (type) {
+				case "flags":
+					infoCell = countryRow.insertCell();
+					// Base URL for flag images
+					const baseURL = `${process.env.PUBLIC_URL}/assets/svg/flags/`;
+					const flagURL: string = baseURL + country.svgFlag;
+
+					infoCell.innerHTML = `<img src="${flagURL}" class="cell invisible" id="_${index}_${i}" alt="${country.location[0]}_${country.location[1]}"/>`;
+					break;
+				case "languages":
+					countryCell.rowSpan = languages.length;
+					// same row level as the country name row
+					infoCell = countryRow.insertCell();
+					infoCell.innerHTML = `<div class="cell _${world.languageArray.findIndex(
+						(lang: CountryAttribute) => {
+							return lang.name === languages[0];
+						}
+					)} invisible">${languages[0]}</div>`;
+
+					for (let i = 1; i < languages.length; i++) {
+						const languageRow: HTMLTableRowElement =
+							tableBody.insertRow();
+						const languageCell: HTMLTableCellElement =
+							languageRow.insertCell();
+						languageCell.innerHTML = `<div class="cell _${world.languageArray.findIndex(
+							(lang: CountryAttribute) => {
+								return lang.name === languages[i];
+							}
+						)} invisible">${languages[i]}</div>`;
+					}
+					break;
+				case "capitals":
+					infoCell = countryRow.insertCell();
+					infoCell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.capital}</div>`;
+					break;
+				case "currencies":
+					infoCell = countryRow.insertCell();
+					infoCell.innerHTML = `<div class="cell _${world.currencyArray.findIndex(
+						(curr: CountryAttribute) => {
+							return curr.name === currency;
+						}
+					)}">${currency}</div>`;
+					break;
+				default:
+					break;
+			}
 		}
-	});
 
-	container.appendChild(table);
+		// Append the table to the container div.
+		container.appendChild(table);
+	});
 }
