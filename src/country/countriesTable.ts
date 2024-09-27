@@ -5,7 +5,6 @@ import { Country } from "./Country";
 import { getWorld } from "../scene/sceneManager";
 import { handleImageClick } from "../controls/inputHandlers";
 import { TFunction } from "i18next";
-import { Simulate } from "react-dom/test-utils";
 
 /** Represents the number of countries in each continent for table layout purposes. */
 const continentCountryCounts: [56, 3, 51, 46, 34, 19, 15] = [

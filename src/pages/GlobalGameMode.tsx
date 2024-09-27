@@ -145,6 +145,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 	}, [
 		continentIndex,
 		gameType,
+		getCenterCA,
 		hard,
 		isModelLoaded,
 		region,
@@ -167,7 +168,6 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				counterValue = countriesCountByRegion[region];
 				break;
 		}
-		console.log("Counter value: ", counterValue);
 		return counterValue;
 	}
 

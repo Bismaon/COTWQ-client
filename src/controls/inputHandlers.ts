@@ -399,7 +399,7 @@ export function handleGiveUp(
 		changeElementsVisibility([hintAnswerContainer], "visible");
 	}
 	const elements: HTMLElement[] = [pauseStart, giveUp, answerContainer];
-	for (let i = 0; i < chevrons.length; i++) {
+	for (let i: number = 0; i < chevrons.length; i++) {
 		elements.push(chevrons[i] as HTMLElement);
 	}
 	changeElementsVisibility(elements, "hidden");
@@ -468,7 +468,6 @@ export function handlePauseStart(ongoing: boolean, timer: Timer): void {
 	const stopStartButton: HTMLButtonElement = document.getElementById(
 		"quiz-stop-start"
 	) as HTMLButtonElement;
-	htmlElements.push(stopStartButton);
 	const answerContainer: HTMLDivElement = document.getElementById(
 		"answer-box-container"
 	) as HTMLDivElement;
