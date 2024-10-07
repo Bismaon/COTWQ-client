@@ -14,7 +14,7 @@ import {
 } from "three";
 import { getWorld } from "../scene/sceneManager";
 import { Country } from "../country/Country";
-import { World } from "../country/World";
+import { CountryAttribute, World } from "../country/World";
 
 export function processText(name: string): string {
 	name = name
@@ -64,6 +64,18 @@ export function getCombinedCenter(objects: Object3D[]): Vector3 {
 
 	const combinedCenter: Vector3 = new Vector3();
 	combinedBox.getCenter(combinedCenter);
+	const distanceFromCenter = combinedCenter.length();
+	console.log("Before fix: ", combinedCenter);
+	if (distanceFromCenter < 70) {
+		if (distanceFromCenter === 0) {
+			combinedCenter.set(1, 0, 0);
+		}
+		const directionToCenter: Vector3 = combinedCenter.clone().normalize();
+		const newCameraPosition: Vector3 = directionToCenter.multiplyScalar(70);
+
+		combinedCenter.copy(newCameraPosition);
+	} //min distance to center
+	console.log("After fix: ", combinedCenter);
 	return combinedCenter;
 }
 
@@ -73,34 +85,21 @@ export function getGradientColor(percentage: number) {
 }
 
 export function changeCountryOfCountryAttribute(
-	indexCA: number,
+	ca: CountryAttribute,
 	state: string,
-	type: string,
 	region: number
 ): void {
 	const world: World = getWorld();
-	let countryAttribute;
-	switch (type) {
-		case "currency":
-			countryAttribute = world.currencyArray[indexCA];
-			break;
-		case "language":
-			state = type;
-			countryAttribute = world.languageArray[indexCA];
-			break;
-		default:
-			return;
-	}
-	countryAttribute.locations.forEach((index: number): void => {
+	ca.locations.forEach((index: number): void => {
 		const country: Country = world.countryArray[index];
-		if (country.owned || (region !== 7 && country.location[0] !== region)) {
+		if (region !== 7 && country.location[0] !== region) {
 			return;
 		}
 		country.state = state;
 		if (!country.visible) {
-			world.setCountryAndConnectedVisibility(index, true);
+			world.setCountryVisibility(index, true);
 		}
-		world.triggerCountryAnimation(index, state, false);
+		world.triggerCountryAnimation(index, ca.type, state, false);
 	});
 }
 
@@ -117,4 +116,28 @@ export function makeMaterialWithGradient(percentage: number): Material {
 		polygonOffsetFactor: 1,
 		polygonOffsetUnits: 1,
 	});
+}
+
+export function correctContinent(continentIndex: number, country: Country) {
+	if (continentIndex !== -1) {
+		return continentIndex === country.location[0];
+	}
+	return true;
+}
+
+export function getCenterCA(continentIndex: number): Vector3 {
+	const world = getWorld();
+	const currItem: CountryAttribute =
+		world.sequentialRandomArray[world.sequentialRandomIndex];
+	const locations: number[] = currItem.locations;
+	let firstCountryOfCAInCI: Country;
+	let objCenter: Vector3 = new Vector3();
+	locations.forEach((index: number) => {
+		const country = world.countryArray[index];
+		if (!correctContinent(continentIndex, country)) return;
+		if (firstCountryOfCAInCI) return;
+		firstCountryOfCAInCI = country;
+		objCenter = getObjCenter(firstCountryOfCAInCI.object);
+	});
+	return objCenter;
 }

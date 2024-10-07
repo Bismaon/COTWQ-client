@@ -5,6 +5,7 @@ import { Country } from "./Country";
 import { getWorld } from "../scene/sceneManager";
 import { handleImageClick } from "../controls/inputHandlers";
 import { TFunction } from "i18next";
+import { correctContinent } from "../utils/utilities";
 
 /** Represents the number of countries in each continent for table layout purposes. */
 const continentCountryCounts: [56, 3, 51, 46, 34, 19, 15] = [
@@ -33,7 +34,7 @@ const continentFormattedNames: string[] = [
 ];
 
 export function changeCountryCellTo(
-	state: "found" | "missed" | "invisible",
+	state: "found" | "error" | "unavailable",
 	countryIndex: number[]
 ): void {
 	countryIndex.forEach((index) => {
@@ -77,8 +78,7 @@ export function randomizedCountries(
 		(country: Country): boolean => {
 			if (country.owned) return false; // skip if the country is not independent
 			if (country.name === "Antarctica") return false; // skip Antarctica
-			if (continentIndex !== -1 && country.location[0] !== continentIndex)
-				return false; // skip if the country is not in the wanted continent
+			if (!correctContinent(continentIndex, country)) return false; // skip if the country is not in the wanted continent
 			return true;
 		}
 	);
@@ -92,7 +92,7 @@ export function clearFlags(): void {
 	if (!flagContainer) {
 		return;
 	}
-	flagContainer.innerHTML = ""; // Clears all children
+	flagContainer.innerHTML = "";
 }
 
 export function populateFlags(continentIndex: number): void {
@@ -135,18 +135,18 @@ export function populateFlags(continentIndex: number): void {
 }
 
 export function changeCACells(
-	state: "found" | "missed" | "invisible",
+	state: "found" | "error" | "unavailable",
 	type: string
 ): void {
 	switch (type) {
 		case "currency":
 			const currencyArray: CountryAttribute[] = getWorld().currencyArray;
 
-			for (let i: number = 0; i < currencyArray.length; i++) {
-				const currency: CountryAttribute = currencyArray[i];
-
-				changeCACell(state, currency, i);
-			}
+			currencyArray.forEach(
+				(currency: CountryAttribute, index: number): void => {
+					changeCACell(state, currency, index);
+				}
+			);
 			break;
 		case "language":
 			const languageArray: CountryAttribute[] = getWorld().languageArray;
@@ -163,7 +163,7 @@ export function changeCACells(
 }
 
 export function changeCACell(
-	state: "found" | "missed" | "invisible",
+	state: string,
 	countryAttribute: CountryAttribute,
 	index: number
 ): void {
@@ -252,7 +252,7 @@ export function createTableFromType(
 			const countryRow: HTMLTableRowElement = tableBody.insertRow();
 			const countryCell: HTMLTableCellElement = countryRow.insertCell();
 			if (type === "names") {
-				countryCell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.name}</div>`;
+				countryCell.innerHTML = `<div class="cell unavailable" id="_${index}_${i}">${country.name}</div>`;
 			} else {
 				countryCell.innerHTML = `<div class="cell-text">${country.name}</div>`;
 			}
@@ -266,7 +266,7 @@ export function createTableFromType(
 					const baseURL = `${process.env.PUBLIC_URL}/assets/svg/flags/`;
 					const flagURL: string = baseURL + country.svgFlag;
 
-					infoCell.innerHTML = `<img src="${flagURL}" class="cell invisible" id="_${index}_${i}" alt="${country.location[0]}_${country.location[1]}"/>`;
+					infoCell.innerHTML = `<img src="${flagURL}" class="cell unavailable" id="_${index}_${i}" alt="${country.location[0]}_${country.location[1]}"/>`;
 					break;
 				case "languages":
 					countryCell.rowSpan = languages.length;
@@ -276,7 +276,7 @@ export function createTableFromType(
 						(lang: CountryAttribute) => {
 							return lang.name === languages[0];
 						}
-					)} invisible">${languages[0]}</div>`;
+					)} unavailable">${languages[0]}</div>`;
 
 					for (let i = 1; i < languages.length; i++) {
 						const languageRow: HTMLTableRowElement =
@@ -287,12 +287,12 @@ export function createTableFromType(
 							(lang: CountryAttribute) => {
 								return lang.name === languages[i];
 							}
-						)} invisible">${languages[i]}</div>`;
+						)} unavailable">${languages[i]}</div>`;
 					}
 					break;
 				case "capitals":
 					infoCell = countryRow.insertCell();
-					infoCell.innerHTML = `<div class="cell invisible" id="_${index}_${i}">${country.capital}</div>`;
+					infoCell.innerHTML = `<div class="cell unavailable" id="_${index}_${i}">${country.capital}</div>`;
 					break;
 				case "currencies":
 					infoCell = countryRow.insertCell();

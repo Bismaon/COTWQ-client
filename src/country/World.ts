@@ -6,7 +6,7 @@ import { getCountryMovement, getStateMaterial } from "../utils/countryUtils";
 import { changeCountryCellTo } from "./countriesTable";
 import { bounceAnimation } from "../utils/animation";
 import { isAcceptedName } from "../controls/inputHandlers";
-import { makeMaterialWithGradient } from "../utils/utilities";
+import { correctContinent, makeMaterialWithGradient } from "../utils/utilities";
 
 export const countriesCountByRegion: { [region: string]: number } = {
 	africa: 53,
@@ -27,6 +27,7 @@ export interface CountryAttribute {
 	locations: number[];
 	found: boolean;
 	region: number[];
+	selected: boolean;
 }
 
 /**
@@ -196,7 +197,7 @@ export class World {
 		this.setCountryAndConnectedIsFound(index, true);
 		changeCountryCellTo("found", [index]);
 
-		this.triggerCountryAnimation(index, "found", true);
+		this.triggerCountryAnimation(index, "", "found", true);
 	}
 
 	public setCountryIsFound(index: number, found: boolean): void {
@@ -223,14 +224,11 @@ export class World {
 			if (country.owned) {
 				return;
 			}
-			if (
-				continentIndex !== -1 &&
-				country.location[0] !== continentIndex
-			) {
+			if (!correctContinent(continentIndex, country)) {
 				this.setCountryAndConnectedState(index, "unavailable");
 			} else {
-				if (gameType !== "currencies" && gameType !== "languages") {
-					changeCountryCellTo("invisible", [index]);
+				if (!["currencies", "languages"].includes(gameType)) {
+					changeCountryCellTo("unavailable", [index]);
 				}
 				if (hard) {
 					this.setCountryAndConnectedVisibility(index, false);
@@ -250,6 +248,7 @@ export class World {
 
 	public triggerCountryAnimation(
 		index: number,
+		type: string,
 		state: string,
 		complete: boolean
 	): void {
@@ -265,15 +264,13 @@ export class World {
 				100
 			);
 
-			// If the state is 'languages', calculate the percentage of found languages.
-			const percentage: number =
-				state === "language"
-					? this.calculateLanguagePercentage(country)
-					: 0;
+			if (type === "language") {
+				state = type;
+			}
 
 			// Execute bounce animation, and apply the state-specific logic after completion.
 			bounceAnimation(countryObj, orgPos, targetPos, (): void => {
-				this.applyState(countryIndex, state, percentage);
+				this.applyState(countryIndex, state);
 			});
 		});
 	}
@@ -333,6 +330,7 @@ export class World {
 				locations: [countryIndex],
 				found: false,
 				region: region,
+				selected: false,
 			});
 		} else {
 			const countryAttribute: CountryAttribute =
@@ -398,6 +396,24 @@ export class World {
 			this._sequentialRandomArray.length;
 	}
 
+	// Helper method to apply state logic after animation
+	public applyState(index: number, state: string): void {
+		switch (state) {
+			case "flags":
+				this.setCountryFlag(index);
+				return;
+			case "language":
+				const country = this._countryArray[index];
+				const percentage = this.calculateLanguagePercentage(country);
+				this._countryArray[index].material =
+					makeMaterialWithGradient(percentage);
+				return;
+			default:
+				this.setCountryState(index, state);
+				return;
+		}
+	}
+
 	// Helper method to calculate the percentage of found languages
 	private calculateLanguagePercentage(country: Country): number {
 		if (!country.languages) return 0;
@@ -410,22 +426,6 @@ export class World {
 		).length;
 
 		return (foundLanguages / country.languages.length) * 100;
-	}
-
-	// Helper method to apply state logic after animation
-	private applyState(index: number, state: string, percentage: number): void {
-		switch (state) {
-			case "flags":
-				this.setCountryFlag(index);
-				break;
-			case "language":
-				this._countryArray[index].material =
-					makeMaterialWithGradient(percentage);
-				break;
-			default:
-				this.setCountryState(index, state);
-				break;
-		}
 	}
 
 	private getConnectedTerritories(index: number): number[] {

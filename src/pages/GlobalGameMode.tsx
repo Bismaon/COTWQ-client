@@ -27,10 +27,15 @@ import {
 import { useModel } from "./ModelContext";
 import { useTranslation } from "react-i18next";
 import { getWorld, setupModelForGame } from "../scene/sceneManager";
-import { Object3D, Vector3 } from "three";
+import { Vector3 } from "three";
 import { Country } from "../country/Country";
-import { getCombinedCenter, getObjCenter } from "../utils/utilities";
+import {
+	correctContinent,
+	getCenterCA,
+	getObjCenter,
+} from "../utils/utilities";
 import { cameraFaceTo } from "../camera/camera";
+import { TFunction } from "i18next";
 
 interface gameModeProps {
 	hard: boolean;
@@ -70,7 +75,9 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				itemArray = getWorld().currencyArray;
 				filteredArray = itemArray.filter(
 					(currency: CountryAttribute): boolean => {
-						return !currency.region.includes(continentIndex);
+						if (continentIndex !== -1)
+							return currency.region.includes(continentIndex);
+						return true;
 					}
 				);
 				break;
@@ -78,9 +85,12 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				itemArray = getWorld().languageArray;
 				filteredArray = itemArray.filter(
 					(language: CountryAttribute): boolean => {
-						return !language.region.includes(continentIndex);
+						if (continentIndex !== -1)
+							return language.region.includes(continentIndex);
+						return true;
 					}
 				);
+
 				break;
 			default:
 				itemArray = getWorld().countryArray;
@@ -90,6 +100,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				);
 				return;
 		}
+		console.log("Filtered array: ", filteredArray);
 		world.sequentialRandomArray = shuffleArray(filteredArray);
 	}
 
@@ -111,11 +122,11 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				console.debug(`Flags have been added.`);
 				break;
 			case "currencies":
-				changeCACells("invisible", "currency");
+				changeCACells("unavailable", "currency");
 				console.debug("Made answers invisible");
 				break;
 			case "languages":
-				changeCACells("invisible", "language");
+				changeCACells("unavailable", "language");
 				console.debug("Made answers invisible");
 				break;
 			default:
@@ -123,20 +134,25 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		}
 		if (sequentialRandom) {
 			setupRandomSequentialArray();
+
 			const world: World = getWorld();
 			const firstItem: any = world.sequentialRandomArray[0];
-
 			if (["languages", "currencies"].includes(gameType)) {
-				cameraFaceTo(getCenterCA(world));
+				firstItem.selected = true;
+				firstItem.locations.forEach((index: number) => {
+					const country: Country = world.countryArray[index];
+					if (!correctContinent(continentIndex, country)) return;
+					world.setCountryState(index, "selected");
+					world.setCountryVisibility(index, true);
+				});
+				cameraFaceTo(getCenterCA(continentIndex));
 			} else {
 				const firstIndex: number = world.getRealIndex(
 					firstItem.location
 				);
 				world.setCountryAndConnectedState(firstIndex, "selected");
 				world.setCountryAndConnectedVisibility(firstIndex, true);
-				const objCenter: Vector3 = getObjCenter(firstItem.object);
-
-				cameraFaceTo(objCenter);
+				cameraFaceTo(getObjCenter(firstItem.object));
 			}
 		}
 
@@ -156,19 +172,14 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 
 	function renderQuizCounter(gameType: string, region: string): number {
 		const regionNumber = getRegionByNumber(region);
-		let counterValue;
 		switch (gameType) {
 			case "currencies":
-				counterValue = currencyByRegion[regionNumber];
-				break;
+				return currencyByRegion[regionNumber];
 			case "languages":
-				counterValue = languageByRegion[regionNumber];
-				break;
+				return languageByRegion[regionNumber];
 			default:
-				counterValue = countriesCountByRegion[region];
-				break;
+				return countriesCountByRegion[region];
 		}
-		return counterValue;
 	}
 
 	function handleSequentialMove(direction: number): void {
@@ -184,7 +195,31 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		const currIndex: number = world.sequentialRandomIndex;
 
 		if (["languages", "currencies"].includes(gameType)) {
-			cameraFaceTo(getCenterCA(world));
+			const prevCA: CountryAttribute =
+				world.sequentialRandomArray[prevIndex];
+			prevCA.selected = false;
+
+			prevCA.locations.forEach((index: number) => {
+				const country = world.countryArray[index];
+				if (!correctContinent(continentIndex, country)) return;
+				if (hard) world.setCountryVisibility(index, false);
+				if (prevCA.type === "language") {
+					world.applyState(index, prevCA.type);
+				} else {
+					world.applyState(index, "unknown");
+				}
+			});
+			const currCA: CountryAttribute =
+				world.sequentialRandomArray[currIndex];
+			console.log("Currently selected item: ", currCA);
+			currCA.selected = true;
+			currCA.locations.forEach((index: number) => {
+				const country = world.countryArray[index];
+				if (!correctContinent(continentIndex, country)) return;
+				world.setCountryState(index, "selected");
+				world.setCountryVisibility(index, true);
+			});
+			cameraFaceTo(getCenterCA(continentIndex));
 		} else {
 			const prevCountry: Country = world.sequentialRandomArray[prevIndex];
 			const prevCountryIndex: number = world.getRealIndex(
@@ -208,30 +243,6 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 			cameraFaceTo(objCenter);
 		}
 	}
-	function getCenterCA(world: World): Vector3 {
-		const currItem: CountryAttribute =
-			world.sequentialRandomArray[world.sequentialRandomIndex];
-		const locations: number[] = currItem.locations;
-		const countriesObject3D: Object3D[] = [];
-		locations.forEach((index: number): void => {
-			const country: Country = world.countryArray[index];
-			if (country.found) return;
-			if (
-				!(
-					continentIndex !== -1 &&
-					country.location[0] !== continentIndex
-				)
-			) {
-				world.setCountryState(index, "unknown");
-				return;
-			}
-			world.setCountryAndConnectedState(index, "selected");
-			world.setCountryAndConnectedVisibility(index, true);
-
-			countriesObject3D.push(country.object);
-		});
-		return getCombinedCenter(countriesObject3D);
-	}
 
 	function renderSequentialRandom(): React.JSX.Element {
 		if (!sequentialRandom) return <></>;
@@ -251,47 +262,6 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				></i>
 			</div>
 		);
-	}
-
-	function renderOptions(gameType: string): React.JSX.Element {
-		switch (gameType) {
-			case "names" || "flags":
-				return (
-					<div className="grid-item" id="quiz-options">
-						<div id="checkbox-container">
-							<label htmlFor="follow">{t("follow")}</label>
-							<input
-								type="checkbox"
-								id="follow"
-								name="follow"
-								onChange={cameraFollowCountry}
-							></input>
-						</div>
-						<div id="quiz-feedback-container"></div>
-						<div id="country-name-container"></div>
-					</div>
-				);
-			default:
-				return (
-					<div className="grid-item" id="quiz-options">
-						<div id="country-name-container"></div>
-					</div>
-				);
-		}
-	}
-
-	function renderRightSide(gameType: string) {
-		switch (gameType) {
-			case "flags":
-				return (
-					<div
-						className="grid-item grid-item-list-container"
-						id="item-list"
-					></div>
-				);
-			default:
-				return <></>;
-		}
 	}
 
 	return (
@@ -358,7 +328,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				</div>
 			</div>
 			{renderRightSide(gameType)}
-			{renderOptions(gameType)}
+			{renderOptions(gameType, t)}
 			<div className="grid-item" id="hint-answer">
 				<div className="grid" id="hint-answer-container"></div>
 			</div>
@@ -366,11 +336,55 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 	);
 };
 
+function renderRightSide(gameType: string) {
+	switch (gameType) {
+		case "flags":
+			return (
+				<div
+					className="grid-item grid-item-list-container"
+					id="item-list"
+				></div>
+			);
+		default:
+			return <></>;
+	}
+}
+
+function renderOptions(
+	gameType: string,
+	t: TFunction<"translation", undefined>
+): React.JSX.Element {
+	switch (gameType) {
+		case "names" || "flags":
+			return (
+				<div className="grid-item" id="quiz-options">
+					<div id="checkbox-container">
+						<label htmlFor="follow">{t("follow")}</label>
+						<input
+							type="checkbox"
+							id="follow"
+							name="follow"
+							onChange={cameraFollowCountry}
+						></input>
+					</div>
+					<div id="quiz-feedback-container"></div>
+					<div id="country-name-container"></div>
+				</div>
+			);
+		default:
+			return (
+				<div className="grid-item" id="quiz-options">
+					<div id="country-name-container"></div>
+				</div>
+			);
+	}
+}
+
 export default GlobalGameMode;
 
 /* TODO LIST
- * - add function for chevrons, go to the next element of the list given by sequential
- * - make a list which will contain all the elements in sequential (country loc, etc.) Randomized each time
+ * - DONE add function for chevrons, go to the next element of the list given by sequential
+ * - DONE make a list which will contain all the elements in sequential (country loc, etc.) Randomized each time
  *   need to make it for continents too
  * - With hard mode, sequential should only show that the country as been correctly entered, then rehides the country
  *   until the quiz is ended

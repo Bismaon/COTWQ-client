@@ -10,6 +10,8 @@ import {
 import {
 	changeCountryOfCountryAttribute,
 	changeElementsVisibility,
+	correctContinent,
+	getCenterCA,
 	getObjCenter,
 	processText,
 } from "../utils/utilities";
@@ -29,6 +31,7 @@ import {
 	changeCountryCellTo,
 	clearFlags,
 	populateFlags,
+	shuffleArray,
 } from "../country/countriesTable";
 import { cameraFaceTo } from "../camera/camera";
 
@@ -39,7 +42,7 @@ function textboxChangeFlags(
 	counter: HTMLDivElement,
 	timer: Timer,
 	region: string,
-	sequentialRandom: boolean
+	sequentialRandom: boolean // TODO new game, the user seelcts the country's flag that hasbeen highlighted
 ): void {
 	let flagSelected: HTMLImageElement | null =
 		document.querySelector(".selected") || document.querySelector("img");
@@ -57,7 +60,7 @@ function textboxChangeFlags(
 		world.setCountryAndConnectedVisibility(index, true);
 	}
 	world.setCountryAndConnectedIsFound(index, true);
-	world.triggerCountryAnimation(index, "flags", true);
+	world.triggerCountryAnimation(index, "", "flags", true);
 
 	// take the first img tag element in the item-list and make it the selected
 	const nextFlag: HTMLImageElement | null = getNextFlag(flagSelected);
@@ -96,17 +99,12 @@ function textboxChangeNames(
 ): void {
 	const countryIndex: number[] = world.exists(enteredText);
 	const country: Country = world.countryArray[countryIndex[0]];
-	if (countryIndex.length === 0) {
-		return; // not a country
-	}
+	if (countryIndex.length === 0) return; // not a country
+
 	countryIndex.forEach((index: number): void => {
 		const country: Country = world.countryArray[index];
-		if (country.found) {
-			return;
-		}
-		if (sequentialRandom && country.state !== "selected") {
-			return;
-		}
+		if (country.found) return;
+		if (sequentialRandom && country.state !== "selected") return;
 		if (sequentialRandom) {
 			world.sequentialRandomArray.splice(world.sequentialRandomIndex, 1);
 			world.nextInSeqArr();
@@ -146,28 +144,35 @@ function textBoxChangeCapitals(
 ): void {
 	const countryArray: Country[] = world.countryArray;
 	countryArray.forEach((country: Country, index: number): void => {
+		if (sequentialRandom && country.state !== "selected") return;
 		if (!country.capital || country.owned) return;
-		if (processText(country.capital) === enteredText) {
-			if (!country.found) {
-				country.found = true;
-				world.applyFoundEffectsToCountry(index);
-
-				answerInput.value = "";
-				updateCounter(
-					counter,
-					world.countriesFound,
-					countriesCountByRegion[region]
-				);
-			}
-			return;
+		if (processText(country.capital) !== enteredText) return;
+		if (country.found) return;
+		if (sequentialRandom) {
+			world.sequentialRandomArray.splice(world.sequentialRandomIndex, 1);
+			world.nextInSeqArr();
+			const nextCountry: Country =
+				world.sequentialRandomArray[world.sequentialRandomIndex];
+			const nextIndex: number = world.getRealIndex(nextCountry.location);
+			world.setCountryAndConnectedState(nextIndex, "selected");
+			world.setCountryAndConnectedVisibility(nextIndex, true);
+			cameraFaceTo(getObjCenter(nextCountry.object));
 		}
+		world.applyFoundEffectsToCountry(index);
+
+		answerInput.value = "";
+		updateCounter(
+			counter,
+			world.countriesFound,
+			countriesCountByRegion[region]
+		);
 	});
 	if (world.isAllFound(region)) {
 		timer.stop();
 		alert(`Congratulations you finished in ${timer.toString()}!`);
 	}
-	return;
 }
+
 function textBoXChangeLanguages(
 	world: World,
 	enteredText: string,
@@ -190,7 +195,8 @@ function textBoXChangeLanguages(
 		regionNumber,
 		languageArray,
 		type,
-		regionCount
+		regionCount,
+		sequentialRandom
 	);
 }
 function textBoXChangeCurrencies(
@@ -199,7 +205,8 @@ function textBoXChangeCurrencies(
 	answerInput: HTMLInputElement,
 	counter: HTMLDivElement,
 	timer: Timer,
-	region: string
+	region: string,
+	sequentialRandom: boolean
 ): void {
 	const currencyArray: CountryAttribute[] = world.currencyArray;
 	const regionNumber: number = getRegionByNumber(region);
@@ -214,7 +221,8 @@ function textBoXChangeCurrencies(
 		regionNumber,
 		currencyArray,
 		type,
-		regionCount
+		regionCount,
+		sequentialRandom
 	);
 }
 function textboxChangeCA(
@@ -226,19 +234,37 @@ function textboxChangeCA(
 	region: number,
 	array: CountryAttribute[],
 	type: "language" | "currency",
-	regionCount: number
+	regionCount: number,
+	sequentialRandom: boolean
 ): void {
 	array.forEach((attribute: CountryAttribute, index: number): void => {
 		if (
 			processText(attribute.name) !== enteredText ||
 			attribute.found ||
-			!attribute.region.includes(region)
-		) {
+			!attribute.region.includes(region) ||
+			(sequentialRandom && !attribute.selected)
+		)
 			return;
-		}
+
 		attribute.found = true;
 		changeCACell("found", attribute, index);
-		changeCountryOfCountryAttribute(index, "found", type, region);
+		changeCountryOfCountryAttribute(attribute, "found", region);
+		if (sequentialRandom) {
+			world.sequentialRandomArray.splice(world.sequentialRandomIndex, 1);
+			world.nextInSeqArr();
+			const nextIndex: number = world.sequentialRandomIndex;
+			const currCA: CountryAttribute =
+				world.sequentialRandomArray[nextIndex];
+			currCA.selected = true;
+			currCA.locations.forEach((index: number): void => {
+				const country: Country = world.countryArray[index];
+				if (region !== 7 && country.location[0] !== region) return;
+				world.setCountryState(index, "selected");
+				world.setCountryVisibility(index, true);
+			});
+			cameraFaceTo(getCenterCA(region));
+		}
+
 		answerInput.value = "";
 		updateCounter(counter, world.getFoundCA(type).length, regionCount);
 	});
@@ -338,26 +364,6 @@ export function cameraFollowCountry(
 	if (isFollowing() === !checkbox.checked) toggleIsFollowing();
 }
 
-function setCountryOfCA(
-	world: World,
-	countryAttribute: CountryAttribute,
-	indexCA: number,
-	state: string,
-	region: number
-): void {
-	const locations: number[] = countryAttribute.locations;
-	locations.forEach((index: number): void => {
-		const country: Country = world.countryArray[index];
-		if (country.owned || (region !== 7 && country.location[0] !== region)) {
-			return;
-		}
-
-		world.triggerCountryAnimation(index, state, true);
-		world.setCountryVisibility(index, true);
-		changeCACell("missed", countryAttribute, indexCA);
-	});
-}
-
 export function handleGiveUp(
 	continentIndex: number,
 	timer: Timer,
@@ -366,9 +372,10 @@ export function handleGiveUp(
 	gameType: string,
 	sequentialRandom: boolean
 ): void {
+	console.debug(`Giving up, cleaning for ${gameType}`);
+
 	const chevrons: HTMLCollection =
 		document.getElementsByClassName("chevron") || [];
-
 	const answerContainer: HTMLDivElement = document.getElementById(
 		"answer-box-container"
 	) as HTMLDivElement;
@@ -392,7 +399,8 @@ export function handleGiveUp(
 			isHard,
 			restartButton,
 			region,
-			gameType
+			gameType,
+			sequentialRandom
 		);
 	};
 	if (isHard) {
@@ -404,62 +412,74 @@ export function handleGiveUp(
 	}
 	changeElementsVisibility(elements, "hidden");
 
+	const world: World = getWorld();
+	const regionNumber: number = getRegionByNumber(region);
+
 	toggleIsPlaying();
 	isControlsEnabled(true);
 	timer.stop();
 
-	const world: World = getWorld();
-
-	console.debug(`Giving up, cleaning for ${gameType}`);
-	const regionNumber: number = getRegionByNumber(region);
 	if (gameType === "currencies") {
 		const currencyArray: CountryAttribute[] = world.currencyArray;
-		currencyArray.forEach(
-			(currency: CountryAttribute, index: number): void => {
-				if (
-					currency.found ||
-					(regionNumber !== 7 &&
-						currency.region.includes(regionNumber))
-				) {
-					return;
-				}
-				setCountryOfCA(world, currency, index, "error", regionNumber);
+		currencyArray.forEach((currency: CountryAttribute): void => {
+			if (
+				currency.found ||
+				(regionNumber !== 7 && !currency.region.includes(regionNumber))
+			) {
+				return;
 			}
-		);
+			currency.locations.forEach((index: number): void => {
+				const country: Country = world.countryArray[index];
+				if (!correctContinent(continentIndex, country)) return;
+				world.triggerCountryAnimation(
+					index,
+					currency.type,
+					"error",
+					false
+				);
+				world.setCountryVisibility(index, true);
+			});
+		});
 		return;
 	} else if (gameType === "languages") {
 		const languageArray: CountryAttribute[] = world.languageArray;
-		languageArray.forEach(
-			(language: CountryAttribute, index: number): void => {
-				if (
-					language.found ||
-					(regionNumber !== 7 &&
-						language.region.includes(regionNumber))
-				) {
-					return;
-				}
-
-				setCountryOfCA(world, language, index, "error", regionNumber);
+		languageArray.forEach((language: CountryAttribute): void => {
+			if (
+				language.found ||
+				(regionNumber !== 7 && !language.region.includes(regionNumber))
+			) {
+				return;
 			}
-		);
+			language.locations.forEach((index: number): void => {
+				const country: Country = world.countryArray[index];
+				if (!correctContinent(continentIndex, country)) return;
+				world.triggerCountryAnimation(
+					index,
+					language.type,
+					"error",
+					false
+				);
+				world.setCountryVisibility(index, true);
+			});
+		});
 		return;
 	}
 	world.countryArray.forEach((country: Country, index: number): void => {
 		if (country.found || country.owned) {
 			return;
 		}
-		const location: [number, number] = country.location;
-		if (!(continentIndex === -1 || location[0] === continentIndex)) {
+		if (!correctContinent(continentIndex, country)) {
 			return;
 		}
 		world.setCountryAndConnectedVisibility(index, true);
 
 		world.triggerCountryAnimation(
 			index,
+			"base",
 			gameType === "flags" ? gameType : "error",
 			true
 		);
-		changeCountryCellTo("missed", [index]);
+		changeCountryCellTo("error", [index]);
 	});
 }
 
@@ -514,7 +534,8 @@ export function restartQuiz(
 	isHard: boolean,
 	restartButton: HTMLButtonElement,
 	region: string,
-	gameType: string
+	gameType: string,
+	sequentialRandom: boolean
 ): void {
 	const counter: HTMLDivElement = document.getElementById(
 		"counter"
@@ -524,6 +545,13 @@ export function restartQuiz(
 	) as HTMLButtonElement;
 	const world: World = getWorld();
 
+	if (sequentialRandom) {
+		world.sequentialRandomArray.forEach((item: any): void => {
+			item.found = false;
+		});
+		world.sequentialRandomArray = shuffleArray(world.sequentialRandomArray);
+		world.sequentialRandomIndex = 0;
+	}
 	if (gameType === "currencies") {
 		world.currencyArray.forEach((currency: CountryAttribute): void => {
 			currency.found = false;
@@ -535,7 +563,7 @@ export function restartQuiz(
 		world.languageArray.forEach((language: CountryAttribute): void => {
 			language.found = false;
 		});
-		changeCACells("invisible", "language");
+		changeCACells("unavailable", "language");
 		counter.textContent =
 			"0\u00A0/\u00A0" + languageByRegion[regionNumber] + " guessed";
 	} else {
