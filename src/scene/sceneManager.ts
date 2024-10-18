@@ -41,27 +41,7 @@ export async function setupSceneModel(): Promise<void> {
 		console.debug("Continents: ", world.continents);
 		console.debug("Countries: ", world.countryArray);
 		console.debug("Currencies: ", world.currencyArray);
-		// for (let i = 0; i < world.continents.length; i++) {
-		// 	console.debug(
-		// 		`Currency ${i}: `,
-		// 		world.currencyArray.filter(
-		// 			(currency: CountryAttribute): boolean => {
-		// 				return currency.region.includes(i);
-		// 			}
-		// 		).length
-		// 	);
-		// }
 		console.debug("Languages: ", world.languageArray);
-		// for (let i = 0; i < world.continents.length; i++) {
-		// 	console.debug(
-		// 		`Language ${i}: `,
-		// 		world.languageArray.filter(
-		// 			(language: CountryAttribute): boolean => {
-		// 				return language.region.includes(i);
-		// 			}
-		// 		).length
-		// 	);
-		// }
 
 		animate(globalScene);
 	} catch (error: unknown) {
@@ -103,9 +83,9 @@ export function getWorld(): World {
 }
 
 function getAllForLang(elements: any): string[] {
-	const lang = getLang();
+	const lang: string = getLang();
 	const container: string[] = [];
-	elements.forEach((element: any) => {
+	elements.forEach((element: any): void => {
 		if (element.en === "") return;
 		if (lang === "en") {
 			container.push(element.en);
@@ -227,7 +207,7 @@ function getLang(): string {
 }
 
 function setLangName(name: any): any {
-	const lang = getLang();
+	const lang: string = getLang();
 	switch (lang) {
 		case "en":
 			return name.en;

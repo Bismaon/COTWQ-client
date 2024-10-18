@@ -1,12 +1,14 @@
+import { Highscores } from "./Highscores";
+
 export class User {
 	constructor(
 		id: number,
 		username: string,
-		highscores: { [gameName: string]: number } = {}
+		highscores: { [gameName: string]: string }
 	) {
 		this._id = id;
 		this._username = username;
-		this._highscores = highscores;
+		this._highscores = new Highscores(highscores);
 	}
 
 	private _id: number;
@@ -29,19 +31,19 @@ export class User {
 		this._username = name;
 	}
 
-	private _highscores: { [gameName: string]: number };
+	private _highscores: Highscores;
 
-	public get highscores(): { [gameName: string]: number } {
+	public get highscores(): Highscores {
 		return this._highscores;
 	}
 
-	public set highscores(highscores: { [gameName: string]: number }) {
+	public set highscores(highscores: Highscores) {
 		this._highscores = highscores;
 	}
 
 	public async updateHighscore(
 		gameName: string,
-		score: number
+		score: string
 	): Promise<void> {
 		try {
 			// Fetch game ID or create new game if it doesn't exist
@@ -61,7 +63,7 @@ export class User {
 			});
 
 			if (response.ok) {
-				this._highscores[gameName] = score;
+				this._highscores.setHighscores(gameName, score);
 			} else {
 				console.error(
 					"Failed to update highscore:",
@@ -71,6 +73,21 @@ export class User {
 		} catch (error) {
 			console.error("Error updating highscore:", error);
 		}
+	}
+
+	public toString(): string {
+		const HS = this._highscores.getEntries().reduce(
+			(acc, [game, score]) => {
+				acc[game] = score; // Convert entries back to object format
+				return acc;
+			},
+			{} as { [gameName: string]: string }
+		);
+		return JSON.stringify({
+			id: this._id,
+			username: this._username,
+			highscores: HS,
+		});
 	}
 
 	private async getOrCreateGameId(gameName: string): Promise<number> {

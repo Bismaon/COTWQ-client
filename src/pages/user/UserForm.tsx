@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { User } from "../../user/User";
-import { checkUserSession } from "../../user/userStorage";
+import { checkUserSession, getUser } from "../../user/userStorage";
 import { useTranslation } from "react-i18next";
 
 interface UserFormProps {
@@ -20,39 +20,13 @@ const UserForm: React.FC<UserFormProps> = ({ onSessionChange }) => {
 			console.log("ID: ", id);
 			if (id !== -1) {
 				setUserID(id);
+				setUserData(getUser());
 				setUserIsSet(true); // This will ensure the second useEffect is triggered only once
 			}
 		}
 	}, [userIsSet]);
 
-	useEffect(() => {
-		if (!(userIsSet && userID !== undefined && !userData)) {
-			return;
-		}
-		fetch("/users/fetch-user", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ id: userID }),
-		})
-			.then((response) => {
-				if (response.ok) {
-					return response.json();
-				} else {
-					throw new Error("Failed to fetch user data");
-				}
-			})
-			.then((data) => {
-				console.log(data);
-				setUserData(data);
-				onSessionChange(); // Notify ProfileMenu about session change
-			})
-			.catch((error) => {
-				console.error(error);
-				setError(error.message);
-			});
-	}, [userIsSet, userID, userData, onSessionChange]);
+	console.debug("Rendering UserForm.tsx");
 
 	return (
 		<>
@@ -65,13 +39,13 @@ const UserForm: React.FC<UserFormProps> = ({ onSessionChange }) => {
 					</p>
 					<h3 className="grid-item">{t("highscores")}:</h3>
 					<ul className="grid-item">
-						{Object.entries(userData.highscores).map(
-							([game, score]: [string, number]) => (
+						{userData.highscores
+							.getFormattedEntries()
+							.map(([game, score]: [string, string]) => (
 								<li key={game}>
 									{game}: {score}
 								</li>
-							)
-						)}
+							))}
 					</ul>
 				</div>
 			)}

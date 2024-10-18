@@ -6,6 +6,7 @@ import { getWorld } from "../scene/sceneManager";
 import { handleImageClick } from "../controls/inputHandlers";
 import { TFunction } from "i18next";
 import { correctContinent } from "../utils/utilities";
+import { Timer } from "../utils/Timer";
 
 /** Represents the number of countries in each continent for table layout purposes. */
 const continentCountryCounts: [56, 3, 51, 46, 34, 19, 15] = [
@@ -37,8 +38,9 @@ export function changeCountryCellTo(
 	state: "found" | "error" | "unavailable",
 	countryIndex: number[]
 ): void {
-	countryIndex.forEach((index) => {
+	countryIndex.forEach((index: number): void => {
 		const countryElement: Country = getWorld().countryArray[index];
+		console.log("Country element: ", countryElement);
 		const [continent, country] = countryElement.location;
 		if (continent === 1) {
 			return;
@@ -82,7 +84,6 @@ export function randomizedCountries(
 			return true;
 		}
 	);
-	// Shuffle the filteredCountries array
 	return shuffleArray(filteredCountries);
 }
 
@@ -95,14 +96,18 @@ export function clearFlags(): void {
 	flagContainer.innerHTML = "";
 }
 
-export function populateFlags(continentIndex: number): void {
+export function populateFlags(
+	continentIndex: number,
+	sequentialRandom: boolean,
+	timer: Timer,
+	region: string
+): void {
 	const flagContainer: HTMLElement | null =
 		document.getElementById("item-list");
 	if (!flagContainer) {
 		return;
 	}
 
-	// Get the countries and shuffle them
 	const countries: Country[] = getWorld().countryArray;
 	const filteredCountries: Country[] = randomizedCountries(
 		countries,
@@ -110,24 +115,22 @@ export function populateFlags(continentIndex: number): void {
 	);
 	console.log("Filtered countries: ", filteredCountries);
 
-	// Base URL for flag images
 	const baseURL = `${process.env.PUBLIC_URL}/assets/svg/flags/`;
 
-	// Create and append flag elements
-	filteredCountries.forEach((country: Country) => {
+	filteredCountries.forEach((country: Country): void => {
 		const flagUrl: string = baseURL + country.svgFlag;
 
 		const imgElement: HTMLImageElement = document.createElement("img");
 		imgElement.src = flagUrl;
 		imgElement.alt = `${country.location[0]}_${country.location[1]}`;
 
-		// Attach click handler
-		imgElement.addEventListener("click", handleImageClick);
+		imgElement.addEventListener("click", (e: MouseEvent): void => {
+			handleImageClick(e, sequentialRandom, timer, region);
+		});
 
 		flagContainer.appendChild(imgElement);
 	});
 
-	// Set the first flag as selected
 	const firstFlag = document.querySelector("img") as HTMLImageElement;
 	if (firstFlag) {
 		firstFlag.classList.add("selected");
@@ -168,9 +171,8 @@ export function changeCACell(
 	index: number
 ): void {
 	let cells;
-	// Find the cell with the specific index in the table
 	switch (countryAttribute.type) {
-		case "currency":
+		case "currency" || "language":
 			cells = document.getElementsByClassName(`_${index}`);
 
 			if (!cells) {
@@ -178,24 +180,11 @@ export function changeCACell(
 				return;
 			}
 
-			// Change the cell's class based on the state
 			for (let i: number = 0; i < cells.length; i++) {
 				const cell: Element = cells[i];
 				cell.className = `cell _${index} ${state}`;
 			}
 
-			break;
-		case "language":
-			cells = document.getElementsByClassName(`_${index}`);
-			if (!cells) {
-				console.error(`Cell with index _${index} not found.`);
-				return;
-			}
-
-			for (let i: number = 0; i < cells.length; i++) {
-				const cell: Element = cells[i];
-				cell.className = `cell _${index} ${state}`;
-			}
 			break;
 		default:
 			console.error(
@@ -210,7 +199,7 @@ export function createTableFromType(
 	t: TFunction<"translation">,
 	region: string,
 	hard: boolean
-) {
+): void {
 	const world: World = getWorld();
 
 	const container: HTMLTableElement = document.getElementById(

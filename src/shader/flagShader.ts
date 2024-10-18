@@ -6,13 +6,14 @@ import {
 	Material,
 	MeshBasicMaterial,
 	RepeatWrapping,
+	Texture,
 	TextureLoader,
 } from "three";
 
 export function createCountryFlagShader(svgURL: string): Material {
 	const textureLoader = new TextureLoader();
 	const baseURL = `${process.env.PUBLIC_URL}/assets/svg/flags/`;
-	const texture = textureLoader.load(baseURL + svgURL);
+	const texture: Texture = textureLoader.load(baseURL + svgURL);
 	// Flip the texture on the Y-axis
 	texture.wrapT = RepeatWrapping;
 	texture.wrapS = ClampToEdgeWrapping;

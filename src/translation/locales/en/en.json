@@ -42,5 +42,6 @@
   "successfullLogin": "LOGGED IN SUCCESSFULLY!",
   "userdata": "User Data",
   "language-select": "Preferred language",
-  "save-settings": "Save settings"
+  "save-settings": "Save settings",
+  "customPromptFlags": "Select the flag that corresponds to the highlighted country"
 }

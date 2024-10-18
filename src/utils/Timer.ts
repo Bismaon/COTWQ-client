@@ -90,9 +90,27 @@ export class Timer {
 	 * @returns The timer as a string.
 	 */
 	public toString(): string {
-		const hours: string = this._hours === 0 ? "" : `${this._hours}:`;
-		const minutes: string = this._minutes === 0 ? "" : `${this._minutes}:`;
-		return hours + minutes + `${this._seconds}`;
+		let hours: string;
+		let minutes: string;
+		let seconds: string = String(this._seconds);
+		if (this._hours === 0) {
+			hours = "";
+		} else if (this._hours < 10) {
+			hours = `0${this._hours}:`;
+		} else {
+			hours = `${this._hours}:`;
+		}
+		if (this._minutes === 0) {
+			minutes = "";
+		} else if (this._minutes < 10) {
+			minutes = `0${this._minutes}:`;
+		} else {
+			minutes = `${this._minutes}:`;
+		}
+		if (this._seconds < 10) {
+			seconds = `0${this._seconds}`;
+		}
+		return hours + minutes + seconds;
 	}
 
 	/**
@@ -101,5 +119,25 @@ export class Timer {
 	 */
 	public toNumber(): number {
 		return this._hours * 10000 + this._minutes * 100 + this._seconds;
+	}
+
+	public toStore(): string {
+		let hours: string,
+			minutes: string,
+			seconds: string = String(this._seconds);
+		if (this._hours < 10) {
+			hours = `0${this._hours}`;
+		} else {
+			hours = `${this._hours}`;
+		}
+		if (this._minutes < 10) {
+			minutes = `0${this._minutes}`;
+		} else {
+			minutes = `${this._minutes}`;
+		}
+		if (this._seconds < 10) {
+			seconds = `0${this._seconds}`;
+		}
+		return hours + minutes + seconds;
 	}
 }

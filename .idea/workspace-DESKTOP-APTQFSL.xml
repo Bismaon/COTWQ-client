@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3abfa59b-59e2-4149-8d66-132c2698f19e" name="Changes" comment="Added sequential random for names/capitals/languages/currencies">
+      <change afterPath="$PROJECT_DIR$/src/user/Highscores.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controls/inputHandlers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controls/inputHandlers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controls/mouseInteraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controls/mouseInteraction.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/country/Country.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/country/Country.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/country/World.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/country/World.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/country/countriesTable.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/country/countriesTable.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/GlobalGameMode.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/GlobalGameMode.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/user/CreateAccountForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/user/CreateAccountForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/user/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/user/LoginForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/user/UserForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/user/UserForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scene/sceneManager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene/sceneManager.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shader/flagShader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/shader/flagShader.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stylesheet/Quiz.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/stylesheet/Quiz.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/translation/locales/en/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/translation/locales/en/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/translation/locales/fr/fr.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/translation/locales/fr/fr.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/user/User.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/User.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/user/userStorage.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/userStorage.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/Timer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/Timer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/utilities.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utilities.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="TypeScript JSX File" />
+        <option value="Python Script" />
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Bismaon&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Bismaon/COTWQ-client.git&quot;,
+    &quot;accountId&quot;: &quot;125a3da2-289c-468d-bba6-1da414478749&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/scene/sceneManager.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/utils/Timer.ts" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="NamedScopeManager">
+    <scope name="src" pattern="file[COTWQ-client]:src/*" />
+  </component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2kxZuP5orlnjdARcWXImMPBx8F6" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;js.last.introduce.type&quot;: &quot;CONST&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/OneDrive/Documents/GitHub/COTWQ-server&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.build.executor&quot;: &quot;Run&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;D:\\OneDrive\\Documents\\GitHub\\COTWQ-client\\node_modules\\prettier&quot;,
+    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\JetBrains\\CLion 2024.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;ts.rename.search.for.dynamic.occurrences&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\OneDrive\Documents\GitHub\COTWQ-client\old GLB models" />
+      <recent name="C:\Users\esteb\OneDrive\Documents\GitHub\COTWQ-client\src\pages\user" />
+      <recent name="C:\Users\esteb\OneDrive\Documents\GitHub\COTWQ-client\src\pages" />
+      <recent name="C:\Users\esteb\OneDrive\Documents\GitHub\COTWQ-client\src\pages\gamemodes" />
+    </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="C:\Users\esteb\OneDrive\Documents\GitHub\COTWQ-client\src\utils\utilities.ts" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="MathUtils" />
+    </option>
+  </component>
+  <component name="RunManager" selected="npm.build">
+    <configuration name="build" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="start" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="start" />
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="npm.build" />
+      <item itemvalue="npm.start" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3abfa59b-59e2-4149-8d66-132c2698f19e" name="Changes" comment="" />
+      <created>1724227410155</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1724227410155</updated>
+      <workItem from="1724227411382" duration="976000" />
+      <workItem from="1724228409296" duration="601000" />
+      <workItem from="1724229079740" duration="2219000" />
+      <workItem from="1724231344963" duration="169000" />
+      <workItem from="1724232440469" duration="19584000" />
+      <workItem from="1724308012137" duration="789000" />
+      <workItem from="1724310456696" duration="413000" />
+      <workItem from="1724310909800" duration="20170000" />
+      <workItem from="1724394397829" duration="71000" />
+      <workItem from="1724394511015" duration="10664000" />
+      <workItem from="1724653018705" duration="9933000" />
+      <workItem from="1724749261206" duration="28346000" />
+      <workItem from="1724828538580" duration="38727000" />
+      <workItem from="1724914075037" duration="13199000" />
+      <workItem from="1724937375469" duration="42000" />
+      <workItem from="1724937428066" duration="12000" />
+      <workItem from="1724939388307" duration="5160000" />
+      <workItem from="1724998849839" duration="11796000" />
+      <workItem from="1725111923036" duration="20877000" />
+      <workItem from="1725189220111" duration="20143000" />
+      <workItem from="1725260845837" duration="21144000" />
+      <workItem from="1725348407660" duration="14374000" />
+      <workItem from="1725667065713" duration="389000" />
+      <workItem from="1725668523162" duration="62000" />
+      <workItem from="1725713597522" duration="224000" />
+      <workItem from="1725713886640" duration="19742000" />
+      <workItem from="1726167204523" duration="254000" />
+      <workItem from="1726167544789" duration="646000" />
+      <workItem from="1726261864053" duration="24386000" />
+      <workItem from="1726431396983" duration="5471000" />
+      <workItem from="1726516285862" duration="1783000" />
+      <workItem from="1726526293356" duration="17890000" />
+      <workItem from="1726583280698" duration="6160000" />
+      <workItem from="1726597296769" duration="4380000" />
+      <workItem from="1726676388380" duration="27373000" />
+      <workItem from="1726778698497" duration="1329000" />
+      <workItem from="1726780404596" duration="8241000" />
+      <workItem from="1726868904378" duration="180000" />
+      <workItem from="1726869115744" duration="4026000" />
+      <workItem from="1726957292907" duration="1636000" />
+      <workItem from="1727297730294" duration="2718000" />
+      <workItem from="1727391408527" duration="2944000" />
+      <workItem from="1727475865721" duration="1102000" />
+      <workItem from="1727797149847" duration="3880000" />
+      <workItem from="1727978942066" duration="2639000" />
+      <workItem from="1728059617384" duration="9581000" />
+      <workItem from="1728785752544" duration="979000" />
+      <workItem from="1728787893604" duration="1793000" />
+      <workItem from="1729108961437" duration="11776000" />
+      <workItem from="1729205829454" duration="1268000" />
+      <workItem from="1729211115904" duration="6000" />
+    </task>
+    <task id="LOCAL-00001" summary="Added sequential random for names/capitals/languages/currencies">
+      <option name="closed" value="true" />
+      <created>1728330343674</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1728330343674</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticReloadCMake value="true" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="6646f874-1f84-4a9c-a799-53cb26c15852" value="TOOL_WINDOW" />
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="6646f874-1f84-4a9c-a799-53cb26c15852">
+          <value>
+            <State />
+          </value>
+        </entry>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added sequential random for names/capitals/languages/currencies" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added sequential random for names/capitals/languages/currencies" />
+  </component>
+  <component name="XPathView.XPathProjectComponent">
+    <history />
+    <find-history />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

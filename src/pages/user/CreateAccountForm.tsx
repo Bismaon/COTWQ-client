@@ -62,10 +62,13 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 			console.debug("Raw response:", response);
 
 			if (response.ok) {
-				const data = await response.json();
-				const { id } = data[0];
-				console.debug("Parsed response:", data);
-				loginUser(id);
+				const { id } = await response.json();
+				console.debug("Parsed response:", id);
+				if (!(await loginUser(id))) {
+					setLogged(false);
+					console.error("Error logging user.");
+					return;
+				}
 				setLogged(true);
 				onSessionChange(); // Notify parent component about session change
 				console.debug("User logged in: ", id);
@@ -79,6 +82,8 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 			setError("An error occurred during account creation.");
 		}
 	};
+
+	console.debug("Rendering CreateAccountForm.tsx");
 
 	return (
 		<form

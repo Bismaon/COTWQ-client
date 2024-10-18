@@ -59,7 +59,7 @@ export class Country {
 		this._material = meshes.material as Material;
 	}
 
-	public get languages() {
+	public get languages(): string[] | null {
 		return this._languages;
 	}
 

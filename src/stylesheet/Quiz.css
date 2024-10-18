@@ -14,10 +14,12 @@
     padding: 0;
     margin: 0;
 }
-.cell{
+
+.cell {
     border-left: 1px solid white;
 
 }
+
 .grid-table-item td,
 .grid-table-item th {
     padding: 0;
@@ -160,13 +162,15 @@
     color: #ff6666;
 }
 
-img.cell.unavailable{
+img.cell.unavailable {
     visibility: hidden;
 }
+
 .cell.unavailable {
     color: rgba(0, 0, 0, 0);
     user-select: none;
 }
+
 .cell-text {
     background-color: transparent;
     padding: 5px;
@@ -175,6 +179,7 @@ img.cell.unavailable{
     min-width: fit-content;
     min-height: fit-content;
 }
+
 /* Continent Section */
 #hint-answer {
     grid-row: 6 / auto;
@@ -226,7 +231,7 @@ img.cell.unavailable{
     visibility: hidden;
 }
 
-.chevron{
+.chevron {
     visibility: hidden;
     border: 1px solid white;
     color: #f9f9f9;

@@ -52,7 +52,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 			if (response.ok) {
 				const { id } = await response.json();
 				console.debug("Parsed response: ", id);
-				loginUser(id);
+				if (!(await loginUser(id))) {
+					setLogged(false);
+					console.error("Error logging user.");
+					return;
+				}
 				setLogged(true);
 				onSessionChange(); // Notify ProfileMenu about session change
 				console.debug("User logged in: ", id);
@@ -66,6 +70,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 			setError("An error occurred during login.");
 		}
 	};
+
+	console.debug("Rendering LoginForm.tsx");
 
 	return (
 		<form

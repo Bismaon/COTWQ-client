@@ -43,7 +43,16 @@ export function changeElementsVisibility(
 	elementArray: HTMLElement[],
 	visibility: "hidden" | "visible"
 ): void {
-	elementArray.forEach((element: HTMLElement): void => {
+	elementArray.forEach((element: HTMLElement, index: number): void => {
+		if (!element) {
+			console.warn(
+				"An element does not exist at index: ",
+				index,
+				", of array: ",
+				elementArray
+			);
+			return;
+		}
 		element.style.visibility = visibility;
 	});
 }
@@ -64,7 +73,7 @@ export function getCombinedCenter(objects: Object3D[]): Vector3 {
 
 	const combinedCenter: Vector3 = new Vector3();
 	combinedBox.getCenter(combinedCenter);
-	const distanceFromCenter = combinedCenter.length();
+	const distanceFromCenter: number = combinedCenter.length();
 	console.log("Before fix: ", combinedCenter);
 	if (distanceFromCenter < 70) {
 		if (distanceFromCenter === 0) {
@@ -79,8 +88,8 @@ export function getCombinedCenter(objects: Object3D[]): Vector3 {
 	return combinedCenter;
 }
 
-export function getGradientColor(percentage: number) {
-	let hue = (percentage / 100) * 120;
+export function getGradientColor(percentage: number): string {
+	let hue: number = (percentage / 100) * 120;
 	return `hsl(${hue}, 100%, 50%)`;
 }
 
@@ -118,7 +127,10 @@ export function makeMaterialWithGradient(percentage: number): Material {
 	});
 }
 
-export function correctContinent(continentIndex: number, country: Country) {
+export function correctContinent(
+	continentIndex: number,
+	country: Country
+): boolean {
 	if (continentIndex !== -1) {
 		return continentIndex === country.location[0];
 	}
@@ -126,14 +138,14 @@ export function correctContinent(continentIndex: number, country: Country) {
 }
 
 export function getCenterCA(continentIndex: number): Vector3 {
-	const world = getWorld();
+	const world: World = getWorld();
 	const currItem: CountryAttribute =
 		world.sequentialRandomArray[world.sequentialRandomIndex];
 	const locations: number[] = currItem.locations;
 	let firstCountryOfCAInCI: Country;
 	let objCenter: Vector3 = new Vector3();
-	locations.forEach((index: number) => {
-		const country = world.countryArray[index];
+	locations.forEach((index: number): void => {
+		const country: Country = world.countryArray[index];
 		if (!correctContinent(continentIndex, country)) return;
 		if (firstCountryOfCAInCI) return;
 		firstCountryOfCAInCI = country;

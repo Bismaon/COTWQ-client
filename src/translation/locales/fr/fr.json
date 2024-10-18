@@ -42,5 +42,6 @@
   "successfullLogin": "CONNECTÉ AVEC SUCCÈS!",
   "userdata": "Données de l'utilisateur",
   "language-select": "Langue préférée",
-  "save-settings": "Sauvegarder les paramètres"
+  "save-settings": "Sauvegarder les paramètres",
+  "customPromptFlags": "Sélectionnez le drapeau qui correspond au pays en surbrillance"
 }
