@@ -179,13 +179,13 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 						</div>
 						<div id="quiz-feedback-container"></div>
 						<div id="country-name-container"></div>
-						<button
+						{/* <button
 							className="quiz-grid-item button"
 							id="finish-game-btn"
 							onClick={handleFinishGame}
 						>
 							Finish Game
-						</button>
+						</button> */}
 					</div>
 				);
 			default:

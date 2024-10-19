@@ -115,7 +115,7 @@ async function retrieveUser(id: number): Promise<UserWithHS | null> {
 }
 
 export async function updateHighscore(
-	user_id: number,
+	userID: number,
 	gameName: string,
 	time: string
 ): Promise<void> {
@@ -125,7 +125,7 @@ export async function updateHighscore(
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ user_id, gameName, time }),
+			body: JSON.stringify({ userID, gameName, time }),
 		});
 
 		if (response.ok) {
@@ -136,16 +136,4 @@ export async function updateHighscore(
 	} catch (error) {
 		console.error("Error fetching user data: ", error);
 	}
-}
-
-export function storeGameNames(gameNames: string[]): void {
-	localStorage.setItem("gameNames", JSON.stringify(gameNames));
-}
-export function retrieveGameNames(): string[] {
-	const data: string | null = localStorage.getItem("gameNames");
-	if (!data) {
-		console.error("Can't find game names.");
-		return [];
-	}
-	return JSON.parse(data);
 }

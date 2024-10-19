@@ -4,7 +4,6 @@ import "../stylesheet/style.css";
 import { useTranslation } from "react-i18next";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { formatGameName, formatTime } from "../utils/utilities";
-import { retrieveGameNames, storeGameNames } from "../user/userStorage";
 
 export interface UserBest extends Highscore {
 	username: string;
@@ -19,6 +18,8 @@ export interface Highscore {
 const Highscores = (): JSX.Element => {
 	const navigate: NavigateFunction = useNavigate();
 	const { t } = useTranslation();
+
+	const [title, setTitle] = useState<string>(""); // Initialize title as a state
 	const [error, setError] = useState<string>("");
 	const [highscores, setHighscores] = useState<UserBest[]>([]);
 	const [currentGameIndex, setCurrentGameIndex] = useState(0);
@@ -139,19 +140,13 @@ const Highscores = (): JSX.Element => {
 				}
 			);
 			setGameNames(gameNames);
-			storeGameNames(gameNames);
 		};
 		fetchGameNames();
 	}, []);
 
 	// Fetch highscores whenever the current game or page changes
 	useEffect((): void => {
-		if (gameNames.length === 0) {
-			if (retrieveGameNames().length === 0) {
-				return;
-			}
-			setGameNames(retrieveGameNames());
-		}
+		if (gameNames.length === 0) return;
 
 		const fetchHighscores = async () => {
 			const currentGameName: string = gameNames[currentGameIndex];
@@ -202,9 +197,12 @@ const Highscores = (): JSX.Element => {
 	);
 
 	// Title for the current game
-	console.log("gameNames: ", gameNames);
-	const title: string =
-		`${formatGameName(gameNames[currentGameIndex])} - Page ${currentPage + 1}`.toUpperCase();
+	useEffect((): void => {
+		if (gameNames.length === 0) return;
+		setTitle(
+			`${formatGameName(gameNames[currentGameIndex])} - Page ${currentPage + 1}`.toUpperCase()
+		);
+	}, [currentGameIndex, currentPage, gameNames]);
 
 	return (
 		<>
@@ -218,14 +216,16 @@ const Highscores = (): JSX.Element => {
 				></i>
 			</div>
 			<div className="grid-item highscores-container">
-				<h2>{title}</h2>
-				<div className="game-navigation-arrows">
+				<div className="game-navigation-arrows left">
 					<button
 						onClick={handlePreviousGame}
 						disabled={currentGameIndex === 0}
 					>
 						&lt; Previous Game
 					</button>
+				</div>
+				<h2>{title}</h2>
+				<div className="game-navigation-arrows right">
 					<button
 						onClick={handleNextGame}
 						disabled={currentGameIndex === gameNames.length - 1}
@@ -233,13 +233,15 @@ const Highscores = (): JSX.Element => {
 						Next Game &gt;
 					</button>
 				</div>
-				<div className="highscore-navigation-arrows">
+				<div className="highscore-navigation-arrows left">
 					<button
 						onClick={handlePreviousPage}
 						disabled={currentPage === 0}
 					>
 						&lt; Previous Page
 					</button>
+				</div>
+				<div className="highscore-navigation-arrows right">
 					<button
 						onClick={handleNextPage}
 						disabled={currentPage === totalPages - 1}
@@ -251,19 +253,21 @@ const Highscores = (): JSX.Element => {
 					<thead>
 						<tr>
 							<th>{t("Rank")}</th>
-							<th>{t("User Name")}</th>
+							<th colSpan={3}>{t("Username")}</th>
 							<th>{t("Score")}</th>
 						</tr>
 					</thead>
 					<tbody>
 						{currentHighscores.map(
-							(user: UserBest, index: number) => (
-								<tr key={index}>
-									<td>{startIndex + index + 1}</td>
-									<td>{user.username}</td>
-									<td>{formatTime(user.score)}</td>
-								</tr>
-							)
+							(user: UserBest, index: number): JSX.Element => {
+								return (
+									<tr key={index}>
+										<td>{startIndex + index + 1}</td>
+										<td colSpan={3}>{user.username}</td>
+										<td>{formatTime(user.score)}</td>
+									</tr>
+								);
+							}
 						)}
 					</tbody>
 				</table>

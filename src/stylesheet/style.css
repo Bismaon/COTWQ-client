@@ -63,6 +63,8 @@ body {
     grid-column: 1 / span 2;
 }
 
+
+
 /* Titles and headings */
 #title {
     grid-row: 1;
@@ -188,12 +190,78 @@ footer#footer {
     max-height: fit-content;
     min-height: fit-content;
 }
-.highscores-container{
+.highscores-container {
     width: 100%;
     max-height: fit-content;
     grid-row: 2/5;
     grid-column: 3/6;
+    display: grid;
+    grid-template-rows: repeat(5, 1fr); /* Adjust for title and table */
+    grid-template-columns: 1fr 3fr 1fr; /* Adjust for arrows and title */
     padding: 0;
-    aspect-ratio: 1;
     z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
 }
+
+.highscores-table {
+    grid-row: 2; /* Place in the second row */
+    grid-column: 2; /* Span all columns */
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.game-navigation-arrows {
+    grid-row: 1; /* Place in the first row */
+    display: flex; /* Use flex for alignment */
+    align-items: center; /* Center vertically */
+}
+
+.game-navigation-arrows.left {
+    grid-column: 1; /* First column for previous game */
+}
+
+.game-navigation-arrows.right{
+    grid-column: 3; /* Third column for next game */
+}
+
+.highscores-container h2 {
+    grid-column: 2; /* Center the title in the second column */
+    vertical-align: center;
+    justify-self: center; /* Center title horizontally */
+    margin: 0; /* Remove default margins */
+}
+
+.highscore-navigation-arrows {
+    grid-row: 2/6; /* Place in the third row */
+    display: flex; /* Use flex for alignment */
+    justify-content: space-between; /* Space out buttons */
+    align-items: center; /* Center vertically */
+}
+
+.highscore-navigation-arrows.left {
+    grid-column: 1; /* First column for previous page */
+}
+
+.highscore-navigation-arrows.right {
+    grid-column: 3; /* Third column for next page */
+}
+
+.highscores-table th,
+.highscores-table td {
+    padding: 12px;
+    text-align: left;
+}
+
+.highscores-table td, .highscores-table th{
+    color: white; /* Set text color to white */
+}
+
+.highscores-table td:first-child {
+    font-weight: bold; /* Make the rank bold */
+}
+
+.highscores-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Lighten the background on hover */
+}
+
