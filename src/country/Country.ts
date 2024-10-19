@@ -56,7 +56,7 @@ export class Country implements BaseItem {
 		this._visible = true;
 		this._meshes = meshes;
 		this._object = object;
-		this._owned = owner !== null;
+		this._owned = owner !== null || acceptedNames.length === 0;
 		this._flagMaterial = flagMaterial;
 		this._material = meshes.material as Material;
 		this._type = "country";
