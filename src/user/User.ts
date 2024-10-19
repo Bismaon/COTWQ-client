@@ -4,11 +4,15 @@ export class User {
 	constructor(
 		id: number,
 		username: string,
-		highscores: { [gameName: string]: string }
+		highscores: { game_name: string; score: string }[] | Highscores
 	) {
 		this._id = id;
 		this._username = username;
-		this._highscores = new Highscores(highscores);
+		if (highscores instanceof Highscores) {
+			this._highscores = highscores;
+		} else {
+			this._highscores = new Highscores(highscores);
+		}
 	}
 
 	private _id: number;

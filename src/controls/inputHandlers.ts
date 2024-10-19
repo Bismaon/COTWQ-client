@@ -709,11 +709,13 @@ export function checkUserSessionAndHandleGameEnd(
 	timer: Timer,
 	gameName: string
 ): void {
-	if (checkUserSession()) {
+	if (checkUserSession() !== -1) {
 		const userID: number = getUserID();
 		const timerStore: string = timer.toStore();
 		updateHighscore(userID, gameName, timerStore).then((r) =>
 			console.debug(r)
 		);
+	} else {
+		// not logged in
 	}
 }

@@ -1,4 +1,5 @@
 import { User } from "./User";
+import { Highscores } from "./Highscores";
 
 export type UserBase = {
 	id: number;
@@ -6,17 +7,18 @@ export type UserBase = {
 	email: string;
 };
 
-export type UserWithHSF = UserBase & {
-	highscores: HighscoreFormatted;
+export type UserWithHS = UserBase & {
+	highscores: Highscore[];
 };
 
-export type HighscoreFormatted = {
-	[gameName: string]: string;
+export type Highscore = {
+	game_name: string;
+	score: string;
 };
 // Assuming this is called after successful login
-export async function loginUser(userId: number): Promise<boolean | Error> {
+export async function loginUser(userId: number): Promise<boolean> {
 	try {
-		const data: UserWithHSF | null = await retrieveUser(userId);
+		const data: UserWithHS | null = await retrieveUser(userId);
 
 		if (!data) {
 			console.error(
@@ -24,11 +26,12 @@ export async function loginUser(userId: number): Promise<boolean | Error> {
 			);
 			return false;
 		}
-
+		console.log("data fetched: ", data);
 		const user: User = new User(data.id, data.username, data.highscores);
 		localStorage.setItem("user", user.toString());
 		localStorage.setItem("userId", String(user.id));
 
+		console.log("formattedHS: ", user.highscores);
 		console.log("User logged in with ID:", user.id);
 		return true;
 	} catch (error) {
@@ -59,29 +62,23 @@ export function logoutUser(): void {
 }
 
 export function getUser(): User | null {
-	const userData: string | null = localStorage.getItem("user");
-	if (!userData) {
-		return null; // No user data found
-	}
-
 	try {
-		const parsedData: UserWithHSF = JSON.parse(userData);
-
-		// Ensure highscores is an object
-		if (
-			typeof parsedData.highscores !== "object" ||
-			Array.isArray(parsedData.highscores)
-		) {
-			console.error("Invalid highscores format. Expected an object.");
-			parsedData.highscores = {}; // Default to an empty object if it's invalid
+		const userData: string | null = localStorage.getItem("user");
+		if (!userData) {
+			return null; // No user data found
 		}
-
-		// Create a new User object with the correct highscores format
-		return new User(
-			parsedData.id,
-			parsedData.username,
+		const parsedData = JSON.parse(userData);
+		const HSBase: { game_name: string; score: string }[] = Object.entries(
 			parsedData.highscores
-		);
+		).map((game: [string, unknown]) => ({
+			game_name: game[0],
+			score: game[1] as string,
+		}));
+		const highscores: Highscores = new Highscores(HSBase);
+
+		const user = new User(parsedData.id, parsedData.username, highscores);
+		console.log("user: ", user);
+		return user;
 	} catch (error) {
 		console.error("Error parsing user data:", error);
 		return null;
@@ -89,9 +86,9 @@ export function getUser(): User | null {
 }
 
 // Fetch user data from the backend
-async function retrieveUser(id: number): Promise<UserWithHSF | null> {
+async function retrieveUser(id: number): Promise<UserWithHS | null> {
 	try {
-		const response = await fetch("/users/fetch-user", {
+		const response: Response = await fetch("/users/fetch-user", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -100,20 +97,13 @@ async function retrieveUser(id: number): Promise<UserWithHSF | null> {
 		});
 
 		if (response.ok) {
-			const data: UserWithHSF = await response.json();
+			const data = await response.json();
 			console.log("Data fetched from backend:", data);
-
-			if (
-				typeof data.highscores !== "object" ||
-				Array.isArray(data.highscores)
-			) {
-				console.error(
-					"Invalid highscores format from backend. Expected object."
-				);
-				data.highscores = {}; // Fix invalid format
+			if (!data) {
 			}
-
-			return data; // Return the retrieved user data
+			const userData: UserWithHS = data.userData;
+			console.log("userData: ", userData);
+			return userData; // Return the retrieved user data
 		} else {
 			console.error("Failed to retrieve user data from the server.");
 			return null;
@@ -146,4 +136,16 @@ export async function updateHighscore(
 	} catch (error) {
 		console.error("Error fetching user data: ", error);
 	}
+}
+
+export function storeGameNames(gameNames: string[]): void {
+	localStorage.setItem("gameNames", JSON.stringify(gameNames));
+}
+export function retrieveGameNames(): string[] {
+	const data: string | null = localStorage.getItem("gameNames");
+	if (!data) {
+		console.error("Can't find game names.");
+		return [];
+	}
+	return JSON.parse(data);
 }

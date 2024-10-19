@@ -3,9 +3,11 @@ import "../stylesheet/Quiz.css";
 import "../stylesheet/style.css";
 import { useTranslation } from "react-i18next";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { formatGameName, formatTime } from "../utils/utilities";
+import { retrieveGameNames, storeGameNames } from "../user/userStorage";
 
 export interface UserBest extends Highscore {
-	username: number;
+	username: string;
 	game_name: string;
 }
 
@@ -13,26 +15,16 @@ export interface Highscore {
 	game_id: number;
 	score: string;
 }
+
 const Highscores = (): JSX.Element => {
 	const navigate: NavigateFunction = useNavigate();
 	const { t } = useTranslation();
 	const [error, setError] = useState<string>("");
-
-	// State to hold the highscores
 	const [highscores, setHighscores] = useState<UserBest[]>([]);
-	const [currentPage, setCurrentPage] = useState(0);
+	const [currentGameIndex, setCurrentGameIndex] = useState(0);
+	const [gameNames, setGameNames] = useState<string[]>([]);
 	const [totalPages, setTotalPages] = useState(0);
-
-	// Dummy data for demonstration
-	const region = "all_regions"; // You would get this from props or state
-	const type = "classic"; // You would get this from props or state
-	const hard = "true"; // You would get this from props or state
-	const gameType = "names"; // You would get this from props or state
-
-	const title = `${region}-${type}-${hard}-${gameType}`
-		.replace(/_/g, " ")
-		.toUpperCase();
-
+	const [currentPage, setCurrentPage] = useState(0);
 	async function getGameID(game_name: string): Promise<number | null> {
 		console.log("Game name: ", game_name);
 		try {
@@ -69,7 +61,7 @@ const Highscores = (): JSX.Element => {
 		console.log("Game ID: ", game_id);
 		const highscores: UserBest[] | null =
 			await getHighscoresFromGameID(game_id);
-		console.log("Highscores: ", highscores);
+		console.log("highscores: ", highscores);
 		if (!highscores) {
 			console.error("An error occurred when getting highscores");
 			return null;
@@ -121,6 +113,7 @@ const Highscores = (): JSX.Element => {
 				return game_names;
 			} else {
 				const errorText: string = await response.text();
+				console.error(errorText);
 				setError(`Failed to get game names: ${errorText}`);
 				return null;
 			}
@@ -130,108 +123,128 @@ const Highscores = (): JSX.Element => {
 			return null;
 		}
 	}
-	useEffect(() => {
-		if (highscores.length !== 0) {
-			return;
-		}
-		// Function to fetch highscores
-		const fetchHighscores = async () => {
-			const game_names: { game_name: string }[] | null =
+
+	// Fetch game names once on mount
+	useEffect((): void => {
+		const fetchGameNames = async () => {
+			const gameNamesList: { game_name: string }[] | null =
 				await getGameNames();
-			if (!game_names) {
+			console.log("games: ", gameNamesList);
+
+			if (!gameNamesList) return;
+
+			const gameNames: string[] = gameNamesList.map(
+				(game: { game_name: string }): string => {
+					return game.game_name;
+				}
+			);
+			setGameNames(gameNames);
+			storeGameNames(gameNames);
+		};
+		fetchGameNames();
+	}, []);
+
+	// Fetch highscores whenever the current game or page changes
+	useEffect((): void => {
+		if (gameNames.length === 0) {
+			if (retrieveGameNames().length === 0) {
 				return;
 			}
-			let allHighscores: UserBest[] = [];
-			for (let i = 0; i < game_names.length; i++) {
-				const game_name = game_names[i].game_name;
-				console.log("Game name: ", game_name);
-				const response: UserBest[] | null =
-					await getHighscoresFromGameName(game_name);
-				if (!response) {
-					console.warn("Nothing here *sus* ", game_name);
-					continue;
-				}
-				allHighscores = [...allHighscores, ...response];
-			}
-			setHighscores(allHighscores);
-			setTotalPages(Math.ceil(allHighscores.length / 10));
-			console.log(allHighscores);
+			setGameNames(retrieveGameNames());
+		}
+
+		const fetchHighscores = async () => {
+			const currentGameName: string = gameNames[currentGameIndex];
+			const highscoresData: UserBest[] | null =
+				await getHighscoresFromGameName(currentGameName);
+			if (!highscoresData) return;
+
+			setHighscores(highscoresData);
+			setTotalPages(Math.ceil(highscoresData.length / 10));
 		};
 
-		fetchHighscores().then((r) => console.debug("Done"));
-	}, [currentPage, highscores.length]);
+		fetchHighscores();
+	}, [currentGameIndex, currentPage, gameNames]);
 
-	function formatTime(time: string): string {
-		let hoursStr: string, minutesStr: string, secondsStr: string;
-		const hours: number = Number(time.slice(0, 2));
-		if (hours === 0) {
-			hoursStr = "";
-		} else {
-			hoursStr = `${hours}h `;
+	// Function to handle game navigation
+	const handleNextGame = (): void => {
+		if (currentGameIndex < gameNames.length - 1) {
+			setCurrentGameIndex(currentGameIndex + 1);
+			setCurrentPage(0); // Reset to the first page when changing game
 		}
-		const minutes: number = Number(time.slice(2, 4));
-		if (minutes === 0) {
-			minutesStr = "";
-		} else if (minutes < 10 && hours !== 0) {
-			minutesStr = `0${minutes}min `;
-		} else {
-			minutesStr = `${minutes}min `;
-		}
-		const seconds: number = Number(time.slice(4, 6));
-		if (seconds === 0) {
-			secondsStr = "";
-		} else if (seconds < 10 && minutes !== 0) {
-			secondsStr = `0${seconds}sec`;
-		} else {
-			secondsStr = `${seconds}sec `;
-		}
-		console.log("base: ", time);
-		console.log("str: ", hoursStr + minutesStr + secondsStr);
-		return hoursStr + minutesStr + secondsStr;
-	}
+	};
 
-	const handleNext = () => {
+	const handlePreviousGame = (): void => {
+		if (currentGameIndex > 0) {
+			setCurrentGameIndex(currentGameIndex - 1);
+			setCurrentPage(0); // Reset to the first page when changing game
+		}
+	};
+
+	// Pagination for highscores
+	const handleNextPage = () => {
 		if (currentPage < totalPages - 1) {
 			setCurrentPage(currentPage + 1);
 		}
 	};
 
-	const handlePrevious = () => {
+	const handlePreviousPage = () => {
 		if (currentPage > 0) {
 			setCurrentPage(currentPage - 1);
 		}
 	};
 
-	// Calculate start and end index for slicing the highscores
-	const startIndex = currentPage * 10;
-	const endIndex = startIndex + 10;
-	const currentHighscores = highscores.slice(startIndex, endIndex);
+	// Calculate highscores to display on the current page
+	const startIndex: number = currentPage * 10;
+	const currentHighscores: UserBest[] = highscores.slice(
+		startIndex,
+		startIndex + 10
+	);
+
+	// Title for the current game
+	console.log("gameNames: ", gameNames);
+	const title: string =
+		`${formatGameName(gameNames[currentGameIndex])} - Page ${currentPage + 1}`.toUpperCase();
 
 	return (
 		<>
 			<div className="grid-item" id="title">
-				<h1>{t("title")}</h1>
+				<h1>{t("Highscores")}</h1>
 			</div>
 			<div className="grid-item" id="back">
 				<i
-					className={`fa-solid fa-arrow-left $"grid-item"`}
-					onClick={() => navigate(-1)}
+					className={`fa-solid fa-arrow-left`}
+					onClick={(): void => navigate(-1)}
 				></i>
 			</div>
 			<div className="grid-item highscores-container">
 				<h2>{title}</h2>
-				<div className="navigation-arrows">
+				<div className="game-navigation-arrows">
 					<button
-						onClick={handlePrevious}
-						disabled={currentPage === 0}
+						onClick={handlePreviousGame}
+						disabled={currentGameIndex === 0}
 					>
-						&lt;
+						&lt; Previous Game
 					</button>
 					<button
-						onClick={handleNext}
+						onClick={handleNextGame}
+						disabled={currentGameIndex === gameNames.length - 1}
+					>
+						Next Game &gt;
+					</button>
+				</div>
+				<div className="highscore-navigation-arrows">
+					<button
+						onClick={handlePreviousPage}
+						disabled={currentPage === 0}
+					>
+						&lt; Previous Page
+					</button>
+					<button
+						onClick={handleNextPage}
 						disabled={currentPage === totalPages - 1}
 					>
-						&gt;
+						Next Page &gt;
 					</button>
 				</div>
 				<table className="highscores-table">
@@ -243,13 +256,15 @@ const Highscores = (): JSX.Element => {
 						</tr>
 					</thead>
 					<tbody>
-						{currentHighscores.map((user: UserBest, index) => (
-							<tr key={index}>
-								<td>{startIndex + index + 1}</td>
-								<td>{user.username}</td>
-								<td>{formatTime(user.score)}</td>
-							</tr>
-						))}
+						{currentHighscores.map(
+							(user: UserBest, index: number) => (
+								<tr key={index}>
+									<td>{startIndex + index + 1}</td>
+									<td>{user.username}</td>
+									<td>{formatTime(user.score)}</td>
+								</tr>
+							)
+						)}
 					</tbody>
 				</table>
 			</div>

@@ -1,7 +1,10 @@
+import { formatTime } from "../utils/utilities";
+
+type highscores = { [gameName: string]: string };
 export class Highscores {
-	private _highscores: { [gameName: string]: string };
-	constructor(highscores: { [gameName: string]: string }) {
-		this._highscores = highscores;
+	private _highscores: highscores;
+	constructor(highscores: { game_name: string; score: string }[]) {
+		this._highscores = this.formatHS(highscores);
 	}
 
 	public toString(): string {
@@ -18,20 +21,27 @@ export class Highscores {
 
 	public getFormattedEntries(): [string, string][] {
 		const entries: [string, string][] = this.getEntries();
-		return entries.map(([gameName, score]) => [
-			gameName,
-			this.scoreToShow(score),
-		]);
+		return entries.map(
+			([gameName, score]: [string, string]): [string, string] => [
+				gameName,
+				formatTime(score),
+			]
+		);
 	}
 
-	private scoreToShow(score: string): string {
-		let hours: string = score.slice(0, 2);
-		hours = hours === "00" ? "" : `${hours}:`;
+	private formatHS(highscores: { game_name: string; score: string }[]): {
+		[p: string]: string;
+	} {
+		console.log("highscoresNF: ", highscores);
 
-		let minutes: string = score.slice(2, 4);
-		minutes = minutes === "00" ? "" : `${minutes}:`;
-
-		const seconds: string = score.slice(4, 6);
-		return `${hours}${minutes}${seconds}`;
+		const formattedHS: highscores = {};
+		Array.from(highscores).forEach(
+			(score: { game_name: string; score: string }): void => {
+				console.log("Score: ", score);
+				formattedHS[score.game_name] = score.score;
+			}
+		);
+		console.log("highscoresF: ", formattedHS);
+		return formattedHS;
 	}
 }

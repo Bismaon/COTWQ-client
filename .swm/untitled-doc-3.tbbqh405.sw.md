@@ -21,7 +21,7 @@ The <SwmToken path="/src/user/userStorage.ts" pos="17:6:6" line-data="export asy
 
 ```
 
-export type UserWithHSF = UserBase & {
+export type UserWithHS = UserBase & {
 	highscores: HighscoreFormatted;
 };
 
@@ -31,7 +31,7 @@ export type HighscoreFormatted = {
 // Assuming this is called after successful login
 export async function loginUser(userId: number): Promise<boolean | Error> {
 	try {
-		const data: UserWithHSF | null = await retrieveUser(userId);
+		const data: UserWithHS | null = await retrieveUser(userId);
 ```
 
 ---
@@ -217,12 +217,12 @@ If there is an error parsing the user data, it is logged, and the function retur
 
 ---
 
-The <SwmToken path="/src/user/userStorage.ts" pos="92:4:4" line-data="async function retrieveUser(id: number): Promise&lt;UserWithHSF | null&gt; {">`retrieveUser`</SwmToken> function fetches user data from the backend. If the response is successful, the data is logged. If the highscores format is invalid, an error is logged, and the format is corrected.
+The <SwmToken path="/src/user/userStorage.ts" pos="92:4:4" line-data="async function retrieveUser(id: number): Promise&lt;UserWithHS | null&gt; {">`retrieveUser`</SwmToken> function fetches user data from the backend. If the response is successful, the data is logged. If the highscores format is invalid, an error is logged, and the format is corrected.
 
 ```
 
 // Fetch user data from the backend
-async function retrieveUser(id: number): Promise<UserWithHSF | null> {
+async function retrieveUser(id: number): Promise<UserWithHS | null> {
 	try {
 		const response = await fetch("/users/fetch-user", {
 			method: "POST",
@@ -233,7 +233,7 @@ async function retrieveUser(id: number): Promise<UserWithHSF | null> {
 		});
 
 		if (response.ok) {
-			const data: UserWithHSF = await response.json();
+			const data: UserWithHS = await response.json();
 			console.log("Data fetched from backend:", data);
 
 			if (

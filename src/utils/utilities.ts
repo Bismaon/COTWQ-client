@@ -152,3 +152,47 @@ export function getCenterCA(continentIndex: number): Vector3 {
 	});
 	return objCenter;
 }
+
+export function formatTime(time: string): string {
+	let hoursStr: string, minutesStr: string, secondsStr: string;
+	const hours: number = Number(time.slice(0, 2));
+	if (hours === 0) {
+		hoursStr = "";
+	} else {
+		hoursStr = `${hours}h `;
+	}
+	const minutes: number = Number(time.slice(2, 4));
+	if (minutes === 0) {
+		minutesStr = "";
+	} else if (minutes < 10 && hours !== 0) {
+		minutesStr = `0${minutes}min `;
+	} else {
+		minutesStr = `${minutes}min `;
+	}
+	const seconds: number = Number(time.slice(4, 6));
+	if (seconds === 0) {
+		secondsStr = "";
+	} else if (seconds < 10 && minutes !== 0) {
+		secondsStr = `0${seconds}sec`;
+	} else {
+		secondsStr = `${seconds}sec `;
+	}
+	console.log("base: ", time);
+	console.log("str: ", hoursStr + minutesStr + secondsStr);
+	return hoursStr + minutesStr + secondsStr;
+}
+
+export function formatGameName(gameName: string): string {
+	console.log("Game name: ", gameName);
+	const [region, normal, hard, gameType] = gameName.split("-");
+	let regionStr: string = region.split("_").join(" ");
+	regionStr = regionStr.charAt(0).toUpperCase() + regionStr.slice(1);
+	let normalStr: string = normal.split("_").join(" ");
+	normalStr = normalStr.charAt(0).toUpperCase() + normalStr.slice(1);
+	let hardStr: string = hard === "true" ? "Hard" : "Easy";
+	let gameTypeStr: string =
+		gameType.charAt(0).toUpperCase() + gameType.slice(1);
+	return (
+		regionStr + " | " + normalStr + " | " + hardStr + " | " + gameTypeStr
+	);
+}

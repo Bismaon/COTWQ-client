@@ -11,7 +11,7 @@ const ProfileMenu: React.FC = () => {
 	const { t } = useTranslation();
 	const [, setSessionChecked] = useState<boolean>(false);
 
-	const handleLogOut = () => {
+	const handleLogOut: () => void = () => {
 		logoutUser();
 		setSessionChecked((prev) => !prev); // Toggle the state to trigger a re-render
 	};

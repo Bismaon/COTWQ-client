@@ -33,7 +33,8 @@ export const handleLogin = async (
 		if (response.ok) {
 			const { id } = await response.json();
 			console.debug("Parsed response: ", id);
-			if (!(await loginUser(id))) {
+			const result: boolean = await loginUser(id);
+			if (!result) {
 				setLogged(false);
 				console.error("Error logging user.");
 				return;
@@ -43,6 +44,7 @@ export const handleLogin = async (
 			console.debug("User logged in: ", id);
 		} else {
 			const errorText: string = await response.text();
+			console.error("Failed to login: ", errorText);
 			setError(`Failed to login: ${errorText}`);
 		}
 	} catch (error) {

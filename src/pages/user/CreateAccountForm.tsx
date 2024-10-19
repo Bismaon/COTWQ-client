@@ -64,7 +64,8 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 			if (response.ok) {
 				const { id } = await response.json();
 				console.debug("Parsed response:", id);
-				if (!(await loginUser(id))) {
+				const result: boolean = await loginUser(id);
+				if (!result) {
 					setLogged(false);
 					console.error("Error logging user.");
 					return;
@@ -75,6 +76,7 @@ const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
 				alert("Account created successfully!");
 			} else {
 				const errorText: string = await response.text();
+				console.error(errorText);
 				setError(`Failed to create account: ${errorText}`);
 			}
 		} catch (error) {

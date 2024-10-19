@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { User } from "../../user/User";
 import { checkUserSession, getUser } from "../../user/userStorage";
 import { useTranslation } from "react-i18next";
+import { formatGameName } from "../../utils/utilities";
 
 interface UserFormProps {
 	onSessionChange: () => void; // Callback to notify parent about session change
@@ -15,12 +16,14 @@ const UserForm: React.FC<UserFormProps> = ({ onSessionChange }) => {
 	const { t } = useTranslation();
 
 	useEffect((): void => {
-		if (!userIsSet) {
+		console.log("user is set? ", userIsSet);
+		if (!userIsSet && !userData) {
 			const id: number = checkUserSession();
 			console.log("ID: ", id);
 			if (id !== -1) {
 				setUserID(id);
 				setUserData(getUser());
+				console.log("Here how many times?");
 				setUserIsSet(true); // This will ensure the second useEffect is triggered only once
 			}
 		}
@@ -41,11 +44,22 @@ const UserForm: React.FC<UserFormProps> = ({ onSessionChange }) => {
 					<ul className="grid-item">
 						{userData.highscores
 							.getFormattedEntries()
-							.map(([game, score]: [string, string]) => (
-								<li key={game}>
-									{game}: {score}
-								</li>
-							))}
+							.map(
+								([game, score]: [
+									string,
+									string,
+								]): JSX.Element => {
+									const formatedGameName: string =
+										formatGameName(game);
+									console.log("game: " + formatedGameName);
+									console.log("score: " + score);
+									return (
+										<li key={game}>
+											{formatedGameName}: {score}
+										</li>
+									);
+								}
+							)}
 					</ul>
 				</div>
 			)}
