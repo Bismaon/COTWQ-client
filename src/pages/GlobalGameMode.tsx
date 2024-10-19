@@ -60,7 +60,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		continentIndex === -1 ? "all_regions" : continentNames[continentIndex];
 	const { isModelLoaded } = useModel();
 	const { t } = useTranslation();
-	const normal: string = sequentialRandom ? "sequential-random" : "normal";
+	const normal: string = sequentialRandom ? "sequential_random" : "normal";
 	const gameName: string =
 		region + "-" + normal + "-" + hard + "-" + gameType;
 

@@ -74,7 +74,6 @@ export function getCombinedCenter(objects: Object3D[]): Vector3 {
 	const combinedCenter: Vector3 = new Vector3();
 	combinedBox.getCenter(combinedCenter);
 	const distanceFromCenter: number = combinedCenter.length();
-	console.log("Before fix: ", combinedCenter);
 	if (distanceFromCenter < 70) {
 		if (distanceFromCenter === 0) {
 			combinedCenter.set(1, 0, 0);
@@ -83,8 +82,7 @@ export function getCombinedCenter(objects: Object3D[]): Vector3 {
 		const newCameraPosition: Vector3 = directionToCenter.multiplyScalar(70);
 
 		combinedCenter.copy(newCameraPosition);
-	} //min distance to center
-	console.log("After fix: ", combinedCenter);
+	}
 	return combinedCenter;
 }
 

@@ -23,7 +23,7 @@ const MainMenu: React.FC = () => {
 			</button>
 			<button
 				className="button grid-item"
-				onClick={() => navigate("high-scores")}
+				onClick={() => navigate("highscores")}
 			>
 				{t("highscores")}
 			</button>

@@ -125,7 +125,7 @@ async function retrieveUser(id: number): Promise<UserWithHSF | null> {
 }
 
 export async function updateHighscore(
-	userID: number,
+	user_id: number,
 	gameName: string,
 	time: string
 ): Promise<void> {
@@ -135,7 +135,7 @@ export async function updateHighscore(
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ userID, gameName, time }),
+			body: JSON.stringify({ user_id, gameName, time }),
 		});
 
 		if (response.ok) {

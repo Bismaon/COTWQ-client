@@ -1,21 +1,22 @@
 // src/utils/loginUtils.ts
 import { loginUser } from "../user/userStorage";
+import { Dispatch, FormEvent, SetStateAction } from "react";
 
 export const togglePasswordVisibility = (
 	passwordInput: HTMLInputElement,
 	showPassword: boolean
-) => {
-	const type = showPassword ? "text" : "password";
+): void => {
+	const type: "text" | "password" = showPassword ? "text" : "password";
 	passwordInput.setAttribute("type", type);
 };
 
 export const handleLogin = async (
-	event: React.FormEvent<HTMLFormElement>,
+	event: FormEvent<HTMLFormElement>,
 	username: string,
 	password: string,
 	onSessionChange: () => void,
-	setLogged: React.Dispatch<React.SetStateAction<boolean>>,
-	setError: React.Dispatch<React.SetStateAction<string | null>>
+	setLogged: Dispatch<SetStateAction<boolean>>,
+	setError: Dispatch<SetStateAction<string | null>>
 ): Promise<void> => {
 	event.preventDefault();
 	try {

@@ -13,8 +13,9 @@ import GameSetter from "./pages/GameSetter";
 import { ModelProvider } from "./pages/ModelContext";
 import Settings from "./pages/Settings";
 import "./translation/i18n";
+import Highscores from "./pages/Highscores";
 
-function App() {
+function App(): JSX.Element {
 	return (
 		<Router>
 			<ModelProvider>
@@ -24,6 +25,7 @@ function App() {
 						<Route path="/" element={<Menus />} />
 						<Route path="/profile" element={<Profile />} />
 						<Route path="/settings" element={<Settings />} />
+						<Route path="/highscores" element={<Highscores />} />
 						<Route path="/games" element={<Games />}>
 							<Route path="normal" element={<SizeMode />}>
 								<Route path="classic" element={<GameMode />}>
