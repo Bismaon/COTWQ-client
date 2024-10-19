@@ -14,7 +14,7 @@ const UserForm: React.FC<UserFormProps> = ({ onSessionChange }) => {
 	const [error, setError] = useState<string>("");
 	const { t } = useTranslation();
 
-	useEffect(() => {
+	useEffect((): void => {
 		if (!userIsSet) {
 			const id: number = checkUserSession();
 			console.log("ID: ", id);

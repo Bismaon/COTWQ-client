@@ -139,8 +139,9 @@ export function correctContinent(
 
 export function getCenterCA(continentIndex: number): Vector3 {
 	const world: World = getWorld();
-	const currItem: CountryAttribute =
-		world.sequentialRandomArray[world.sequentialRandomIndex];
+	const currItem: CountryAttribute = world.sequentialRandomArray[
+		world.sequentialRandomIndex
+	] as CountryAttribute;
 	const locations: number[] = currItem.locations;
 	let firstCountryOfCAInCI: Country;
 	let objCenter: Vector3 = new Vector3();

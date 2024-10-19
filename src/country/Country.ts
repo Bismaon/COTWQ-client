@@ -1,7 +1,8 @@
 // country/Country.ts
 import { Material, Mesh, Object3D } from "three";
+import { BaseItem } from "./World";
 
-export class Country {
+export class Country implements BaseItem {
 	// Holds the capital of the country as a string
 	private readonly _capital: string | null;
 	// Holds the currency of the country as a string
@@ -25,6 +26,7 @@ export class Country {
 	private readonly _owner: [number, number] | null;
 	// Material of the flag resulting from the svg
 	private readonly _flagMaterial: Material;
+	private readonly _type: string;
 
 	constructor(
 		name: string,
@@ -57,6 +59,7 @@ export class Country {
 		this._owned = owner !== null;
 		this._flagMaterial = flagMaterial;
 		this._material = meshes.material as Material;
+		this._type = "country";
 	}
 
 	public get languages(): string[] | null {
@@ -134,6 +137,10 @@ export class Country {
 	 */
 	public set found(isFound: boolean) {
 		this._found = isFound;
+	}
+
+	public get type(): string {
+		return this._type;
 	}
 
 	private _visible: boolean;

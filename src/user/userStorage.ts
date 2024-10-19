@@ -1,4 +1,5 @@
 import { User } from "./User";
+
 export type UserBase = {
 	id: number;
 	username: string;
@@ -9,26 +10,15 @@ export type UserWithHSF = UserBase & {
 	highscores: HighscoreFormatted;
 };
 
-export type GuestUser = UserBase & {
-	guestToken: string;
-};
-export type Highscore = {
-	gameID: number;
-	time: string;
-};
 export type HighscoreFormatted = {
 	[gameName: string]: string;
 };
-export type Game = {
-	gameName: string;
-	gameID: number;
-};
 // Assuming this is called after successful login
-export async function loginUser(userId: number): Promise<boolean> {
+export async function loginUser(userId: number): Promise<boolean | Error> {
 	try {
-		const data = await retrieveUser(userId);
+		const data: UserWithHSF | null = await retrieveUser(userId);
 
-		if (!data || !data.highscores) {
+		if (!data) {
 			console.error(
 				"Failed to retrieve user data or highscores are missing."
 			);
@@ -36,7 +26,7 @@ export async function loginUser(userId: number): Promise<boolean> {
 		}
 
 		const user: User = new User(data.id, data.username, data.highscores);
-		localStorage.setItem("user", user.toString()); // Directly use user.toString()
+		localStorage.setItem("user", user.toString());
 		localStorage.setItem("userId", String(user.id));
 
 		console.log("User logged in with ID:", user.id);
@@ -51,10 +41,10 @@ export async function loginUser(userId: number): Promise<boolean> {
 export function checkUserSession(): number {
 	const userId: number = getUserID();
 	if (userId) {
-		console.log("Session active for user ID:", userId);
+		console.debug("Session active for user ID: ", userId);
 		return userId;
 	} else {
-		console.log("No active session.");
+		console.debug("No active session.");
 		return -1;
 	}
 }
@@ -69,13 +59,13 @@ export function logoutUser(): void {
 }
 
 export function getUser(): User | null {
-	const userData = localStorage.getItem("user");
+	const userData: string | null = localStorage.getItem("user");
 	if (!userData) {
 		return null; // No user data found
 	}
 
 	try {
-		const parsedData = JSON.parse(userData);
+		const parsedData: UserWithHSF = JSON.parse(userData);
 
 		// Ensure highscores is an object
 		if (

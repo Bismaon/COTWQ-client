@@ -55,7 +55,7 @@ export function resetModel(): void {
 	if (isFollowing()) toggleIsFollowing();
 	isControlsEnabled(isPlaying());
 	world.clearFound();
-	world.resetCountries();
+	world.resetCountries(-1);
 	setCameraPosition(new Vector3(0, 0, 118));
 }
 

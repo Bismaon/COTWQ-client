@@ -3,7 +3,11 @@
 import { Country } from "./Country";
 import { Object3D, Vector3 } from "three";
 import { getCountryMovement, getStateMaterial } from "../utils/countryUtils";
-import { changeCountryCellTo } from "./countriesTable";
+import {
+	changeCACells,
+	changeCountryCellTo,
+	shuffleArray,
+} from "./countriesTable";
 import { bounceAnimation } from "../utils/animation";
 import { isAcceptedName } from "../controls/inputHandlers";
 import {
@@ -25,11 +29,13 @@ export const countriesCountByRegion: { [region: string]: number } = {
 export const currencyByRegion: number[] = [41, 0, 46, 20, 16, 9, 12, 146];
 export const languageByRegion: number[] = [40, 0, 40, 41, 4, 13, 8, 136];
 
-export interface CountryAttribute {
+export interface BaseItem {
 	type: string;
+	found: boolean;
+}
+export interface CountryAttribute extends BaseItem {
 	name: string;
 	locations: number[];
-	found: boolean;
 	region: number[];
 	selected: boolean;
 }
@@ -54,13 +60,13 @@ export class World {
 		this._sequentialRandomIndex = 0;
 	}
 
-	private _sequentialRandomArray: any[];
+	private _sequentialRandomArray: BaseItem[];
 
-	public get sequentialRandomArray(): any[] {
+	public get sequentialRandomArray(): BaseItem[] {
 		return this._sequentialRandomArray;
 	}
 
-	public set sequentialRandomArray(value: any[]) {
+	public set sequentialRandomArray(value: BaseItem[]) {
 		this._sequentialRandomArray = value;
 	}
 
@@ -102,6 +108,15 @@ export class World {
 		this._countryArray = newCountry;
 	}
 
+	public getRegionCountries(regionNumber: number): Country[] {
+		if (regionNumber === 7) {
+			return this._countryArray;
+		}
+
+		return this._countryArray.filter((country) => {
+			return country.location[0] === regionNumber;
+		});
+	}
 	public incrementFound(): void {
 		this._countriesFound++;
 	}
@@ -242,9 +257,11 @@ export class World {
 		});
 	}
 
-	public resetCountries(): void {
+	public resetCountries(continentIndex: number): void {
 		this._countryArray.forEach((country: Country, index: number): void => {
 			if (country.owned) return;
+			if (continentIndex !== -1 && country.location[0] !== continentIndex)
+				return;
 			this.setCountryAndConnectedVisibility(index, true);
 			this.setCountryAndConnectedState(index, "unknown");
 		});
@@ -419,33 +436,6 @@ export class World {
 		}
 	}
 
-	// Helper method to calculate the percentage of found languages
-	private calculateLanguagePercentage(country: Country): number {
-		if (!country.languages) return 0;
-
-		const foundLanguages: number = country.languages.filter(
-			(lang: string): CountryAttribute | undefined =>
-				this._languageArray.find(
-					(l: CountryAttribute): boolean => l.name === lang && l.found
-				)
-		).length;
-
-		return (foundLanguages / country.languages.length) * 100;
-	}
-
-	private getConnectedTerritories(index: number): number[] {
-		let baseCountry: Country = this._countryArray[index];
-		if (baseCountry.owner !== null) {
-			baseCountry = this.getCountryByLocation(baseCountry.owner);
-		}
-		const connected: number[] = [this.getRealIndex(baseCountry.location)];
-
-		baseCountry.territories.forEach((location: [number, number]): void => {
-			connected.push(this.getRealIndex(location));
-		});
-		return connected;
-	}
-
 	public finishGame(type: string, region: number): void {
 		switch (type) {
 			case "currency":
@@ -497,5 +487,71 @@ export class World {
 				);
 				break;
 		}
+	}
+
+	public resetSequentialItems(
+		sequentialRandom: boolean,
+		gameType: string
+	): void {
+		if (!sequentialRandom) return;
+		this._sequentialRandomIndex = 0;
+		switch (gameType) {
+			case "languages":
+				this._sequentialRandomArray = shuffleArray(this._languageArray);
+				break;
+			case "currencies":
+				this._sequentialRandomArray = shuffleArray(this._currencyArray);
+				break;
+			default:
+				this._sequentialRandomArray = shuffleArray(this._countryArray);
+				break;
+		}
+	}
+
+	public resetCA(gameType: string): void {
+		switch (gameType) {
+			case "languages":
+				this._languageArray.forEach((language: CountryAttribute) => {
+					language.found = false;
+				});
+				changeCACells("unavailable", "language");
+
+				break;
+			case "currencies":
+				this._currencyArray.forEach((currency: CountryAttribute) => {
+					currency.found = false;
+				});
+				changeCACells("unavailable", "currency");
+				break;
+			default:
+				break;
+		}
+	}
+
+	// Helper method to calculate the percentage of found languages
+	private calculateLanguagePercentage(country: Country): number {
+		if (!country.languages) return 0;
+
+		const foundLanguages: number = country.languages.filter(
+			(lang: string): CountryAttribute | undefined =>
+				this._languageArray.find(
+					(l: CountryAttribute): boolean => l.name === lang && l.found
+				)
+		).length;
+
+		return (foundLanguages / country.languages.length) * 100;
+	}
+
+	private getConnectedTerritories(index: number): number[] {
+		let baseCountry: Country = this._countryArray[index];
+		if (baseCountry.owner !== null) {
+			baseCountry = this.getCountryByLocation(baseCountry.owner);
+		}
+		const connected: number[] = [this.getRealIndex(baseCountry.location)];
+
+		baseCountry.territories.forEach((location: [number, number]): void => {
+			connected.push(this.getRealIndex(location));
+		});
+		return connected;
 	}
 }

@@ -1,6 +1,6 @@
 // country/countriesTable.ts
 
-import { CountryAttribute, World } from "./World";
+import { BaseItem, CountryAttribute, World } from "./World";
 import { Country } from "./Country";
 import { getWorld } from "../scene/sceneManager";
 import { handleImageClick } from "../controls/inputHandlers";
@@ -40,7 +40,6 @@ export function changeCountryCellTo(
 ): void {
 	countryIndex.forEach((index: number): void => {
 		const countryElement: Country = getWorld().countryArray[index];
-		console.log("Country element: ", countryElement);
 		const [continent, country] = countryElement.location;
 		if (continent === 1) {
 			return;
@@ -100,7 +99,8 @@ export function populateFlags(
 	continentIndex: number,
 	sequentialRandom: boolean,
 	timer: Timer,
-	region: string
+	region: string,
+	gameName: string
 ): void {
 	const flagContainer: HTMLElement | null =
 		document.getElementById("item-list");
@@ -125,7 +125,7 @@ export function populateFlags(
 		imgElement.alt = `${country.location[0]}_${country.location[1]}`;
 
 		imgElement.addEventListener("click", (e: MouseEvent): void => {
-			handleImageClick(e, sequentialRandom, timer, region);
+			handleImageClick(e, sequentialRandom, timer, region, gameName);
 		});
 
 		flagContainer.appendChild(imgElement);
@@ -141,56 +141,49 @@ export function changeCACells(
 	state: "found" | "error" | "unavailable",
 	type: string
 ): void {
+	let caArray: BaseItem[];
 	switch (type) {
 		case "currency":
-			const currencyArray: CountryAttribute[] = getWorld().currencyArray;
+			caArray = getWorld().currencyArray;
 
-			currencyArray.forEach(
-				(currency: CountryAttribute, index: number): void => {
-					changeCACell(state, currency, index);
-				}
-			);
 			break;
 		case "language":
-			const languageArray: CountryAttribute[] = getWorld().languageArray;
+			caArray = getWorld().languageArray;
 
-			languageArray.forEach(
-				(language: CountryAttribute, index: number): void => {
-					changeCACell(state, language, index);
-				}
-			);
 			break;
 		default:
 			console.error(`Country attribute of type ${type} unknown`);
+			return;
 	}
+	caArray.forEach((item: BaseItem, index: number): void => {
+		changeCACell(state, item.type, index);
+	});
 }
 
-export function changeCACell(
-	state: string,
-	countryAttribute: CountryAttribute,
-	index: number
-): void {
-	let cells;
-	switch (countryAttribute.type) {
-		case "currency" || "language":
-			cells = document.getElementsByClassName(`_${index}`);
-
-			if (!cells) {
-				console.error(`Cell with ID ${index} not found.`);
-				return;
-			}
-
-			for (let i: number = 0; i < cells.length; i++) {
-				const cell: Element = cells[i];
-				cell.className = `cell _${index} ${state}`;
-			}
-
+export function changeCACell(state: string, type: string, index: number): void {
+	let cells: Element[];
+	switch (type) {
+		case "currency":
+			changing();
+			break;
+		case "language":
+			changing();
 			break;
 		default:
-			console.error(
-				`Country attribute of type ${countryAttribute.type} unknown`
-			);
+			console.error(`Country attribute of type ${type} unknown`);
 			return;
+	}
+	function changing(): void {
+		cells = Array.from(document.getElementsByClassName(`cell _${index}`));
+
+		if (!cells) {
+			console.error(`Cells with classname ${index} not found.`);
+			return;
+		}
+
+		cells.forEach((cell: Element): void => {
+			cell.className = `cell _${index} ${state}`;
+		});
 	}
 }
 

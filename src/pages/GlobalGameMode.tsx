@@ -39,7 +39,6 @@ import {
 import { cameraFaceTo } from "../camera/camera";
 import { TFunction } from "i18next";
 import { getUserID, updateHighscore } from "../user/userStorage";
-import { updateControls } from "../controls/controls";
 
 interface gameModeProps {
 	hard: boolean;
@@ -139,9 +138,9 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 			world.isAllFound(region)
 		) {
 			gameTimer.stop();
-			const completionTime = gameTimer.toString();
-			const userID = getUserID();
-			const timerStore = gameTimer.toStore();
+			const completionTime: string = gameTimer.toString();
+			const userID: number = getUserID();
+			const timerStore: string = gameTimer.toStore();
 
 			// Display success message
 			alert(`Congratulations! You finished in ${completionTime}!`);
@@ -153,7 +152,8 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 
 			gameFinishedRef.current = true; // Set ref to prevent further calls
 		} else if (["currencies", "languages"].includes(gameType)) {
-			let type = gameType === "currencies" ? "currency" : "language";
+			let type: string =
+				gameType === "currencies" ? "currency" : "language";
 			world.allCountryAttributeFound(type, regionNumber);
 		} else {
 			alert("There are still some countries left to find!");
@@ -215,7 +215,8 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 					continentIndex,
 					sequentialRandom,
 					gameTimer,
-					region
+					region,
+					gameName
 				);
 				console.debug(`Flags have been added.`);
 				break;
@@ -258,8 +259,8 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		isQuizInit.current = true;
 	}, [
 		continentIndex,
+		gameTimer,
 		gameType,
-		getCenterCA,
 		hard,
 		isModelLoaded,
 		region,
@@ -281,6 +282,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 	}
 
 	function handleSequentialMove(direction: number): void {
+		if (!ongoing) return;
 		const world: World = getWorld();
 		const prevIndex: number = world.sequentialRandomIndex;
 
@@ -289,8 +291,9 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		const currIndex: number = world.sequentialRandomIndex;
 
 		if (["languages", "currencies"].includes(gameType)) {
-			const prevCA: CountryAttribute =
-				world.sequentialRandomArray[prevIndex];
+			const prevCA: CountryAttribute = world.sequentialRandomArray[
+				prevIndex
+			] as CountryAttribute;
 			prevCA.selected = false;
 
 			prevCA.locations.forEach((index: number): void => {
@@ -303,8 +306,9 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 					world.applyState(index, "unknown");
 				}
 			});
-			const currCA: CountryAttribute =
-				world.sequentialRandomArray[currIndex];
+			const currCA: CountryAttribute = world.sequentialRandomArray[
+				currIndex
+			] as CountryAttribute;
 			console.log("Currently selected item: ", currCA);
 			currCA.selected = true;
 			currCA.locations.forEach((index: number): void => {
@@ -315,15 +319,23 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 			});
 			cameraFaceTo(getCenterCA(continentIndex));
 		} else {
-			const prevCountry: Country = world.sequentialRandomArray[prevIndex];
+			const prevCountry: Country = world.sequentialRandomArray[
+				prevIndex
+			] as Country;
 			const prevCountryIndex: number = world.getRealIndex(
 				prevCountry.location
 			);
-			world.setCountryAndConnectedState(prevCountryIndex, "unknown");
+			world.setCountryAndConnectedState(
+				prevCountryIndex,
+				prevCountry.state === "selected" ? "unknown" : prevCountry.state
+			);
 			if (hard) {
 				world.setCountryAndConnectedVisibility(prevCountryIndex, false);
 			}
-			const currCountry: Country = world.sequentialRandomArray[currIndex];
+
+			const currCountry: Country = world.sequentialRandomArray[
+				currIndex
+			] as Country;
 			const currCountryIndex: number = world.getRealIndex(
 				currCountry.location
 			);
@@ -366,14 +378,15 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 						className="quiz-grid-item button"
 						id="give-up-btn"
 						onClick={(): void => {
-							ongoing = !ongoing;
+							ongoing = ongoing ? false : ongoing;
 							handleGiveUp(
 								continentIndex,
 								gameTimer,
 								hard,
 								region,
 								gameType,
-								sequentialRandom
+								sequentialRandom,
+								gameName
 							);
 						}}
 					>
@@ -383,8 +396,8 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 						className="quiz-grid-item button"
 						id="quiz-stop-start"
 						onClick={(): void => {
-							ongoing = !ongoing;
-							handlePauseStart(ongoing, gameTimer);
+							ongoing = handlePauseStart(ongoing, gameTimer);
+							console.log(ongoing);
 						}}
 					>
 						{t("start")}

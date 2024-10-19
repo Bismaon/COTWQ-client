@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { checkUserSession, loginUser } from "../../user/userStorage";
+import { checkUserSession } from "../../user/userStorage";
 import CreateAccountForm from "./CreateAccountForm";
 import UserForm from "./UserForm";
 import { useTranslation } from "react-i18next";
+import { handleLogin, togglePasswordVisibility } from "../../utils/loginUtils"; // Adjust the import path accordingly
 
 interface LoginFormProps {
 	onSessionChange: () => void; // Callback to notify parent about session change
@@ -28,56 +29,23 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 			"password"
 		) as HTMLInputElement;
 		setShowPassword(!showPassword);
-		const type =
-			passwordInput.getAttribute("type") === "password"
-				? "text"
-				: "password";
-		passwordInput.setAttribute("type", type);
+		togglePasswordVisibility(passwordInput, showPassword);
 	};
-	const handleLogin = async (
-		event: React.FormEvent<HTMLFormElement>
-	): Promise<void> => {
-		event.preventDefault();
-		try {
-			const response: Response = await fetch("/users/login", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ username, password }),
-			});
-
-			console.debug("Raw response:", response);
-
-			if (response.ok) {
-				const { id } = await response.json();
-				console.debug("Parsed response: ", id);
-				if (!(await loginUser(id))) {
-					setLogged(false);
-					console.error("Error logging user.");
-					return;
-				}
-				setLogged(true);
-				onSessionChange(); // Notify ProfileMenu about session change
-				console.debug("User logged in: ", id);
-				alert(t("successfullLogin"));
-			} else {
-				const errorText: string = await response.text();
-				setError(`Failed to login: ${errorText}`);
-			}
-		} catch (error) {
-			console.error("Error logging in:", error);
-			setError("An error occurred during login.");
-		}
-	};
-
-	console.debug("Rendering LoginForm.tsx");
 
 	return (
 		<form
 			className="grid-profile-container"
 			name="login-form"
-			onSubmit={handleLogin}
+			onSubmit={(event) =>
+				handleLogin(
+					event,
+					username,
+					password,
+					onSessionChange,
+					setLogged,
+					setError
+				)
+			}
 		>
 			<label className="grid-item" htmlFor="username">
 				{t("username")}
@@ -138,8 +106,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSessionChange }) => {
 				</button>
 			</div>
 
-			{/* <button className="grid-item">Forgot password?</button> */}
-			{/* Redirect to change password */}
 			{error && <p style={{ color: "red" }}>{error}</p>}
 		</form>
 	);
