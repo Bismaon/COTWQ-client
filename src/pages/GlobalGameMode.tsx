@@ -113,11 +113,23 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 
 	const gameFinishedRef = React.useRef(false); // Use ref to avoid re-renders
 
+	function caByRegion(type: string, region: number): number {
+		switch (type) {
+			case "language":
+				return languageByRegion[region];
+			case "currency":
+				return currencyByRegion[region];
+			default:
+				return 0;
+		}
+	}
+
 	function handleFinishGame(): void {
 		if (gameFinishedRef.current) return; // Prevent multiple calls
 
 		const world: World = getWorld();
 		const regionNumber: number = regionMap[region];
+		console.debug("Region: ", region, ", region number: ", regionNumber);
 		let type: string = gameType === "currencies" ? "currency" : "language";
 
 		// Call the finish game logic (update world state)
@@ -127,38 +139,55 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		const counter: HTMLDivElement = document.getElementById(
 			"counter"
 		) as HTMLDivElement;
-		updateCounter(
-			counter,
-			world.countriesFound,
-			countriesCountByRegion[region]
-		);
 
 		// Check if all countries are found and stop the timer
+
 		if (
 			!["currencies", "languages"].includes(gameType) &&
 			world.isAllFound(region)
 		) {
 			finishGameProcessing(gameTimer, gameName);
 			gameFinishedRef.current = true; // Set ref to prevent further calls
-		} else if (
-			["currencies", "languages"].includes(gameType) &&
-			world.allCountryAttributeFound(type, regionNumber)
-		) {
-			finishGameProcessing(gameTimer, gameName);
-			gameFinishedRef.current = true; // Set ref to prevent further calls
+			updateCounter(
+				counter,
+				world.countriesFound,
+				countriesCountByRegion[region]
+			);
+		} else if (["currencies", "languages"].includes(gameType)) {
+			const res = world.allCountryAttributeFound(type, regionNumber);
+			console.debug("All attribute found? ", res);
+			if (world.allCountryAttributeFound(type, regionNumber)) {
+				finishGameProcessing(gameTimer, gameName);
+				gameFinishedRef.current = true; // Set ref to prevent further calls
+				updateCounter(
+					counter,
+					world.getFoundCA(type, regionNumber).length,
+					caByRegion(type, regionNumber)
+				);
+			}
 		} else {
 			alert("There are still some countries left to find!");
 		}
 	}
 
-	function renderOptions(
+	function RenderOptions(
 		gameType: string,
 		t: TFunction<"translation", undefined>
 	): React.JSX.Element {
-		switch (gameType) {
-			case "names" || "flags":
-				return (
-					<div className="grid-item" id="quiz-options">
+		// Check if the URL contains "cotwq"
+		const isButtonVisible: boolean =
+			!window.location.href.includes("cotwq");
+
+		return (
+			<div className="grid-item" id="quiz-options">
+				{[
+					"names",
+					"flags",
+					"capitals",
+					"currencies",
+					"languages",
+				].includes(gameType) && (
+					<>
 						<div id="checkbox-container">
 							<label htmlFor="follow">{t("follow")}</label>
 							<input
@@ -170,22 +199,20 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 						</div>
 						<div id="quiz-feedback-container"></div>
 						<div id="country-name-container"></div>
-						<button
-							className="quiz-grid-item button"
-							id="finish-game-btn"
-							onClick={handleFinishGame}
-						>
-							Finish Game
-						</button>
-					</div>
-				);
-			default:
-				return (
-					<div className="grid-item" id="quiz-options">
-						<div id="country-name-container"></div>
-					</div>
-				);
-		}
+					</>
+				)}
+				{/* Render the Finish Game button conditionally */}
+				{isButtonVisible && (
+					<button
+						className="quiz-grid-item button"
+						id="finish-game-btn"
+						onClick={handleFinishGame}
+					>
+						Finish Game
+					</button>
+				)}
+			</div>
+		);
 	}
 
 	useEffect((): void => {
@@ -430,7 +457,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				</div>
 			</div>
 			{renderRightSide(gameType)}
-			{renderOptions(gameType, t)}
+			{RenderOptions(gameType, t)}
 			<div className="grid-item" id="hint-answer">
 				<div className="grid" id="hint-answer-container"></div>
 			</div>

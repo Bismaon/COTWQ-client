@@ -131,9 +131,9 @@ export async function updateHighscore(
 		if (response.ok) {
 			console.debug("Successfully updated highscore: ", response.status);
 		} else {
-			console.error("Failed to retrieve user data from the server.");
+			console.error("Failed to update highscore.", response.status);
 		}
 	} catch (error) {
-		console.error("Error fetching user data: ", error);
+		console.error("Error updating highscore: ", error);
 	}
 }

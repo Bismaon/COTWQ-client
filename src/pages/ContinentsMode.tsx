@@ -8,11 +8,13 @@ import {
 } from "react-router-dom";
 import "../stylesheet/style.css";
 import { useTranslation } from "react-i18next";
+import { useMenu } from "../App";
 
 const ContinentsMode: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
 	const { t } = useTranslation();
+	const { setHoveredButton } = useMenu();
 
 	const isInContinentsMenu: boolean =
 		location.pathname.endsWith("/continents");
@@ -37,37 +39,67 @@ const ContinentsMode: React.FC = () => {
 					</div>
 					<button
 						className="button grid-item"
-						onClick={() => handleNavigate("africa")}
+						onClick={() => {
+							handleNavigate("africa");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("AF")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("africa")}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={() => handleNavigate("south_america")}
+						onClick={() => {
+							handleNavigate("south_america");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("SA")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("southamerica")}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={() => handleNavigate("north_america")}
+						onClick={() => {
+							handleNavigate("north_america");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("NA")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("northamerica")}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={() => handleNavigate("asia")}
+						onClick={() => {
+							handleNavigate("asia");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("AS")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("asia")}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={() => handleNavigate("europe")}
+						onClick={() => {
+							handleNavigate("europe");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("EU")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("europe")}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={() => handleNavigate("oceania")}
+						onClick={() => {
+							handleNavigate("oceania");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("OC")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("oceania")}
 					</button>

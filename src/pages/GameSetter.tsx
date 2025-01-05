@@ -29,6 +29,7 @@ const GameSetter: React.FC = () => {
 		const sequentialRandom: boolean =
 			pathSegments.includes("sequential-random");
 		const gameMode: string = pathSegments[pathSegments.length - 1];
+		console.debug("Game type: ", gameMode);
 		return (
 			<GlobalGameMode
 				hard={isHardMode}

@@ -38,6 +38,11 @@ import {
 	updateHighscore,
 } from "../user/userStorage";
 
+/**
+ * Updates the currently selected flag by removing the selected state from the current flag
+ * and applying it to the next available flag.
+ * @param {HTMLImageElement} flagSelected - The currently selected flag element.
+ */
 function updateFlagSelection(flagSelected: HTMLImageElement): void {
 	const nextFlag: HTMLImageElement | null = getNextFlag(flagSelected);
 	flagSelected.classList.remove("selected");
@@ -47,11 +52,18 @@ function updateFlagSelection(flagSelected: HTMLImageElement): void {
 	}
 }
 
+/**
+ * Handles the game completion by stopping the timer and displaying a congratulatory message.
+ * @param {Timer} timer - The timer instance for the game.
+ */
 function handleGameCompletion(timer: Timer): void {
 	timer.stop();
 	alert(`Congratulations you finished in ${timer.toString()}!`); // make a better message
 }
 
+/**
+ * Displays the answer container by setting its visibility to "visible."
+ */
 function showAnswerContainer(): void {
 	const answerContainer: HTMLDivElement = document.getElementById(
 		"hint-answer-container"
@@ -59,6 +71,17 @@ function showAnswerContainer(): void {
 	answerContainer.style.visibility = "visible";
 }
 
+/**
+ * Handles text box input for the "flags" game mode.
+ * @param {World} world - The current world instance.
+ * @param {string} enteredText - The text entered in the answer box.
+ * @param {HTMLInputElement} answerInput - The input element for the answer box.
+ * @param {HTMLDivElement} counter - The counter element to update.
+ * @param {Timer} timer - The timer instance for the game.
+ * @param {string} region - The current region for the game.
+ * @param {string} gameName - The name of the current game.
+ * @param {boolean} [sequentialRandom] - Whether the game is in sequential random mode.
+ */
 function textboxChangeFlags(
 	world: World,
 	enteredText: string,
@@ -100,12 +123,21 @@ function textboxChangeFlags(
 		countriesCountByRegion[region]
 	);
 	if (world.isAllFound(region)) {
-		handleGameCompletion(timer);
-		checkUserSessionAndHandleGameEnd(timer, gameName);
-		showAnswerContainer();
+		finishGameProcessing(timer, gameName);
 	}
 }
 
+/**
+ * Handles text box input for the "names" game mode.
+ * @param {World} world - The current world instance.
+ * @param {string} enteredText - The text entered in the answer box.
+ * @param {HTMLInputElement} answerInput - The input element for the answer box.
+ * @param {HTMLDivElement} counter - The counter element to update.
+ * @param {Timer} timer - The timer instance for the game.
+ * @param {string} region - The current region for the game.
+ * @param {boolean} sequentialRandom - Whether the game is in sequential random mode.
+ * @param {string} gameName - The name of the current game.
+ */
 function textboxChangeNames(
 	world: World,
 	enteredText: string,
@@ -136,6 +168,17 @@ function textboxChangeNames(
 	});
 }
 
+/**
+ * Updates the state of a country and its associated elements when found.
+ * @param {boolean} sequentialRandom - Whether the game is in sequential random mode.
+ * @param {Timer} timer - The timer instance for the game.
+ * @param {World} world - The current world instance.
+ * @param {number} index - The index of the country being updated.
+ * @param {HTMLInputElement} answerInput - The input element for the answer box.
+ * @param {HTMLDivElement} counter - The counter element to update.
+ * @param {string} region - The current region for the game.
+ * @param {string} gameName - The name of the current game.
+ */
 function textBoxBasicFound(
 	sequentialRandom: boolean,
 	timer: Timer,
@@ -165,12 +208,21 @@ function textBoxBasicFound(
 		countriesCountByRegion[region]
 	);
 	if (world.isAllFound(region)) {
-		handleGameCompletion(timer);
-		checkUserSessionAndHandleGameEnd(timer, gameName);
-		showAnswerContainer();
+		finishGameProcessing(timer, gameName);
 	}
 }
 
+/**
+ * Handles text box input for the "capitals" game mode.
+ * @param {World} world - The current world instance.
+ * @param {string} enteredText - The text entered in the answer box.
+ * @param {HTMLInputElement} answerInput - The input element for the answer box.
+ * @param {HTMLDivElement} counter - The counter element to update.
+ * @param {Timer} timer - The timer instance for the game.
+ * @param {string} region - The current region for the game.
+ * @param {boolean} sequentialRandom - Whether the game is in sequential random mode.
+ * @param {string} gameName - The name of the current game.
+ */
 function textBoxChangeCapitals(
 	world: World,
 	enteredText: string,
@@ -200,6 +252,17 @@ function textBoxChangeCapitals(
 	});
 }
 
+/**
+ * Handles text box input for the "languages" game mode.
+ * @param {World} world - The current world instance.
+ * @param {string} enteredText - The text entered in the answer box.
+ * @param {HTMLInputElement} answerInput - The input element for the answer box.
+ * @param {HTMLDivElement} counter - The counter element to update.
+ * @param {Timer} timer - The timer instance for the game.
+ * @param {string} region - The current region for the game.
+ * @param {boolean} sequentialRandom - Whether the game is in sequential random mode.
+ * @param {string} gameName - The name of the current game.
+ */
 function textBoXChangeLanguages(
 	world: World,
 	enteredText: string,
@@ -209,7 +272,7 @@ function textBoXChangeLanguages(
 	region: string,
 	sequentialRandom: boolean,
 	gameName: string
-) {
+): void {
 	const languageArray: CountryAttribute[] = world.languageArray;
 	const regionNumber: number = getRegionByNumber(region);
 	const type = "language";
@@ -229,6 +292,17 @@ function textBoXChangeLanguages(
 	);
 }
 
+/**
+ * Handles text box input for the "currencies" game mode.
+ * @param {World} world - The current world instance.
+ * @param {string} enteredText - The text entered in the answer box.
+ * @param {HTMLInputElement} answerInput - The input element for the answer box.
+ * @param {HTMLDivElement} counter - The counter element to update.
+ * @param {Timer} timer - The timer instance for the game.
+ * @param {string} region - The current region for the game.
+ * @param {boolean} sequentialRandom - Whether the game is in sequential random mode.
+ * @param {string} gameName - The name of the current game.
+ */
 function textBoXChangeCurrencies(
 	world: World,
 	enteredText: string,
@@ -258,6 +332,11 @@ function textBoXChangeCurrencies(
 	);
 }
 
+/**
+ * Finalizes the game by handling completion logic, updating user session, and showing answers.
+ * @param {Timer} timer - The timer instance for the game.
+ * @param {string} gameName - The name of the current game.
+ */
 export function finishGameProcessing(timer: Timer, gameName: string): void {
 	handleGameCompletion(timer);
 	checkUserSessionAndHandleGameEnd(timer, gameName);
@@ -307,7 +386,11 @@ function textboxChangeCA(
 		}
 
 		answerInput.value = "";
-		updateCounter(counter, world.getFoundCA(type).length, regionCount);
+		updateCounter(
+			counter,
+			world.getFoundCA(type, region).length,
+			regionCount
+		);
 	});
 
 	if (world.allCountryAttributeFound(type, region)) {
@@ -345,6 +428,14 @@ export function updateCounter(
 	counter.textContent = `${foundCount}\u00A0/\u00A0${totalCount} guessed`;
 }
 
+/**
+ * Handles text box input changes and routes them to the appropriate game type handler.
+ * @param {Timer} timer - The timer instance for the game.
+ * @param {string} gameType - The type of game (e.g., "flags", "names").
+ * @param {string} region - The region for the game.
+ * @param {boolean} sequentialRandom - Whether the game is in sequential random mode.
+ * @param {string} gameName - The name of the current game.
+ */
 export function handleTextboxChange(
 	timer: Timer,
 	gameType: string,
@@ -391,6 +482,12 @@ export function handleTextboxChange(
 	}
 }
 
+/**
+ * Checks if the entered text matches any of the accepted names.
+ * @param {string[]} acceptedNames - The array of accepted names.
+ * @param {string} enteredText - The text entered by the user.
+ * @returns {boolean} True if the entered text matches an accepted name, otherwise false.
+ */
 export function isAcceptedName(
 	acceptedNames: string[],
 	enteredText: string
@@ -401,6 +498,10 @@ export function isAcceptedName(
 	});
 }
 
+/**
+ * Toggles the camera follow mode based on the state of a checkbox input.
+ * @param {React.ChangeEvent<HTMLInputElement>} event - The change event from the checkbox.
+ */
 export function cameraFollowCountry(
 	event: React.ChangeEvent<HTMLInputElement>
 ): void {
@@ -450,6 +551,7 @@ function countryAttributeGiveUp(
 			break;
 	}
 }
+
 function CAGU(
 	world: World,
 	regionNumber: number,
@@ -473,6 +575,16 @@ function CAGU(
 	});
 }
 
+/**
+ * Handles the "give up" logic for the game, revealing answers and resetting UI elements.
+ * @param {number} continentIndex - The index of the continent for the game.
+ * @param {Timer} timer - The timer instance for the game.
+ * @param {boolean} isHard - Whether the game is in hard mode.
+ * @param {string} region - The region for the game.
+ * @param {string} gameType - The type of the game (e.g., "flags").
+ * @param {boolean} sequentialRandom - Whether the game is in sequential random mode.
+ * @param {string} gameName - The name of the current game.
+ */
 export function handleGiveUp(
 	continentIndex: number,
 	timer: Timer,
@@ -528,6 +640,18 @@ export function handleGiveUp(
 	countryGiveUp(world, continentIndex, gameType);
 }
 
+/**
+ * Restarts the quiz, resetting all game elements and updating the UI.
+ * @param {number} continentIndex - The index of the continent for the game.
+ * @param {Timer} timer - The timer instance for the game.
+ * @param {boolean} hard - Whether the game is in hard mode.
+ * @param {HTMLButtonElement} restartButton - The restart button element.
+ * @param {string} region - The region for the game.
+ * @param {string} gameType - The type of the game (e.g., "flags").
+ * @param {boolean} sequentialRandom - Whether the game is in sequential random mode.
+ * @param {string} gameName - The name of the current game.
+ * @param {HTMLElement[]} elements - The elements to reset.
+ */
 export function restartQuiz(
 	continentIndex: number,
 	timer: Timer,
@@ -668,12 +792,10 @@ export function handleImageClick(
 
 		world.sequentialRandomArray.splice(world.sequentialRandomIndex, 1);
 		world.nextInSeqArr();
-		console.log(world.sequentialRandomArray);
+		console.debug(world.sequentialRandomArray);
 
 		if (world.isAllFound(region)) {
-			handleGameCompletion(timer);
-			checkUserSessionAndHandleGameEnd(timer, gameName);
-			showAnswerContainer();
+			finishGameProcessing(timer, gameName);
 		}
 	}
 }
@@ -726,7 +848,6 @@ export function checkUserSessionAndHandleGameEnd(
 		);
 	} else {
 		// not logged in
-		const userID: number = -1;
 		const timerStore: string = timer.toStore();
 		console.debug("Highscore: ", timerStore, ", game: ", gameName);
 	}

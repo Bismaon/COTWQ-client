@@ -104,10 +104,19 @@ export class World {
 		return this._countriesFound;
 	}
 
+	/**
+	 * Replaces the existing countries in the world with a new array.
+	 * @param {Country[]} newCountry - The new array of countries.
+	 */
 	public replaceCountries(newCountry: Country[]): void {
 		this._countryArray = newCountry;
 	}
 
+	/**
+	 * Retrieves all countries in a specified region.
+	 * @param {number} regionNumber - The region index.
+	 * @returns {Country[]} An array of countries in the specified region.
+	 */
 	public getRegionCountries(regionNumber: number): Country[] {
 		if (regionNumber === 7) {
 			return this._countryArray;
@@ -117,14 +126,28 @@ export class World {
 			return country.location[0] === regionNumber;
 		});
 	}
+
+	/**
+	 * Increments the count of found countries.
+	 */
 	public incrementFound(): void {
 		this._countriesFound++;
 	}
 
+	/**
+	 * Checks if all countries in a region have been found.
+	 * @param {string} region - The region name.
+	 * @returns {boolean} True if all countries are found, otherwise false.
+	 */
 	public isAllFound(region: string): boolean {
 		return countriesCountByRegion[region] === this._countriesFound;
 	}
 
+	/**
+	 * Checks if a country exists based on its name.
+	 * @param {string} name - The name of the country.
+	 * @returns {number[]} An array of indices of countries matching the name.
+	 */
 	public exists(name: string): number[] {
 		return this._countryArray
 			.map((obj: Country, index: number): number =>
@@ -133,6 +156,9 @@ export class World {
 			.filter((index: number): boolean => index !== -1);
 	}
 
+	/**
+	 * Clears the "found" state of all countries.
+	 */
 	public clearFound(): void {
 		this._countryArray.forEach((country: Country): void => {
 			if (country.found) {
@@ -142,10 +168,20 @@ export class World {
 		this._countriesFound = 0;
 	}
 
+	/**
+	 * Retrieves a country by its location coordinates.
+	 * @param {[number, number]} location - The location coordinates.
+	 * @returns {Country} The country at the specified location.
+	 */
 	public getCountryByLocation(location: [number, number]): Country {
 		return this._countryArray[this.getRealIndex(location)];
 	}
 
+	/**
+	 * Calculates the real index of a country based on its location.
+	 * @param {number[]} location - The location coordinates.
+	 * @returns {number} The real index of the country.
+	 */
 	public getRealIndex(location: number[]): number {
 		let realIndex: number = 0;
 
@@ -159,6 +195,11 @@ export class World {
 		return realIndex;
 	}
 
+	/**
+	 * Retrieves a country based on its 3D object.
+	 * @param {Object3D} object - The 3D object representing the country.
+	 * @returns {Country} The country corresponding to the object.
+	 */
 	public getCountryByObject(object: Object3D): Country {
 		const index: number = this.countryArray.findIndex(
 			(country: Country): boolean =>
@@ -167,6 +208,11 @@ export class World {
 		return this.countryArray[index];
 	}
 
+	/**
+	 * Sets the state for a country and its connected territories.
+	 * @param {number} index - The index of the country.
+	 * @param {string} state - The state to set.
+	 */
 	public setCountryAndConnectedState(index: number, state: string): void {
 		const countriesIndex: number[] = this.getConnectedTerritories(index);
 		countriesIndex.forEach((index): void => {
@@ -174,12 +220,21 @@ export class World {
 		});
 	}
 
+	/**
+	 * Sets the state for a single country.
+	 * @param {number} index - The index of the country.
+	 * @param {string} state - The state to set.
+	 */
 	public setCountryState(index: number, state: string): void {
 		const country: Country = this._countryArray[index];
 		country.state = state;
 		country.material = getStateMaterial(state);
 	}
 
+	/**
+	 * Sets the flag material for a country and its connected territories.
+	 * @param {number} index - The index of the country.
+	 */
 	public setCountryAndConnectedFlag(index: number): void {
 		const countriesIndex: number[] = this.getConnectedTerritories(index);
 		countriesIndex.forEach((index: number): void => {
@@ -187,11 +242,20 @@ export class World {
 		});
 	}
 
+	/**
+	 * Sets the flag material for a single country.
+	 * @param {number} index - The index of the country.
+	 */
 	public setCountryFlag(index: number): void {
 		const country: Country = this._countryArray[index];
 		country.material = country.flagMaterial;
 	}
 
+	/**
+	 * Toggles the visibility of a country and its connected territories.
+	 * @param {number} index - The index of the country.
+	 * @param {boolean} visibility - The visibility state.
+	 */
 	public setCountryAndConnectedVisibility(
 		index: number,
 		visibility: boolean
@@ -202,11 +266,20 @@ export class World {
 		});
 	}
 
+	/**
+	 * Toggles the visibility of a single country.
+	 * @param {number} index - The index of the country.
+	 * @param {boolean} visibility - The visibility state.
+	 */
 	public setCountryVisibility(index: number, visibility: boolean): void {
 		const country: Country = this._countryArray[index];
 		country.visible = visibility;
 	}
 
+	/**
+	 * Applies "found" effects to a country.
+	 * @param {number} index - The index of the country.
+	 */
 	public applyFoundEffectsToCountry(index: number): void {
 		const mainCountry: Country = this._countryArray[index];
 		if (!mainCountry.visible) {
@@ -219,6 +292,11 @@ export class World {
 		this.triggerCountryAnimation(index, "", "found", true);
 	}
 
+	/**
+	 * Sets the "found" state for a single country.
+	 * @param {number} index - The index of the country.
+	 * @param {boolean} found - The found state.
+	 */
 	public setCountryIsFound(index: number, found: boolean): void {
 		const country: Country = this._countryArray[index];
 		country.found = found;
@@ -227,6 +305,11 @@ export class World {
 		}
 	}
 
+	/**
+	 * Sets the "found" state for a country and its connected territories.
+	 * @param {number} index - The index of the country.
+	 * @param {boolean} found - The found state.
+	 */
 	public setCountryAndConnectedIsFound(index: number, found: boolean): void {
 		const countryIndex: number[] = this.getConnectedTerritories(index);
 		countryIndex.forEach((index: number): void => {
@@ -234,6 +317,12 @@ export class World {
 		});
 	}
 
+	/**
+	 * Configures the countries for a specific game type and difficulty.
+	 * @param {boolean} hard - Whether the game is in hard mode.
+	 * @param {number} continentIndex - The index of the continent.
+	 * @param {string} gameType - The game type (e.g., "flags").
+	 */
 	public setUpCountries(
 		hard: boolean,
 		continentIndex: number,
@@ -257,6 +346,10 @@ export class World {
 		});
 	}
 
+	/**
+	 * Resets the countries to their default state.
+	 * @param {number} continentIndex - The index of the continent to reset.
+	 */
 	public resetCountries(continentIndex: number): void {
 		this._countryArray.forEach((country: Country, index: number): void => {
 			if (country.owned) return;
@@ -267,6 +360,13 @@ export class World {
 		});
 	}
 
+	/**
+	 * Animates a country's movement with a bounce effect.
+	 * @param {number} index - The index of the country.
+	 * @param {string} type - The type of animation.
+	 * @param {string} state - The state to apply after animation.
+	 * @param {boolean} complete - Whether to apply to connected territories.
+	 */
 	public triggerCountryAnimation(
 		index: number,
 		type: string,
@@ -296,6 +396,13 @@ export class World {
 		});
 	}
 
+	/**
+	 * Adds a long-form country attribute to the world.
+	 * @param {string} type - The type of the attribute (e.g., "language").
+	 * @param {any[]} attributeArray - The array of attributes.
+	 * @param {[number, number]} location - The location of the country.
+	 * @param {boolean} owned - Whether the country is owned.
+	 */
 	public addMissingCountryAttributeLong(
 		type: string,
 		attributeArray: any[],
@@ -312,6 +419,13 @@ export class World {
 		});
 	}
 
+	/**
+	 * Adds a single country attribute to the world.
+	 * @param {string} type - The type of the attribute (e.g., "currency").
+	 * @param {any} attributeName - The name of the attribute.
+	 * @param {[number, number]} location - The location of the country.
+	 * @param {boolean} owned - Whether the country is owned.
+	 */
 	public addMissingCountryAttributeSingle(
 		type: string,
 		attributeName: any,
@@ -364,15 +478,23 @@ export class World {
 		}
 	}
 
+	/**
+	 * Checks if all country attributes of a specific type have been found in a region.
+	 * @param {string} type - The type of the attribute (e.g., "language").
+	 * @param {number} region - The region index.
+	 * @returns {boolean} True if all attributes are found, otherwise false.
+	 */
 	public allCountryAttributeFound(type: string, region: number): boolean {
 		switch (type) {
 			case "currency":
 				return (
-					this.getFoundCA(type).length === currencyByRegion[region]
+					this.getFoundCA(type, region).length ===
+					currencyByRegion[region]
 				);
 			case "language":
 				return (
-					this.getFoundCA(type).length === languageByRegion[region]
+					this.getFoundCA(type, region).length ===
+					languageByRegion[region]
 				);
 			default:
 				console.error(`Country attribute of type ${type} unknown.`);
@@ -380,20 +502,30 @@ export class World {
 		}
 	}
 
-	public getFoundCA(type: any): CountryAttribute[] {
+	/**
+	 * Checks if all country attributes of a specific type have been found in a region.
+	 * @param {string} type - The type of the attribute (e.g., "language").
+	 * @param {number} region - The region index.
+	 * @returns {boolean} True if all attributes are found, otherwise false.
+	 */
+	public getFoundCA(type: any, region: number): CountryAttribute[] {
 		let foundArray: CountryAttribute[];
 		switch (type) {
 			case "currency":
 				foundArray = this._currencyArray.filter(
 					(currency: CountryAttribute): boolean => {
-						return currency.found;
+						return (
+							currency.found && currency.region.includes(region)
+						);
 					}
 				);
 				return foundArray;
 			case "language":
 				foundArray = this._languageArray.filter(
 					(language: CountryAttribute): boolean => {
-						return language.found;
+						return (
+							language.found && language.region.includes(region)
+						);
 					}
 				);
 				return foundArray;
@@ -403,12 +535,18 @@ export class World {
 		}
 	}
 
+	/**
+	 * Moves to the next item in the sequential array.
+	 */
 	public nextInSeqArr(): void {
 		this._sequentialRandomIndex =
 			(this.sequentialRandomIndex + 1) %
 			this._sequentialRandomArray.length;
 	}
 
+	/**
+	 * Moves to the previous item in the sequential array.
+	 */
 	public prevInSeqArr(): void {
 		this._sequentialRandomIndex =
 			(this.sequentialRandomIndex -
@@ -417,7 +555,11 @@ export class World {
 			this._sequentialRandomArray.length;
 	}
 
-	// Helper method to apply state logic after animation
+	/**
+	 * Applies a state to a country based on the game type.
+	 * @param {number} index - The index of the country.
+	 * @param {string} state - The state to apply.
+	 */
 	public applyState(index: number, state: string): void {
 		switch (state) {
 			case "flags":
@@ -436,39 +578,42 @@ export class World {
 		}
 	}
 
+	/**
+	 * Completes the game for a specific type and region.
+	 * @param {string} type - The game type (e.g., "currencies").
+	 * @param {number} region - The region index.
+	 */
 	public finishGame(type: string, region: number): void {
 		switch (type) {
-			case "currency":
+			case "currencies":
 				this._currencyArray.forEach(
 					(attribute: CountryAttribute): void => {
 						if (
-							attribute.found ||
-							!attribute.region.includes(region)
+							!attribute.found &&
+							attribute.region.includes(region)
 						) {
-							return;
+							changeCountryOfCountryAttribute(
+								attribute,
+								"found",
+								region
+							);
 						}
-						changeCountryOfCountryAttribute(
-							attribute,
-							"found",
-							region
-						);
 					}
 				);
 				break;
-			case "language":
+			case "languages":
 				this._languageArray.forEach(
 					(attribute: CountryAttribute): void => {
 						if (
-							attribute.found ||
-							!attribute.region.includes(region)
+							!attribute.found &&
+							attribute.region.includes(region)
 						) {
-							return;
+							changeCountryOfCountryAttribute(
+								attribute,
+								"found",
+								region
+							);
 						}
-						changeCountryOfCountryAttribute(
-							attribute,
-							"found",
-							region
-						);
 					}
 				);
 				break;
@@ -476,19 +621,23 @@ export class World {
 				this._countryArray.forEach(
 					(country: Country, index: number): void => {
 						if (
-							country.owned ||
-							country.found ||
-							!(region === 7 || country.location[0] === region)
+							!country.owned &&
+							!country.found &&
+							(region === 7 || country.location[0] === region)
 						) {
-							return;
+							this.applyFoundEffectsToCountry(index);
 						}
-						this.applyFoundEffectsToCountry(index);
 					}
 				);
 				break;
 		}
 	}
 
+	/**
+	 * Resets items for sequential game modes.
+	 * @param {boolean} sequentialRandom - Whether sequential mode is active.
+	 * @param {string} gameType - The game type.
+	 */
 	public resetSequentialItems(
 		sequentialRandom: boolean,
 		gameType: string
@@ -508,6 +657,10 @@ export class World {
 		}
 	}
 
+	/**
+	 * Resets country attributes for a specific game type.
+	 * @param {string} gameType - The game type (e.g., "languages").
+	 */
 	public resetCA(gameType: string): void {
 		switch (gameType) {
 			case "languages":

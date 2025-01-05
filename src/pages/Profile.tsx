@@ -5,10 +5,12 @@ import LoginForm from "./user/LoginForm";
 import { checkUserSession, logoutUser } from "../user/userStorage";
 import UserForm from "./user/UserForm";
 import { useTranslation } from "react-i18next";
+import { useMenu } from "../App";
 
 const ProfileMenu: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const { t } = useTranslation();
+	const { setHoveredButton } = useMenu();
 	const [, setSessionChecked] = useState<boolean>(false);
 
 	const handleLogOut: () => void = () => {

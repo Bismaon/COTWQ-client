@@ -5,7 +5,8 @@
   "homepage": "/",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && ROBOCOPY build ../cotwq-server/public /E",
+    "build": "react-scripts build",
+    "push": "node push.cjs",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

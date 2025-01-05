@@ -34,6 +34,11 @@ const continentFormattedNames: string[] = [
 	"South America",
 ];
 
+/**
+ * Changes the state (class) of specific country cells in the table.
+ * @param {"found" | "error" | "unavailable"} state - The new state to apply.
+ * @param {number[]} countryIndex - Array of country indices to update.
+ */
 export function changeCountryCellTo(
 	state: "found" | "error" | "unavailable",
 	countryIndex: number[]
@@ -62,6 +67,11 @@ export function changeCountryCellTo(
 	});
 }
 
+/**
+ * Shuffles an array in place using the Fisher-Yates algorithm.
+ * @param {any[]} array - The array to shuffle.
+ * @returns {any[]} A new array with the elements shuffled.
+ */
 export function shuffleArray(array: any[]): any[] {
 	const copiedArray: any[] = array.slice();
 	for (let i: number = array.length - 1; i > 0; i--) {
@@ -71,6 +81,12 @@ export function shuffleArray(array: any[]): any[] {
 	return copiedArray;
 }
 
+/**
+ * Filters and shuffles an array of countries based on specific criteria.
+ * @param {Country[]} countries - The array of countries to process.
+ * @param {number} continentIndex - The index of the continent to filter by.
+ * @returns {Country[]} An array of shuffled and filtered countries.
+ */
 export function randomizedCountries(
 	countries: Country[],
 	continentIndex: number
@@ -86,6 +102,9 @@ export function randomizedCountries(
 	return shuffleArray(filteredCountries);
 }
 
+/**
+ * Clears all flags from the "item-list" container in the DOM.
+ */
 export function clearFlags(): void {
 	const flagContainer: HTMLElement | null =
 		document.getElementById("item-list");
@@ -95,6 +114,14 @@ export function clearFlags(): void {
 	flagContainer.innerHTML = "";
 }
 
+/**
+ * Populates the flag container with flags for the given countries.
+ * @param {number} continentIndex - The index of the continent to filter by.
+ * @param {boolean} sequentialRandom - Whether the flags should be randomized sequentially.
+ * @param {Timer} timer - The game timer instance.
+ * @param {string} region - The region for the game.
+ * @param {string} gameName - The name of the game.
+ */
 export function populateFlags(
 	continentIndex: number,
 	sequentialRandom: boolean,
@@ -137,6 +164,11 @@ export function populateFlags(
 	}
 }
 
+/**
+ * Changes the state (class) of cells corresponding to a specific country attribute type.
+ * @param {"found" | "error" | "unavailable"} state - The new state to apply.
+ * @param {string} type - The type of the country attribute (e.g., "currency", "language").
+ */
 export function changeCACells(
 	state: "found" | "error" | "unavailable",
 	type: string
@@ -160,6 +192,12 @@ export function changeCACells(
 	});
 }
 
+/**
+ * Changes the state (class) of a single cell based on its index and type.
+ * @param {string} state - The new state to apply.
+ * @param {string} type - The type of the country attribute (e.g., "currency", "language").
+ * @param {number} index - The index of the cell to update.
+ */
 export function changeCACell(state: string, type: string, index: number): void {
 	let cells: Element[];
 	switch (type) {
@@ -187,6 +225,13 @@ export function changeCACell(state: string, type: string, index: number): void {
 	}
 }
 
+/**
+ * Creates and populates a table layout for the game based on the selected type.
+ * @param {string} type - The type of data to display (e.g., "names", "flags", "languages").
+ * @param {TFunction<"translation">} t - The translation function for localization.
+ * @param {string} region - The region to display in the table.
+ * @param {boolean} hard - Whether the game is in hard mode.
+ */
 export function createTableFromType(
 	type: string,
 	t: TFunction<"translation">,

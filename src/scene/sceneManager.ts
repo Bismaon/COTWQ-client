@@ -23,6 +23,10 @@ const world: World = new World();
 let model: Object3D;
 const colorsArray: Material[] = [];
 
+/**
+ * Sets up the 3D scene model by loading assets and initializing world data.
+ * @returns {Promise<void>} Resolves when the setup is complete.
+ */
 export async function setupSceneModel(): Promise<void> {
 	try {
 		const globalScene: Object3D = await loadModel();
@@ -49,6 +53,9 @@ export async function setupSceneModel(): Promise<void> {
 	}
 }
 
+/**
+ * Resets the model to its default state by clearing the world data and reinitializing camera and controls.
+ */
 export function resetModel(): void {
 	if (isPlaying()) toggleIsPlaying();
 	if (!isRotating()) toggleIsRotating();
@@ -59,6 +66,12 @@ export function resetModel(): void {
 	setCameraPosition(new Vector3(0, 0, 118));
 }
 
+/**
+ * Configures the model for a specific game mode.
+ * @param {boolean} isHard - Whether the game is in hard mode.
+ * @param {number} continentIndex - The index of the continent for the game.
+ * @param {string} gameType - The type of the game (e.g., "flags", "languages").
+ */
 export function setupModelForGame(
 	isHard: boolean,
 	continentIndex: number,
@@ -74,14 +87,27 @@ export function setupModelForGame(
 	if (isRotating()) toggleIsRotating();
 }
 
+/**
+ * Retrieves the global colors array used for materials.
+ * @returns {Material[]} The colors array.
+ */
 export function getColorsArray(): Material[] {
 	return colorsArray;
 }
 
+/**
+ * Retrieves the global world instance.
+ * @returns {World} The global world instance.
+ */
 export function getWorld(): World {
 	return world;
 }
 
+/**
+ * Retrieves all translated names for a given set of elements in the current language.
+ * @param {any[]} elements - The elements containing names in multiple languages.
+ * @returns {string[]} An array of translated names.
+ */
 function getAllForLang(elements: any): string[] {
 	const lang: string = getLang();
 	const container: string[] = [];
@@ -96,6 +122,12 @@ function getAllForLang(elements: any): string[] {
 	return container;
 }
 
+/**
+ * Parses raw country data into a Country instance.
+ * @param {any} countryData - The raw country data from the XML.
+ * @returns {Country} The parsed Country instance.
+ * @throws {Error} Throws if the country's object is not a mesh.
+ */
 function parseCountryData(countryData: any): Country {
 	let territories: any = countryData.territories.territory;
 	let languages: any = countryData.languages.language;
@@ -173,6 +205,11 @@ function parseCountryData(countryData: any): Country {
 	return country;
 }
 
+/**
+ * Loads and parses country data from an XML file.
+ * @param {string} url - The URL of the XML file.
+ * @returns {Promise<Country[]>} A promise that resolves with an array of Country instances.
+ */
 async function loadCountriesData(url: string): Promise<Country[]> {
 	try {
 		// Fetch XML data from URL
@@ -193,6 +230,11 @@ async function loadCountriesData(url: string): Promise<Country[]> {
 	}
 }
 
+/**
+ * Updates the language for country names and reloads the country data.
+ * @param {string} lang - The new language code (e.g., "en", "fr").
+ * @returns {Promise<void>} Resolves when the operation is complete.
+ */
 export async function changeLanguageForCountry(lang: string): Promise<void> {
 	localStorage.setItem("lang", lang);
 	world.replaceCountries(
@@ -202,10 +244,19 @@ export async function changeLanguageForCountry(lang: string): Promise<void> {
 	);
 }
 
+/**
+ * Retrieves the current language code from localStorage or defaults to "en".
+ * @returns {string} The current language code.
+ */
 function getLang(): string {
 	return localStorage.getItem("lang") || "en";
 }
 
+/**
+ * Sets the name of an entity based on the current language.
+ * @param {any} name - The object containing names in multiple languages.
+ * @returns {any} The name in the current language.
+ */
 function setLangName(name: any): any {
 	const lang: string = getLang();
 	switch (lang) {
