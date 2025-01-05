@@ -258,6 +258,12 @@ function textBoXChangeCurrencies(
 	);
 }
 
+export function finishGameProcessing(timer: Timer, gameName: string): void {
+	handleGameCompletion(timer);
+	checkUserSessionAndHandleGameEnd(timer, gameName);
+	showAnswerContainer();
+}
+
 function textboxChangeCA(
 	world: World,
 	enteredText: string,
@@ -305,9 +311,7 @@ function textboxChangeCA(
 	});
 
 	if (world.allCountryAttributeFound(type, region)) {
-		handleGameCompletion(timer);
-		checkUserSessionAndHandleGameEnd(timer, gameName);
-		showAnswerContainer();
+		finishGameProcessing(timer, gameName);
 	}
 }
 
@@ -713,9 +717,17 @@ export function checkUserSessionAndHandleGameEnd(
 		const userID: number = getUserID();
 		const timerStore: string = timer.toStore();
 		updateHighscore(userID, gameName, timerStore).then((r) =>
-			console.debug(r)
+			console.debug(
+				"Highscore updated: ",
+				timerStore,
+				", game: ",
+				gameName
+			)
 		);
 	} else {
 		// not logged in
+		const userID: number = -1;
+		const timerStore: string = timer.toStore();
+		console.debug("Highscore: ", timerStore, ", game: ", gameName);
 	}
 }

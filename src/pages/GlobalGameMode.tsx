@@ -4,6 +4,7 @@ import "../stylesheet/style.css";
 import { Timer } from "../utils/Timer";
 import {
 	cameraFollowCountry,
+	finishGameProcessing,
 	getRegionByNumber,
 	handleGiveUp,
 	handlePauseStart,
@@ -38,7 +39,6 @@ import {
 } from "../utils/utilities";
 import { cameraFaceTo } from "../camera/camera";
 import { TFunction } from "i18next";
-import { getUserID, updateHighscore } from "../user/userStorage";
 
 interface gameModeProps {
 	hard: boolean;
@@ -71,7 +71,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		languages: t("answerPromptTextLanguages"),
 		capitals: t("answerPromptTextCapitals"),
 	};
-	const customPromptFlags = t("customPromptFlags");
+	const customPromptFlags: string = t("customPromptFlags");
 
 	function setupRandomSequentialArray(): void {
 		const world: World = getWorld();
@@ -118,6 +118,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 
 		const world: World = getWorld();
 		const regionNumber: number = regionMap[region];
+		let type: string = gameType === "currencies" ? "currency" : "language";
 
 		// Call the finish game logic (update world state)
 		world.finishGame(gameType, regionNumber);
@@ -137,24 +138,14 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 			!["currencies", "languages"].includes(gameType) &&
 			world.isAllFound(region)
 		) {
-			gameTimer.stop();
-			const completionTime: string = gameTimer.toString();
-			const userID: number = getUserID();
-			const timerStore: string = gameTimer.toStore();
-
-			// Display success message
-			alert(`Congratulations! You finished in ${completionTime}!`);
-
-			// Update highscore
-			updateHighscore(userID, gameName, timerStore).then((r) =>
-				console.debug("Highscore updated: ", timerStore)
-			);
-
+			finishGameProcessing(gameTimer, gameName);
 			gameFinishedRef.current = true; // Set ref to prevent further calls
-		} else if (["currencies", "languages"].includes(gameType)) {
-			let type: string =
-				gameType === "currencies" ? "currency" : "language";
-			world.allCountryAttributeFound(type, regionNumber);
+		} else if (
+			["currencies", "languages"].includes(gameType) &&
+			world.allCountryAttributeFound(type, regionNumber)
+		) {
+			finishGameProcessing(gameTimer, gameName);
+			gameFinishedRef.current = true; // Set ref to prevent further calls
 		} else {
 			alert("There are still some countries left to find!");
 		}
@@ -179,13 +170,13 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 						</div>
 						<div id="quiz-feedback-container"></div>
 						<div id="country-name-container"></div>
-						{/* <button
+						<button
 							className="quiz-grid-item button"
 							id="finish-game-btn"
 							onClick={handleFinishGame}
 						>
 							Finish Game
-						</button> */}
+						</button>
 					</div>
 				);
 			default:
