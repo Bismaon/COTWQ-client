@@ -14,7 +14,10 @@ import {
 } from "three";
 import { getWorld } from "../scene/sceneManager";
 import { Country } from "../country/Country";
-import { CountryAttribute, World } from "../country/World";
+import { World } from "../country/World";
+import { AttributeStructure } from "../country/AttributeStructure";
+import { countryLoc } from "./types";
+import { FOUND } from "./constants";
 
 /**
  * Processes a string by normalizing and removing diacritics, punctuation, spaces, and text within parentheses.
@@ -129,20 +132,20 @@ export function getGradientColor(percentage: number): string {
 
 /**
  * Updates the state of countries associated with a CountryAttribute.
- * @param {CountryAttribute} ca - The CountryAttribute to modify.
+ * @param {AttributeStructure} ca - The CountryAttribute to modify.
  * @param {string} state - The state to apply.
  * @param {number} region - The region to filter by.
  */
 export function changeCountryOfCountryAttribute(
-	ca: CountryAttribute,
+	ca: AttributeStructure,
 	state: string,
 	region: number
 ): void {
 	const world: World = getWorld();
-	console.debug("region", region);
-	ca.locations.forEach((index: number): void => {
-		const country: Country = world.countryArray[index];
-		if (region !== 7 && country.location[0] !== region) {
+	ca.territories.forEach((loc: countryLoc): void => {
+		const index = world.getRealIndex(loc);
+		const country: Country = world.countries.get(index) as Country;
+		if (!country.isInRegion(region)) {
 			return;
 		}
 		country.state = state;
@@ -151,7 +154,7 @@ export function changeCountryOfCountryAttribute(
 		}
 		world.triggerCountryAnimation(index, ca.type, state, false);
 	});
-	if (state === "found") {
+	if (state === FOUND) {
 		ca.found = true;
 	}
 }
@@ -195,14 +198,16 @@ export function correctContinent(
  */
 export function getCenterCA(continentIndex: number): Vector3 {
 	const world: World = getWorld();
-	const currItem: CountryAttribute = world.sequentialRandomArray[
+	const currItem: [number, any] = getNthItem(
+		world.sequentialRandomMap,
 		world.sequentialRandomIndex
-	] as CountryAttribute;
-	const locations: number[] = currItem.locations;
+	) as [number, any];
+	const locations: countryLoc[] = currItem[1].locations;
 	let firstCountryOfCAInCI: Country;
 	let objCenter: Vector3 = new Vector3();
-	locations.forEach((index: number): void => {
-		const country: Country = world.countryArray[index];
+	locations.forEach((loc: countryLoc): void => {
+		const index: number = world.getRealIndex(loc);
+		const country: Country = world.countries.get(index) as Country;
 		if (!correctContinent(continentIndex, country)) return;
 		if (firstCountryOfCAInCI) return;
 		firstCountryOfCAInCI = country;
@@ -263,4 +268,39 @@ export function formatGameName(gameName: string): string {
 	return (
 		regionStr + " | " + normalStr + " | " + hardStr + " | " + gameTypeStr
 	);
+}
+
+export function getIndexInMap<K, V>(
+	map: Map<K, V>,
+	condition: (value: V, key: K) => boolean
+): number {
+	let index: number = 0;
+	for (const [key, value] of Array.from(map.entries())) {
+		if (condition(value, key)) {
+			return index;
+		}
+		index++;
+	}
+	return -1; // Return -1 if not found
+}
+
+export function getNthItem<K, V>(
+	map: Map<K, V>,
+	n: number
+): [K, V] | undefined {
+	const entries = Array.from(map.entries());
+	return n >= 0 && n < entries.length ? entries[n] : undefined;
+}
+
+export function deleteNthItem<K, V>(map: Map<K, V>, n: number): void {
+	let [index]: [K, V] = getNthItem(map, n) as [K, V];
+	map.delete(index);
+}
+
+export function hasValue<K, V>(
+	map: Map<K, V>,
+	valueCheck: (value: V) => boolean
+): number {
+	let valueArray: V[] = Array.from(map.values());
+	return valueArray.findIndex(valueCheck);
 }

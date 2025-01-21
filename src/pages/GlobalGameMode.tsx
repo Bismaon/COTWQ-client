@@ -9,24 +9,15 @@ import {
 	handleGiveUp,
 	handlePauseStart,
 	handleTextboxChange,
-	regionMap,
 	updateCounter,
 } from "../controls/inputHandlers";
 import {
 	changeCACells,
-	continentNames,
 	createTableFromType,
 	populateFlags,
-	randomizedCountries,
-	shuffleArray,
-} from "../country/countriesTable";
-import {
-	countriesCountByRegion,
-	CountryAttribute,
-	currencyByRegion,
-	languageByRegion,
-	World,
-} from "../country/World";
+	shuffleMap,
+} from "../utils/countryUtils";
+import { World } from "../country/World";
 import { useModel } from "./ModelContext";
 import { useTranslation } from "react-i18next";
 import { getWorld, setupModelForGame } from "../scene/sceneManager";
@@ -35,34 +26,57 @@ import { Country } from "../country/Country";
 import {
 	correctContinent,
 	getCenterCA,
+	getNthItem,
 	getObjCenter,
 } from "../utils/utilities";
 import { cameraFaceTo } from "../camera/camera";
 import { TFunction } from "i18next";
+import {
+	CAPITALS,
+	countriesCountByRegion,
+	CURRENCIES,
+	CURRENCY,
+	currencyByRegion,
+	FLAGS,
+	LANGUAGE,
+	languageByRegion,
+	LANGUAGES,
+	NAMES,
+	regionMap,
+	UNAVAILABLE,
+	UNKNOWN,
+} from "../utils/constants";
+import { Currency } from "../country/Currency";
+import { Language } from "../country/Language";
+import { AttributeStructure } from "../country/AttributeStructure";
+import { countryLoc } from "../utils/types";
 
 interface gameModeProps {
 	hard: boolean;
-	continentIndex: number;
+	region: number;
 	gameType: string;
 	sequentialRandom: boolean;
 }
 
 const GlobalGameMode: React.FC<gameModeProps> = ({
 	hard,
-	continentIndex,
+	region,
 	gameType,
 	sequentialRandom,
 }: gameModeProps): JSX.Element => {
 	let isQuizInit: React.MutableRefObject<boolean> = useRef(false);
 	let ongoing: boolean = false;
 	const gameTimer: Timer = new Timer();
-	const region: string =
-		continentIndex === -1 ? "all_regions" : continentNames[continentIndex];
 	const { isModelLoaded } = useModel();
 	const { t } = useTranslation();
 	const normal: string = sequentialRandom ? "sequential_random" : "normal";
+
+	const regionString: string =
+		region !== -1
+			? (getNthItem(regionMap, region) as [string, number])[0]
+			: "all_regions";
 	const gameName: string =
-		region + "-" + normal + "-" + hard + "-" + gameType;
+		regionString + "-" + normal + "-" + hard + "-" + gameType;
 
 	const answerPromptText: { [gameType: string]: string } = {
 		flags: t("answerPromptTextFlags"),
@@ -73,51 +87,49 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 	};
 	const customPromptFlags: string = t("customPromptFlags");
 
-	function setupRandomSequentialArray(): void {
+	function setupRandomSequentialMap(): void {
 		const world: World = getWorld();
-		let itemArray;
-		let filteredArray;
+		let selectMap: Map<number, any> = new Map();
 		switch (gameType) {
-			case "currencies":
-				itemArray = getWorld().currencyArray;
-				filteredArray = itemArray.filter(
-					(currency: CountryAttribute): boolean => {
-						if (continentIndex !== -1)
-							return currency.region.includes(continentIndex);
-						return true;
+			case CURRENCIES:
+				world.currencies.forEach(
+					(currency: Currency, index: number): void => {
+						if (currency.isInRegion(region)) {
+							selectMap.set(index, currency);
+						}
 					}
 				);
 				break;
-			case "languages":
-				itemArray = getWorld().languageArray;
-				filteredArray = itemArray.filter(
-					(language: CountryAttribute): boolean => {
-						if (continentIndex !== -1)
-							return language.region.includes(continentIndex);
-						return true;
+			case LANGUAGES:
+				world.languages.forEach(
+					(lang: Language, index: number): void => {
+						if (lang.isInRegion(region)) {
+							selectMap.set(index, lang);
+						}
 					}
 				);
-
 				break;
 			default:
-				itemArray = getWorld().countryArray;
-				world.sequentialRandomArray = randomizedCountries(
-					itemArray,
-					continentIndex
+				world.countries.forEach(
+					(country: Country, index: number): void => {
+						if (country.isInRegion(region)) {
+							selectMap.set(index, country);
+						}
+					}
 				);
-				return;
+				break;
 		}
-		console.log("Filtered array: ", filteredArray);
-		world.sequentialRandomArray = shuffleArray(filteredArray);
+		console.log("Filtered map: ", selectMap);
+		world.sequentialRandomMap = shuffleMap(selectMap);
 	}
 
 	const gameFinishedRef = React.useRef(false); // Use ref to avoid re-renders
 
 	function caByRegion(type: string, region: number): number {
 		switch (type) {
-			case "language":
+			case LANGUAGE:
 				return languageByRegion[region];
-			case "currency":
+			case CURRENCY:
 				return currencyByRegion[region];
 			default:
 				return 0;
@@ -128,9 +140,14 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		if (gameFinishedRef.current) return; // Prevent multiple calls
 
 		const world: World = getWorld();
-		const regionNumber: number = regionMap[region];
-		console.debug("Region: ", region, ", region number: ", regionNumber);
-		let type: string = gameType === "currencies" ? "currency" : "language";
+		const regionNumber: number = regionMap.get(regionString) as number;
+		console.debug(
+			"Region: ",
+			regionString,
+			", regionString number: ",
+			regionNumber
+		);
+		let type: string = gameType === CURRENCIES ? CURRENCY : LANGUAGE;
 
 		// Call the finish game logic (update world state)
 		world.finishGame(gameType, regionNumber);
@@ -143,17 +160,17 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		// Check if all countries are found and stop the timer
 
 		if (
-			!["currencies", "languages"].includes(gameType) &&
-			world.isAllFound(region)
+			![CURRENCIES, LANGUAGES].includes(gameType) &&
+			world.isAllFound(regionString)
 		) {
 			finishGameProcessing(gameTimer, gameName);
 			gameFinishedRef.current = true; // Set ref to prevent further calls
 			updateCounter(
 				counter,
 				world.countriesFound,
-				countriesCountByRegion[region]
+				countriesCountByRegion[regionString]
 			);
-		} else if (["currencies", "languages"].includes(gameType)) {
+		} else if ([CURRENCIES, LANGUAGES].includes(gameType)) {
 			const res = world.allCountryAttributeFound(type, regionNumber);
 			console.debug("All attribute found? ", res);
 			if (world.allCountryAttributeFound(type, regionNumber)) {
@@ -161,7 +178,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 				gameFinishedRef.current = true; // Set ref to prevent further calls
 				updateCounter(
 					counter,
-					world.getFoundCA(type, regionNumber).length,
+					world.getFoundCA(type, regionNumber).size,
 					caByRegion(type, regionNumber)
 				);
 			}
@@ -180,13 +197,9 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 
 		return (
 			<div className="grid-item" id="quiz-options">
-				{[
-					"names",
-					"flags",
-					"capitals",
-					"currencies",
-					"languages",
-				].includes(gameType) && (
+				{[NAMES, FLAGS, CAPITALS, CURRENCIES, LANGUAGES].includes(
+					gameType
+				) && (
 					<>
 						<div id="checkbox-container">
 							<label htmlFor="follow">{t("follow")}</label>
@@ -198,6 +211,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 							></input>
 						</div>
 						<div id="quiz-feedback-container"></div>
+						{/* For language mode, have a numbered list with each language being its own part in the code, you'll get it, while the language isn't found the list will contain "??" for each hidden language, once found the placeholder will be changed to the language */}
 						<div id="country-name-container"></div>
 					</>
 				)}
@@ -224,45 +238,46 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		}
 
 		console.debug(`Creating table from type: ${gameType}.`);
-		createTableFromType(gameType, t, region, hard);
+		createTableFromType(gameType, t, regionString, hard);
 		console.debug(`Created table for ${gameType}.`);
-		setupModelForGame(hard, continentIndex, gameType);
+		setupModelForGame(hard, region, gameType);
 		switch (gameType) {
-			case "flags":
+			case FLAGS:
 				populateFlags(
-					continentIndex,
+					region,
 					sequentialRandom,
 					gameTimer,
-					region,
+					regionString,
 					gameName
 				);
 				console.debug(`Flags have been added.`);
 				break;
-			case "currencies":
-				changeCACells("unavailable", "currency");
+			case CURRENCIES:
+				changeCACells(UNAVAILABLE, CURRENCY);
 				console.debug("Made answers invisible");
 				break;
-			case "languages":
-				changeCACells("unavailable", "language");
+			case LANGUAGES:
+				changeCACells(UNAVAILABLE, LANGUAGE);
 				console.debug("Made answers invisible");
 				break;
 			default:
 				break;
 		}
 		if (sequentialRandom) {
-			setupRandomSequentialArray();
-
+			setupRandomSequentialMap();
 			const world: World = getWorld();
-			const firstItem: any = world.sequentialRandomArray[0];
-			if (["languages", "currencies"].includes(gameType)) {
+			const firstItem: any = world.sequentialRandomMap.get(0);
+			if ([LANGUAGES, CURRENCIES].includes(gameType)) {
 				firstItem.selected = true;
 				firstItem.locations.forEach((index: number): void => {
-					const country: Country = world.countryArray[index];
-					if (!correctContinent(continentIndex, country)) return;
+					const country: Country = world.countries.get(
+						index
+					) as Country;
+					if (!correctContinent(region, country)) return;
 					world.setCountryState(index, "selected");
 					world.setCountryVisibility(index, true);
 				});
-				cameraFaceTo(getCenterCA(continentIndex));
+				cameraFaceTo(getCenterCA(region));
 			} else {
 				const firstIndex: number = world.getRealIndex(
 					firstItem.location
@@ -276,23 +291,24 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 		console.debug("Post setups completed.");
 		isQuizInit.current = true;
 	}, [
-		continentIndex,
+		region,
 		gameTimer,
 		gameType,
 		hard,
 		isModelLoaded,
-		region,
+		regionString,
 		sequentialRandom,
-		setupRandomSequentialArray,
+		setupRandomSequentialMap,
 		t,
+		gameName,
 	]);
 
 	function renderQuizCounter(gameType: string, region: string): number {
 		const regionNumber: number = getRegionByNumber(region);
 		switch (gameType) {
-			case "currencies":
+			case CURRENCIES:
 				return currencyByRegion[regionNumber];
-			case "languages":
+			case LANGUAGES:
 				return languageByRegion[regionNumber];
 			default:
 				return countriesCountByRegion[region];
@@ -308,55 +324,57 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 
 		const currIndex: number = world.sequentialRandomIndex;
 
-		if (["languages", "currencies"].includes(gameType)) {
-			const prevCA: CountryAttribute = world.sequentialRandomArray[
+		if ([LANGUAGES, CURRENCIES].includes(gameType)) {
+			const [, prevCA]: [number, AttributeStructure] = getNthItem(
+				world.sequentialRandomMap,
 				prevIndex
-			] as CountryAttribute;
+			) as [number, AttributeStructure];
 			prevCA.selected = false;
 
-			prevCA.locations.forEach((index: number): void => {
-				const country: Country = world.countryArray[index];
-				if (!correctContinent(continentIndex, country)) return;
+			prevCA.territories.forEach((loc: countryLoc): void => {
+				const index: number = world.getRealIndex(loc);
+				const country: Country = world.countries.get(index) as Country;
+				if (!correctContinent(region, country)) return;
 				if (hard) world.setCountryVisibility(index, false);
-				if (prevCA.type === "language") {
+				if (prevCA.type === LANGUAGE) {
 					world.applyState(index, prevCA.type);
 				} else {
-					world.applyState(index, "unknown");
+					world.applyState(index, UNKNOWN);
 				}
 			});
-			const currCA: CountryAttribute = world.sequentialRandomArray[
+			const [, currCA]: [number, AttributeStructure] = getNthItem(
+				world.sequentialRandomMap,
 				currIndex
-			] as CountryAttribute;
+			) as [number, AttributeStructure];
 			console.log("Currently selected item: ", currCA);
 			currCA.selected = true;
-			currCA.locations.forEach((index: number): void => {
-				const country: Country = world.countryArray[index];
-				if (!correctContinent(continentIndex, country)) return;
+			currCA.territories.forEach((loc: countryLoc): void => {
+				const index: number = world.getRealIndex(loc);
+				const country: Country = world.countries.get(index) as Country;
+				if (!correctContinent(region, country)) return;
 				world.setCountryState(index, "selected");
 				world.setCountryVisibility(index, true);
 			});
-			cameraFaceTo(getCenterCA(continentIndex));
+			cameraFaceTo(getCenterCA(region));
 		} else {
-			const prevCountry: Country = world.sequentialRandomArray[
-				prevIndex
-			] as Country;
-			const prevCountryIndex: number = world.getRealIndex(
-				prevCountry.location
-			);
+			const [prevCountryIndex, prevCountry]: [number, Country] =
+				getNthItem(world.sequentialRandomMap, prevIndex) as [
+					number,
+					Country,
+				];
 			world.setCountryAndConnectedState(
 				prevCountryIndex,
-				prevCountry.state === "selected" ? "unknown" : prevCountry.state
+				prevCountry.state === "selected" ? UNKNOWN : prevCountry.state
 			);
 			if (hard) {
 				world.setCountryAndConnectedVisibility(prevCountryIndex, false);
 			}
 
-			const currCountry: Country = world.sequentialRandomArray[
-				currIndex
-			] as Country;
-			const currCountryIndex: number = world.getRealIndex(
-				currCountry.location
-			);
+			const [currCountryIndex, currCountry]: [number, Country] =
+				getNthItem(world.sequentialRandomMap, currIndex) as [
+					number,
+					Country,
+				];
 			world.setCountryAndConnectedState(currCountryIndex, "selected");
 			world.setCountryAndConnectedVisibility(currCountryIndex, true);
 			const objCenter: Vector3 = getObjCenter(currCountry.object);
@@ -398,10 +416,10 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 						onClick={(): void => {
 							ongoing = ongoing ? false : ongoing;
 							handleGiveUp(
-								continentIndex,
+								region,
 								gameTimer,
 								hard,
-								region,
+								regionString,
 								gameType,
 								sequentialRandom,
 								gameName
@@ -423,11 +441,11 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 
 					<div className="quiz-grid-item" id="answer-box-container">
 						<label id="answer-box-prompt" htmlFor="textbox">
-							{gameType === "flags" && sequentialRandom
+							{gameType === FLAGS && sequentialRandom
 								? customPromptFlags
 								: answerPromptText[gameType]}
 						</label>
-						{!(gameType === "flags" && sequentialRandom) && (
+						{!(gameType === FLAGS && sequentialRandom) && (
 							<input
 								autoFocus={true}
 								type="text"
@@ -437,7 +455,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 									handleTextboxChange(
 										gameTimer,
 										gameType,
-										region,
+										regionString,
 										sequentialRandom,
 										gameName
 									)
@@ -449,7 +467,8 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 					</div>
 
 					<div className="quiz-grid-item" id="counter">
-						0&nbsp;/&nbsp; {renderQuizCounter(gameType, region)}
+						0&nbsp;/&nbsp;{" "}
+						{renderQuizCounter(gameType, regionString)}
 						&nbsp;
 						{t("guessed")}
 					</div>
@@ -467,7 +486,7 @@ const GlobalGameMode: React.FC<gameModeProps> = ({
 
 function renderRightSide(gameType: string): JSX.Element {
 	switch (gameType) {
-		case "flags":
+		case FLAGS:
 			return (
 				<div
 					className="grid-item grid-item-list-container"

@@ -21,7 +21,7 @@ const GameSetter: React.FC = () => {
 	function getGameMode() {
 		const pathSegments: string[] = location.pathname.split("/");
 		const hasContinents: number = pathSegments.indexOf("continents");
-		const continentIndex: number =
+		const region: number =
 			hasContinents !== -1
 				? continentNames.indexOf(pathSegments[hasContinents + 1])
 				: -1;
@@ -33,7 +33,7 @@ const GameSetter: React.FC = () => {
 		return (
 			<GlobalGameMode
 				hard={isHardMode}
-				continentIndex={continentIndex}
+				region={region}
 				gameType={gameMode}
 				sequentialRandom={sequentialRandom}
 			/>
