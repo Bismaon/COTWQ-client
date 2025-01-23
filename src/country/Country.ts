@@ -134,6 +134,6 @@ export class Country extends AttributeStructure {
 	}
 
 	public isInRegion(region: number): boolean {
-		return region === -1 || region === this.location[0];
+		return region === 7 || region === this.location[0];
 	}
 }

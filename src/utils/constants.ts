@@ -1,18 +1,11 @@
-export const countriesCountByRegion: { [region: string]: number } = {
-	africa: 53,
-	antarctic: 1,
-	asia: 47,
-	europe: 43,
-	north_america: 23,
-	oceania: 13,
-	south_america: 12,
-	all_regions: 191,
-};
+export const countriesCountByRegion: number[] = [
+	53, 1, 47, 43, 23, 13, 12, 191,
+];
 /**
  * Number of country Object in each continent array
  */
 export const continentCountryCounts: number[] = [
-	56, 3, 51, 46, 34, 19, 15, 191,
+	56, 3, 51, 46, 34, 19, 15, 224,
 ];
 export const currencyByRegion: number[] = [41, 0, 46, 20, 16, 9, 12, 146];
 export const languageByRegion: number[] = [40, 0, 40, 41, 4, 13, 8, 136];
@@ -52,7 +45,7 @@ export const CURRENCIES: string = "currencies";
 export const CAPITALS: string = "capitals";
 export const NAMES: string = "names";
 export const regionMap: Map<string, number> = new Map([
-	["all_regions", -1],
+	["all_regions", 7],
 	["africa", 0],
 	["antarctica", 1],
 	["asia", 2],
@@ -61,3 +54,13 @@ export const regionMap: Map<string, number> = new Map([
 	["oceania", 5],
 	["south_america", 6],
 ]);
+
+export const continentNames: string[] = [
+	"africa",
+	"antarctic",
+	"asia",
+	"europe",
+	"north_america",
+	"oceania",
+	"south_america",
+];

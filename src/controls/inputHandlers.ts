@@ -4,7 +4,6 @@ import { World } from "../country/World";
 import {
 	changeCountryOfCountryAttribute,
 	changeElementsVisibility,
-	correctContinent,
 	deleteNthItem,
 	getCenterCA,
 	getNthItem,
@@ -35,6 +34,7 @@ import {
 } from "../user/userStorage";
 import {
 	countriesCountByRegion,
+	COUNTRY,
 	CURRENCIES,
 	CURRENCY,
 	currencyByRegion,
@@ -44,7 +44,7 @@ import {
 	LANGUAGE,
 	languageByRegion,
 	LANGUAGES,
-	regionMap,
+	SELECTED,
 } from "../utils/constants";
 import { Currency } from "../country/Currency";
 import { AttributeStructure } from "../country/AttributeStructure";
@@ -58,10 +58,10 @@ import { countryLoc } from "../utils/types";
  */
 function updateFlagSelection(flagSelected: HTMLImageElement): void {
 	const nextFlag: HTMLImageElement | null = getNextFlag(flagSelected);
-	flagSelected.classList.remove("selected");
+	flagSelected.classList.remove(SELECTED);
 	flagSelected.remove();
 	if (nextFlag) {
-		nextFlag.classList.add("selected");
+		nextFlag.classList.add(SELECTED);
 	}
 }
 
@@ -101,7 +101,7 @@ function textboxChangeFlags(
 	answerInput: HTMLInputElement,
 	counter: HTMLDivElement,
 	timer: Timer,
-	region: string,
+	region: number,
 	gameName: string,
 	sequentialRandom?: boolean
 ): void {
@@ -161,7 +161,7 @@ function textboxChangeNames(
 	answerInput: HTMLInputElement,
 	counter: HTMLDivElement,
 	timer: Timer,
-	region: string,
+	region: number,
 	sequentialRandom: boolean,
 	gameName: string
 ): void {
@@ -171,7 +171,7 @@ function textboxChangeNames(
 	countryIndex.forEach((index: number): void => {
 		const country: Country = world.countries.get(index) as Country;
 		if (country.found) return;
-		if (sequentialRandom && country.state !== "selected") return;
+		if (sequentialRandom && country.state !== SELECTED) return;
 		textBoxBasicFound(
 			sequentialRandom,
 			timer,
@@ -203,7 +203,7 @@ function textBoxBasicFound(
 	index: number,
 	answerInput: HTMLInputElement,
 	counter: HTMLDivElement,
-	region: string,
+	region: number,
 	gameName: string
 ): void {
 	if (sequentialRandom) {
@@ -213,7 +213,7 @@ function textBoxBasicFound(
 			world.sequentialRandomMap,
 			world.sequentialRandomIndex
 		) as [number, Country];
-		world.setCountryAndConnectedState(nextIndex, "selected");
+		world.setCountryAndConnectedState(nextIndex, SELECTED);
 		world.setCountryAndConnectedVisibility(nextIndex, true);
 		cameraFaceTo(getObjCenter(nextCountry.object));
 	}
@@ -246,13 +246,13 @@ function textBoxChangeCapitals(
 	answerInput: HTMLInputElement,
 	counter: HTMLDivElement,
 	timer: Timer,
-	region: string,
+	region: number,
 	sequentialRandom: boolean,
 	gameName: string
 ): void {
 	const countryArray: Map<number, Country> = world.countries;
 	countryArray.forEach((country: Country, index: number): void => {
-		if (sequentialRandom && country.state !== "selected") return;
+		if (sequentialRandom && country.state !== SELECTED) return;
 		if (!country.capital || country.owned) return;
 		if (processText(country.capital) !== enteredText) return;
 		if (country.found) return;
@@ -286,23 +286,21 @@ function textBoxChangeLanguages(
 	answerInput: HTMLInputElement,
 	counter: HTMLDivElement,
 	timer: Timer,
-	region: string,
+	region: number,
 	sequentialRandom: boolean,
 	gameName: string
 ): void {
 	const languageMap: Map<number, Language> = world.languages;
-	const regionNumber: number = getRegionByNumber(region);
-	const type = LANGUAGE;
-	const regionCount: number = languageByRegion[regionNumber];
+	const regionCount: number = languageByRegion[region];
 	textboxChangeCA(
 		world,
 		enteredText,
 		answerInput,
 		counter,
 		timer,
-		regionNumber,
+		region,
 		languageMap,
-		type,
+		LANGUAGE,
 		regionCount,
 		sequentialRandom,
 		gameName
@@ -320,29 +318,27 @@ function textBoxChangeLanguages(
  * @param {boolean} sequentialRandom - Whether the game is in sequential random mode.
  * @param {string} gameName - The name of the current game.
  */
-function textBoXChangeCurrencies(
+function textBoxChangeCurrencies(
 	world: World,
 	enteredText: string,
 	answerInput: HTMLInputElement,
 	counter: HTMLDivElement,
 	timer: Timer,
-	region: string,
+	region: number,
 	sequentialRandom: boolean,
 	gameName: string
 ): void {
 	const currencyMap: Map<number, Currency> = world.currencies;
-	const regionNumber: number = getRegionByNumber(region);
-	const type = CURRENCY;
-	const regionCount: number = currencyByRegion[regionNumber];
+	const regionCount: number = currencyByRegion[region];
 	textboxChangeCA(
 		world,
 		enteredText,
 		answerInput,
 		counter,
 		timer,
-		regionNumber,
+		region,
 		currencyMap,
-		type,
+		CURRENCY,
 		regionCount,
 		sequentialRandom,
 		gameName
@@ -383,7 +379,7 @@ function textboxChangeCA(
 			return;
 
 		attribute.found = true;
-		changeCACell(FOUND, attribute.type, index);
+		changeCACell(FOUND, type, index);
 		changeCountryOfCountryAttribute(attribute, FOUND, region);
 		if (sequentialRandom) {
 			deleteNthItem(
@@ -401,8 +397,8 @@ function textboxChangeCA(
 				const index: number = world.getRealIndex(loc);
 				const country: Country = world.countries.get(index) as Country;
 				if (region !== 7 && country.location[0] !== region) return;
-				world.setCountryState(index, "selected");
-				world.setCountryVisibility(index, true);
+				world.setCountryState(index, SELECTED);
+				country.visible = true;
 			});
 			cameraFaceTo(getCenterCA(region));
 		}
@@ -427,10 +423,6 @@ function getNextFlag(flagSelected: HTMLImageElement): HTMLImageElement | null {
 	);
 }
 
-export function getRegionByNumber(region: string): number {
-	return regionMap.get(region) ?? -1;
-}
-
 export function updateCounter(
 	counter: HTMLDivElement,
 	foundCount: number,
@@ -450,7 +442,7 @@ export function updateCounter(
 export function handleTextboxChange(
 	timer: Timer,
 	gameType: string,
-	region: string,
+	region: number,
 	sequentialRandom: boolean,
 	gameName: string
 ): void {
@@ -472,7 +464,7 @@ export function handleTextboxChange(
 	const enteredText: string = processText(answerInput.value);
 	const gameTypeHandlers: { [key: string]: Function } = {
 		flags: textboxChangeFlags,
-		currencies: textBoXChangeCurrencies,
+		currencies: textBoxChangeCurrencies,
 		languages: textBoxChangeLanguages,
 		capitals: textBoxChangeCapitals,
 		names: textboxChangeNames,
@@ -520,24 +512,20 @@ export function cameraFollowCountry(
 	if (isFollowing() === !checkbox.checked) toggleIsFollowing();
 }
 
-function countryGiveUp(
-	world: World,
-	continentIndex: number,
-	gameType: string
-): void {
+function countryGiveUp(world: World, region: number, gameType: string): void {
 	if ([LANGUAGES, CURRENCIES].includes(gameType)) return;
 	world.countries.forEach((country: Country, index: number): void => {
 		if (country.found || country.owned) {
 			return;
 		}
-		if (!correctContinent(continentIndex, country)) {
+		if (!country.isInRegion(region)) {
 			return;
 		}
 		world.setCountryAndConnectedVisibility(index, true);
 
 		world.triggerCountryAnimation(
 			index,
-			"base",
+			COUNTRY,
 			gameType === FLAGS ? gameType : ERROR,
 			true
 		);
@@ -583,7 +571,7 @@ function CAGU(
 			}
 
 			world.triggerCountryAnimation(cIndex, ca.type, ERROR, false);
-			world.setCountryVisibility(cIndex, true);
+			country.visible = true;
 		});
 		changeCACell(ERROR, ca.type, index);
 	});
@@ -591,7 +579,6 @@ function CAGU(
 
 /**
  * Handles the "give up" logic for the game, revealing answers and resetting UI elements.
- * @param {number} continentIndex - The index of the continent for the game.
  * @param {Timer} timer - The timer instance for the game.
  * @param {boolean} isHard - Whether the game is in hard mode.
  * @param {string} region - The region for the game.
@@ -600,10 +587,9 @@ function CAGU(
  * @param {string} gameName - The name of the current game.
  */
 export function handleGiveUp(
-	continentIndex: number,
 	timer: Timer,
 	isHard: boolean,
-	region: string,
+	region: number,
 	gameType: string,
 	sequentialRandom: boolean,
 	gameName: string
@@ -631,7 +617,6 @@ export function handleGiveUp(
 	restartButton.textContent = "Restart";
 	restartButton.onclick = (): void => {
 		restartQuiz(
-			continentIndex,
 			timer,
 			isHard,
 			restartButton,
@@ -649,14 +634,12 @@ export function handleGiveUp(
 	changeElementsVisibility(elements, "hidden");
 	changeElementsVisibility([elements[2]], "visible");
 	const world: World = getWorld();
-	const regionNumber: number = getRegionByNumber(region);
-	countryAttributeGiveUp(world, gameType, regionNumber);
-	countryGiveUp(world, continentIndex, gameType);
+	countryAttributeGiveUp(world, gameType, region);
+	countryGiveUp(world, region, gameType);
 }
 
 /**
  * Restarts the quiz, resetting all game elements and updating the UI.
- * @param {number} continentIndex - The index of the continent for the game.
  * @param {Timer} timer - The timer instance for the game.
  * @param {boolean} hard - Whether the game is in hard mode.
  * @param {HTMLButtonElement} restartButton - The restart button element.
@@ -667,11 +650,10 @@ export function handleGiveUp(
  * @param {HTMLElement[]} elements - The elements to reset.
  */
 export function restartQuiz(
-	continentIndex: number,
 	timer: Timer,
 	hard: boolean,
 	restartButton: HTMLButtonElement,
-	region: string,
+	region: number,
 	gameType: string,
 	sequentialRandom: boolean,
 	gameName: string,
@@ -681,19 +663,12 @@ export function restartQuiz(
 	restartButton.disabled = true; // Disable button while resetting
 
 	const world: World = getWorld();
-	world.resetCountries(continentIndex);
+	world.resetCountries(region);
 	world.resetSequentialItems(sequentialRandom, gameType);
 	world.resetCA(gameType);
 	world.clearFound();
-	updateUIAfterRestart(
-		region,
-		gameType,
-		continentIndex,
-		sequentialRandom,
-		timer,
-		gameName
-	); // Implement this function to handle UI updates
-	world.setUpCountries(hard, continentIndex, gameType);
+	updateUIAfterRestart(region, gameType, sequentialRandom, timer, gameName); // Implement this function to handle UI updates
+	world.setUpCountries(hard, region, gameType);
 	changeElementsVisibility(elements, "visible");
 	if (hard) {
 		changeElementsVisibility([elements[2]], "hidden");
@@ -740,30 +715,29 @@ export function handleImageClick(
 	event: MouseEvent,
 	sequentialRandom: boolean,
 	timer: Timer,
-	region: string,
+	region: number,
 	gameName: string
 ): void {
 	const imgElement = event.currentTarget as HTMLImageElement;
 
-	if (imgElement.classList.contains("selected")) {
-		imgElement.classList.remove("selected");
+	if (imgElement.classList.contains(SELECTED)) {
+		imgElement.classList.remove(SELECTED);
 	} else {
 		const previouslySelected: Element | null =
-			document.querySelector(".selected");
+			document.querySelector(".SELECTED");
 		if (previouslySelected) {
-			previouslySelected.classList.remove("selected");
+			previouslySelected.classList.remove(SELECTED);
 		}
-		imgElement.classList.add("selected");
+		imgElement.classList.add(SELECTED);
 	}
 	if (sequentialRandom) {
 		const world: World = getWorld();
-		const currIndex: number = world.sequentialRandomIndex;
 		const [countryIndex, currItem]: [number, Country] = getNthItem(
 			world.sequentialRandomMap,
-			currIndex
+			world.sequentialRandomIndex
 		) as [number, Country];
 		const selected: HTMLImageElement | null =
-			document.querySelector(".selected");
+			document.querySelector(".SELECTED");
 		if (!selected) return;
 		const imgLoc: string[] = selected.alt.split("_");
 		const countryLoc: [number, number] = currItem.location;
@@ -782,7 +756,7 @@ export function handleImageClick(
 		world.setCountryAndConnectedIsFound(countryIndex, true);
 		world.triggerCountryAnimation(countryIndex, "", FLAGS, true);
 
-		selected.classList.remove("selected");
+		selected.classList.remove(SELECTED);
 		selected.remove();
 		const counter: HTMLDivElement = document.getElementById(
 			"counter"
@@ -812,9 +786,8 @@ export function handleImageClick(
 }
 
 function updateUIAfterRestart(
-	region: string,
+	region: number,
 	gameType: string,
-	continentIndex: number,
 	sequentialRandom: boolean,
 	timer: Timer,
 	gameName: string
@@ -831,13 +804,7 @@ function updateUIAfterRestart(
 	if (counter) updateCounter(counter, 0, countriesCountByRegion[region]); // Reset counter
 	if (gameType === FLAGS) {
 		clearFlags();
-		populateFlags(
-			continentIndex,
-			sequentialRandom,
-			timer,
-			region,
-			gameName
-		);
+		populateFlags(sequentialRandom, timer, region, gameName);
 	}
 	// Add more UI reset logic as needed (e.g., resetting flags)
 }

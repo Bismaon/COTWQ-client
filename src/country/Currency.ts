@@ -11,7 +11,7 @@ export class Currency extends AttributeStructure {
 		location: countryLoc
 	) {
 		super(name, acceptedNames, CURRENCY, [location]);
-		this._regions = [-1, location[0]];
+		this._regions = [7, location[0]];
 	}
 
 	public isInRegion(region: number): boolean {

@@ -142,7 +142,7 @@ h2 {
     outline: 3px solid transparent;
 }
 
-.grid-item-list-container img.selected {
+.grid-item-list-container img.SELECTED {
     outline: 3px solid #08f;
 }
 

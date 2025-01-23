@@ -11,7 +11,7 @@ import {
 	toggleIsPlaying,
 	toggleIsRotating,
 } from "../controls/playingState";
-import { cameraFaceTo, setCameraPosition } from "../camera/camera";
+import { cameraFaceTo, getCamera, setCameraPosition } from "../camera/camera";
 import { Country } from "../country/Country";
 import { isControlsEnabled } from "../controls/controls";
 import { getObjCenter, isMesh } from "../utils/utilities";
@@ -44,7 +44,6 @@ export async function setupSceneModel(): Promise<void> {
 		const countriesData = await loadCountriesData(
 			`${process.env.PUBLIC_URL}/assets/xml/countries_data.xml`
 		);
-		console.log("Countries data: ", countriesData);
 		countriesData.forEach((country: Country, index: number): void => {
 			world.countries.set(index, country);
 		});
@@ -52,6 +51,7 @@ export async function setupSceneModel(): Promise<void> {
 		console.debug("Countries: ", world.countries);
 		console.debug("Currencies: ", world.currencies);
 		console.debug("Languages: ", world.languages);
+		console.debug("Camera coordinates: ", getCamera().position);
 
 		animate(globalScene);
 	} catch (error: unknown) {
@@ -68,26 +68,25 @@ export function resetModel(): void {
 	if (isFollowing()) toggleIsFollowing();
 	isControlsEnabled(isPlaying());
 	world.clearFound();
-	world.resetCountries(-1);
+	world.resetCountries(7);
 	setCameraPosition(new Vector3(0, 0, 118));
 }
 
 /**
  * Configures the model for a specific game mode.
  * @param {boolean} isHard - Whether the game is in hard mode.
- * @param {number} continentIndex - The index of the continent for the game.
+ * @param {number} region - The index of the continent for the game.
  * @param {string} gameType - The type of the game (e.g., FLAGS, LANGUAGES).
  */
 export function setupModelForGame(
 	isHard: boolean,
-	continentIndex: number,
+	region: number,
 	gameType: string
 ): void {
 	// Change all countries not in the continent to unavailable color/state
-	world.setUpCountries(isHard, continentIndex, gameType);
-	if (continentIndex !== -1) {
-		const continentObj: Object3D = world.continents[continentIndex];
-		cameraFaceTo(getObjCenter(continentObj));
+	world.setUpCountries(isHard, region, gameType);
+	if (region !== 7) {
+		cameraFaceTo(getObjCenter(world.continents[region]));
 	}
 
 	if (isRotating()) toggleIsRotating();
@@ -203,7 +202,6 @@ function parseCountryData(countryData: any): Country {
 	languages.forEach((language: Language): void => {
 		world.addLanguage(world.languages.size, language);
 	});
-	// Parse currency
 
 	let currency: Currency | null = null;
 	if (countryData.currency && countryData.currency[0]) {
@@ -216,6 +214,7 @@ function parseCountryData(countryData: any): Country {
 	if (currency) {
 		world.addCurrency(world.currencies.size, currency);
 	}
+
 	createCountryOutline(meshes);
 	const country: Country = new Country(
 		name,

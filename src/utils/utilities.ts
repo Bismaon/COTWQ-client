@@ -150,7 +150,7 @@ export function changeCountryOfCountryAttribute(
 		}
 		country.state = state;
 		if (!country.visible) {
-			world.setCountryVisibility(index, true);
+			country.visible = true;
 		}
 		world.triggerCountryAnimation(index, ca.type, state, false);
 	});
@@ -176,43 +176,41 @@ export function changeCountryOfCountryAttribute(
 }
 
 /**
- * Checks if a country belongs to the specified continent.
- * @param {number} continentIndex - The index of the continent.
- * @param {Country} country - The country to check.
- * @returns {boolean} True if the country belongs to the continent, otherwise false.
- */
-export function correctContinent(
-	continentIndex: number,
-	country: Country
-): boolean {
-	if (continentIndex !== -1) {
-		return continentIndex === country.location[0];
-	}
-	return true;
-}
-
-/**
  * Retrieves the center position of a CountryAttribute's 3D object.
- * @param {number} continentIndex - The continent index.
+ * @param {number} region - The continent index.
  * @returns {Vector3} The center position.
  */
-export function getCenterCA(continentIndex: number): Vector3 {
+export function getCenterCA(region: number): Vector3 {
 	const world: World = getWorld();
 	const currItem: [number, any] = getNthItem(
 		world.sequentialRandomMap,
 		world.sequentialRandomIndex
 	) as [number, any];
-	const locations: countryLoc[] = currItem[1].locations;
+	const locations: countryLoc[] = currItem[1].territories;
 	let firstCountryOfCAInCI: Country;
 	let objCenter: Vector3 = new Vector3();
 	locations.forEach((loc: countryLoc): void => {
 		const index: number = world.getRealIndex(loc);
 		const country: Country = world.countries.get(index) as Country;
-		if (!correctContinent(continentIndex, country)) return;
-		if (firstCountryOfCAInCI) return;
+		if (!country.isInRegion(region) || country.owned) {
+			console.log(
+				"This country is not part of the region or is owned: ",
+				country
+			);
+			return;
+		}
+		if (firstCountryOfCAInCI) {
+			console.log(
+				"A country for the CA has already been chosen: ",
+				firstCountryOfCAInCI
+			);
+			return;
+		}
 		firstCountryOfCAInCI = country;
 		objCenter = getObjCenter(firstCountryOfCAInCI.object);
 	});
+	console.log("Object center: ", objCenter);
+	console.log("currItem: ", currItem);
 	return objCenter;
 }
 
@@ -288,7 +286,7 @@ export function getNthItem<K, V>(
 	map: Map<K, V>,
 	n: number
 ): [K, V] | undefined {
-	const entries = Array.from(map.entries());
+	const entries: [K, V][] = Array.from(map.entries());
 	return n >= 0 && n < entries.length ? entries[n] : undefined;
 }
 

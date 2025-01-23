@@ -14,7 +14,7 @@ export class Language extends AttributeStructure {
 	) {
 		super(name, acceptedNames, LANGUAGE, [location]);
 		this._translations = translations;
-		this._regions = [-1, location[0]];
+		this._regions = [7, location[0]];
 	}
 
 	public isInRegion(region: number): boolean {

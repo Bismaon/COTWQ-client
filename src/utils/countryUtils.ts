@@ -3,7 +3,7 @@ import { getWorld } from "../scene/sceneManager";
 import { World } from "../country/World";
 import { TFunction } from "i18next";
 import { Country } from "../country/Country";
-import { correctContinent, getIndexInMap } from "./utilities";
+import { getIndexInMap } from "./utilities";
 import { Timer } from "./Timer";
 import { handleImageClick } from "../controls/inputHandlers";
 import {
@@ -17,6 +17,7 @@ import {
 	NAMES,
 	regionMap,
 	regionNamesUNFtoFORMap,
+	SELECTED,
 } from "./constants";
 import { Currency } from "../country/Currency";
 import { Language } from "../country/Language";
@@ -57,19 +58,19 @@ export function shuffleArray(array: any[]): any[] {
 /**
  * Filters and shuffles an array of countries based on specific criteria.
  * @param {Country[]} countries - The array of countries to process.
- * @param {number} continentIndex - The index of the continent to filter by.
+ * @param {number} region - The index of the continent to filter by.
  * @returns {Country[]} An array of shuffled and filtered countries.
  */
 export function randomizedCountries(
 	countries: Map<number, Country>,
-	continentIndex: number
+	region: number
 ): Map<number, Country> {
 	const filteredCountries: Map<number, Country> = new Map(
 		Array.from(countries.entries()).filter(
 			([_, country]: [number, Country]): boolean => {
 				if (country.owned) return false; // skip if the country is not independent
 				if (country.name === "Antarctica") return false; // skip Antarctica
-				if (!correctContinent(continentIndex, country)) return false; // skip if the country is not in the wanted continent
+				if (!country.isInRegion(region)) return false; // skip if the country is not in the wanted continent
 				return true;
 			}
 		)
@@ -91,17 +92,15 @@ export function clearFlags(): void {
 
 /**
  * Populates the flag container with flags for the given countries.
- * @param {number} continentIndex - The index of the continent to filter by.
  * @param {boolean} sequentialRandom - Whether the flags should be randomized sequentially.
  * @param {Timer} timer - The game timer instance.
  * @param {string} region - The region for the game.
  * @param {string} gameName - The name of the game.
  */
 export function populateFlags(
-	continentIndex: number,
 	sequentialRandom: boolean,
 	timer: Timer,
-	region: string,
+	region: number,
 	gameName: string
 ): void {
 	const flagContainer: HTMLElement | null =
@@ -113,7 +112,7 @@ export function populateFlags(
 	const countries: Map<number, Country> = getWorld().countries;
 	const filteredCountries: Map<number, Country> = randomizedCountries(
 		countries,
-		continentIndex
+		region
 	);
 	console.log("Filtered countries: ", filteredCountries);
 
@@ -135,7 +134,7 @@ export function populateFlags(
 
 	const firstFlag = document.querySelector("img") as HTMLImageElement;
 	if (firstFlag) {
-		firstFlag.classList.add("selected");
+		firstFlag.classList.add(SELECTED);
 	}
 }
 
@@ -246,7 +245,7 @@ export function changeCACell(state: string, type: string, index: number): void {
 export function createTableFromType(
 	type: string,
 	t: TFunction<"translation">,
-	region: string,
+	region: number,
 	hard: boolean
 ): void {
 	const world: World = getWorld();
@@ -260,9 +259,9 @@ export function createTableFromType(
 	}
 	regionMap.forEach((index: number, regionI: string): void => {
 		if (
-			regionI === "antarctica" ||
-			(region !== "all_regions" && regionI !== region) ||
-			regionI === "all_regions"
+			index === 1 || // antarctica
+			(region !== 7 && index !== region) || // passes regions which aren't the one given (not "all_regions")
+			index === 7 // skips if region given is all_regions
 		) {
 			return;
 		}

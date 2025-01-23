@@ -134,7 +134,7 @@ export class World {
 	 * @param {string} region - The region name.
 	 * @returns {boolean} True if all countries are found, otherwise false.
 	 */
-	public isAllFound(region: string): boolean {
+	public isAllFound(region: number): boolean {
 		return countriesCountByRegion[region] === this._countriesFound;
 	}
 
@@ -261,18 +261,8 @@ export class World {
 	): void {
 		const countriesIndex: number[] = this.getConnectedTerritories(index);
 		countriesIndex.forEach((index: number): void => {
-			this.setCountryVisibility(index, visibility);
+			(this._countries.get(index) as Country).visible = visibility;
 		});
-	}
-
-	/**
-	 * Toggles the visibility of a single country.
-	 * @param {number} index - The index of the country.
-	 * @param {boolean} visibility - The visibility state.
-	 */
-	public setCountryVisibility(index: number, visibility: boolean): void {
-		const country: Country = this._countries.get(index) as Country;
-		country.visible = visibility;
 	}
 
 	/**
@@ -347,13 +337,11 @@ export class World {
 
 	/**
 	 * Resets the countries to their default state.
-	 * @param {number} continentIndex - The index of the continent to reset.
+	 * @param {number} region - The index of the continent to reset.
 	 */
-	public resetCountries(continentIndex: number): void {
+	public resetCountries(region: number): void {
 		this._countries.forEach((country: Country, index: number): void => {
-			if (country.owned) return;
-			if (continentIndex !== -1 && country.location[0] !== continentIndex)
-				return;
+			if (country.owned || !country.isInRegion(region)) return;
 			this.setCountryAndConnectedVisibility(index, true);
 			this.setCountryAndConnectedState(index, UNKNOWN);
 		});
