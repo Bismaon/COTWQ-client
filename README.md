@@ -1,53 +1,61 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Countries of the World Quizzes
+## Description
+This is a React-based web application. It includes a structured frontend with essential React components, and static assets. The project is only designed by me. It is a small scale project and not made for scalability.  I have been working on this project for a while now and have always aimed to make the code readable and structured, however I am aware there are some improvements possible, and would gladly take them. :)
 
-## Available Scripts
+Across the app you will be able to play various quiz ranging from countries name to their language,
+capital, flag, etc. You can create an account and login to keep track of your times, these times are also accessible via the Highscores button. The app is also available in french however lots of translation are wrong or not updated.
+## Installation
+To set up the project locally, follow these steps:
 
-In the project directory, you can run:
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/Bismaon/COTWQ-client.git
+   cd COTWQ-client
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
 
-### `npm start`
+## Running the Application
+Start the development server:
+```sh
+npm start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+This will launch the React app on `http://localhost:3000/`.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Building for Production
+To create an optimized production build:
+```sh
+npm run build
+```
 
-### `npm test`
+This will generate a `build/` folder with the minified assets.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more
-information.
+## Pushing
+To push the content of the build folder to the server directory:
+```sh
+npm run push
+```
 
-### `npm run build`
+## License
+### Project License (MIT)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This project is licensed under the MIT License, which allows you to use, modify, and distribute the project with minimal restrictions. See the LICENSE file for full details.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Asset License (Royalty-Free)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This project includes assets licensed under a Royalty-Free License.
 
-### `npm run eject`
+You may use the assets in commercial projects without additional fees.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The assets must be incorporated into the project and should not be distributed separately in digital or physical form.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will
-remove the single build dependency from your project.
+You cannot resell the assets in their original or modified standalone form.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc.) right
-into your project so you have full control over them. All the commands except `eject` will still work, but they will
-point to the copied scripts so you can tweak them. At this point you’re on your own.
+The original creator retains ownership and distribution rights.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you
-shouldn’t feel obligated to use this feature. We understand that this tool wouldn’t be useful if you couldn’t customize
-it when you are ready for it.
+Please refer to the legally binding General Terms and Conditions of the asset provider for further details.
 
-## Learn More
-
-You can learn more in
-the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
