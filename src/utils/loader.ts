@@ -12,8 +12,13 @@ import { isMesh } from "./utilities";
 import { getScene } from "../scene/sceneSetup";
 import { getColorsArray } from "../scene/sceneManager";
 
+/** Manages the loading of assets for the application. */
 export const loadingManager = new LoadingManager();
 
+/**
+ * Loads a 3D model (GLTF) and adds it to the scene.
+ * @returns {Promise<Object3D>} A promise that resolves with the loaded model.
+ */
 export function loadModel(): Promise<Object3D> {
 	return new Promise((resolve, reject): void => {
 		const loader: GLTFLoader = new GLTFLoader(loadingManager);
@@ -39,6 +44,11 @@ export function loadModel(): Promise<Object3D> {
 	});
 }
 
+/**
+ * Extracts unique materials from the given model and applies configurations.
+ * Adds the materials to the global color array.
+ * @param {Object3D} model - The 3D model from which to extract materials.
+ */
 function extractColors(model: Object3D): void {
 	const colors: Material[] = getColorsArray();
 	model.traverse((child: Object3D): void => {
@@ -62,6 +72,12 @@ function extractColors(model: Object3D): void {
 	console.log("Colors: ", colors);
 }
 
+/**
+ * Checks if a material is already present in the global color array.
+ * @param {Material[]} colors - The array of materials to check against.
+ * @param {Material} material - The material to check.
+ * @returns {boolean} True if the material exists in the array, otherwise false.
+ */
 function isInColors(colors: Material[], material: Material): boolean {
 	return (
 		colors.findIndex(

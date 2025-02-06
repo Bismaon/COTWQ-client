@@ -7,11 +7,13 @@ import {
 } from "react-router-dom";
 import "../stylesheet/style.css";
 import { useTranslation } from "react-i18next";
+import { useMenu } from "../App";
 
 const SizeMode: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
 	const { t } = useTranslation();
+	const { setHoveredButton } = useMenu();
 
 	const isInSizeMode: boolean =
 		location.pathname.endsWith("/normal") ||
@@ -38,19 +40,34 @@ const SizeMode: React.FC = () => {
 					</div>
 					<button
 						className="button grid-item"
-						onClick={(): void => navigate("classic")}
+						onClick={(): void => {
+							navigate("classic");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("classic")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("classic")}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={(): void => navigate("sequential-random")}
+						onClick={(): void => {
+							navigate("sequential-random");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("sequential")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("sequential-random")}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={(): void => navigate("hard")}
+						onClick={(): void => {
+							navigate("hard");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("hard")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("hard")}
 					</button>

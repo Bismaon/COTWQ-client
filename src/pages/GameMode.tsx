@@ -8,13 +8,26 @@ import {
 } from "react-router-dom";
 import "../stylesheet/style.css";
 import { useTranslation } from "react-i18next";
+import { useMenu } from "../App";
+import {
+	CAPITALS,
+	CURRENCIES,
+	FLAGS,
+	LANGUAGES,
+	NAMES,
+} from "../utils/constants";
 
 const GameMode: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
 	const { t } = useTranslation();
+	const { setHoveredButton } = useMenu();
 
-	const isInGameMode =
+	const hardMode: string = location.pathname.includes("/hard") ? "-hard" : "";
+	const sequential: string = location.pathname.includes("sequential-random")
+		? "-sequential"
+		: "";
+	const isInGameMode: boolean =
 		location.pathname.endsWith("/classic") ||
 		location.pathname.endsWith("/sequential-random");
 
@@ -38,33 +51,68 @@ const GameMode: React.FC = () => {
 					</div>
 					<button
 						className="button grid-item"
-						onClick={() => handleNavigate("names")}
+						onClick={() => {
+							handleNavigate(NAMES);
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() =>
+							setHoveredButton(NAMES + hardMode + sequential)
+						}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
-						{t("names")}
+						{t(NAMES)}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={() => handleNavigate("flags")}
+						onClick={() => {
+							handleNavigate(FLAGS);
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() =>
+							setHoveredButton(FLAGS + hardMode + sequential)
+						}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
-						{t("flags")}
+						{t(FLAGS)}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={() => handleNavigate("languages")}
+						onClick={() => {
+							handleNavigate(LANGUAGES);
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() =>
+							setHoveredButton(LANGUAGES + hardMode + sequential)
+						}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
-						{t("languages")}
+						{t(LANGUAGES)}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={() => handleNavigate("currencies")}
+						onClick={() => {
+							handleNavigate(CURRENCIES);
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() =>
+							setHoveredButton(CURRENCIES + hardMode + sequential)
+						}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
-						{t("currencies")}
+						{t(CURRENCIES)}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={() => navigate("capitals")}
+						onClick={() => {
+							navigate(CAPITALS);
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() =>
+							setHoveredButton(CAPITALS + hardMode + sequential)
+						}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
-						{t("capitals")}
+						{t(CAPITALS)}
 					</button>
 				</>
 			)}

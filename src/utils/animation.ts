@@ -7,6 +7,10 @@ import { updateControls } from "../controls/controls";
 
 const group: Group = new Group(); // Contains the current tween updates
 
+/**
+ * Animates the given 3D model by continuously updating its rotation, rendering the scene, and updating controls.
+ * @param {Object3D} model - The 3D model to animate.
+ */
 export function animate(model: Object3D): void {
 	let lastRenderTime: number = 0;
 	const renderer: WebGLRenderer = getRenderer();
@@ -34,6 +38,13 @@ export function animate(model: Object3D): void {
 	_animate(0);
 }
 
+/**
+ * Animates the camera from a start position to a target position while looking at a specified point.
+ * @param {Vector3} startPosition - The starting position of the camera.
+ * @param {Vector3} targetPosition - The target position of the camera.
+ * @param {Vector3} lookAtVector - The point the camera should look at during the animation.
+ * @param {number} [duration=1000] - The duration of the animation in milliseconds.
+ */
 export function CameraAnimation(
 	startPosition: Vector3,
 	targetPosition: Vector3,
@@ -54,6 +65,14 @@ export function CameraAnimation(
 	group.add(tweenCam.start());
 }
 
+/**
+ * Animates an object to "bounce" between two positions and optionally executes a callback after the animation.
+ * @param {Object3D} obj - The 3D object to animate.
+ * @param {Vector3} orgPos - The original position of the object.
+ * @param {Vector3} targetPos - The target position of the object.
+ * @param {() => void} [callback] - Optional callback function to execute after the bounce.
+ * @param {number} [duration=1000] - The total duration of the bounce animation in milliseconds.
+ */
 export function bounceAnimation(
 	obj: Object3D,
 	orgPos: Vector3,

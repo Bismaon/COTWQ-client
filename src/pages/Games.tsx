@@ -8,11 +8,13 @@ import {
 } from "react-router-dom";
 import "../stylesheet/style.css";
 import { useTranslation } from "react-i18next";
+import { useMenu } from "../App";
 
 const Games: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
 	const { t } = useTranslation();
+	const { setHoveredButton } = useMenu();
 
 	// Determine if we are on a specific game mode path
 	const isInGameMode: boolean = location.pathname === "/games";
@@ -33,13 +35,23 @@ const Games: React.FC = () => {
 					</div>
 					<button
 						className="button grid-item"
-						onClick={() => navigate("normal")}
+						onClick={() => {
+							navigate("normal");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("normal")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("normal")}
 					</button>
 					<button
 						className="button grid-item"
-						onClick={() => navigate("continents")}
+						onClick={() => {
+							navigate("continents");
+							setHoveredButton(null);
+						}}
+						onMouseEnter={() => setHoveredButton("continents")}
+						onMouseLeave={() => setHoveredButton(null)}
 					>
 						{t("continents")}
 					</button>

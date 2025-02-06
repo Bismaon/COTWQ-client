@@ -27,7 +27,7 @@ const UserForm: React.FC<UserFormProps> = ({ onSessionChange }) => {
 				setUserIsSet(true); // This will ensure the second useEffect is triggered only once
 			}
 		}
-	}, [userIsSet]);
+	}, [userData, userIsSet]);
 
 	console.debug("Rendering UserForm.tsx");
 

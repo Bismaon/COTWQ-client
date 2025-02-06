@@ -4,35 +4,27 @@ import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 import "../stylesheet/style.css";
 import { resetModel } from "../scene/sceneManager";
 import GlobalGameMode from "./GlobalGameMode";
+import { continentNames } from "../utils/constants";
 
 const GameSetter: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	const location = useLocation();
-	const continentNames: string[] = [
-		"africa",
-		"antarctic",
-		"asia",
-		"europe",
-		"north_america",
-		"oceania",
-		"south_america",
-	];
-
 	function getGameMode() {
 		const pathSegments: string[] = location.pathname.split("/");
 		const hasContinents: number = pathSegments.indexOf("continents");
-		const continentIndex: number =
+		const region: number =
 			hasContinents !== -1
 				? continentNames.indexOf(pathSegments[hasContinents + 1])
-				: -1;
+				: 7;
 		const isHardMode: boolean = pathSegments.includes("hard");
 		const sequentialRandom: boolean =
 			pathSegments.includes("sequential-random");
 		const gameMode: string = pathSegments[pathSegments.length - 1];
+		console.debug("Game type: ", gameMode);
 		return (
 			<GlobalGameMode
 				hard={isHardMode}
-				continentIndex={continentIndex}
+				region={region}
 				gameType={gameMode}
 				sequentialRandom={sequentialRandom}
 			/>
