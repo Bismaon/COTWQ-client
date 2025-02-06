@@ -1,13 +1,12 @@
 // country/Country.ts
 import { Material, Mesh, Object3D } from "three";
-import { BaseItem } from "./World";
+import { AttributeStructure } from "./AttributeStructure";
+import { countryLoc } from "../utils/types";
+import { COUNTRY, UNKNOWN } from "../utils/constants";
 
-export class Country implements BaseItem {
+export class Country extends AttributeStructure {
 	// Holds the capital of the country as a string
 	private readonly _capital: string | null;
-	// Holds the currency of the country as a string
-	private readonly _currency: string | null;
-	private readonly _languages: string[] | null;
 	private readonly _svgFlag: string;
 	// true if the country is not independent
 	private readonly _owned: boolean;
@@ -16,54 +15,43 @@ export class Country implements BaseItem {
 	// The object of the country in the model
 	private readonly _object: Object3D;
 	// continent index and index of the country in that continent array
-	private readonly _location: [number, number];
-	// locations of the countries connected to `this`
-	private readonly _territories: [number, number][] | null;
-	private readonly _name: string;
-	// Names that will be accepted when typing the country names in quizzes, is empty if it is not independent
-	private readonly _acceptedNames: string[];
+	private readonly _location: countryLoc;
 	// location of the country which is parent to `this`
-	private readonly _owner: [number, number] | null;
+	private readonly _owner: countryLoc | null;
 	// Material of the flag resulting from the svg
 	private readonly _flagMaterial: Material;
-	private readonly _type: string;
+	private readonly _langAmount: number;
 
 	constructor(
 		name: string,
 		acceptedNames: string[],
-		territories: [number, number][] | null,
-		location: [number, number],
-		owner: [number, number] | null,
+		territories: countryLoc[],
+		location: countryLoc,
+		owner: countryLoc | null,
 		svgFlag: string,
-		currency: string | null,
-		capital: string | null,
-		languages: string[] | null,
 		meshes: Mesh,
 		object: Object3D,
-		flagMaterial: Material
+		flagMaterial: Material,
+		capital: string | null,
+		langNumber: number
 	) {
-		this._name = name;
-		this._acceptedNames = acceptedNames;
-		this._territories = territories;
+		super(name, acceptedNames, COUNTRY, territories);
 		this._location = location;
 		this._owner = owner;
 		this._svgFlag = svgFlag;
-		this._currency = currency;
-		this._languages = languages;
 		this._capital = capital;
-		this._found = false;
-		this._state = "unknown";
+		this._state = UNKNOWN;
 		this._visible = true;
 		this._meshes = meshes;
 		this._object = object;
 		this._owned = owner !== null || acceptedNames.length === 0;
 		this._flagMaterial = flagMaterial;
 		this._material = meshes.material as Material;
-		this._type = "country";
+		this._langAmount = langNumber;
 	}
 
-	public get languages(): string[] | null {
-		return this._languages;
+	public get langAmount(): number {
+		return this._langAmount;
 	}
 
 	// Current material of the country object
@@ -81,9 +69,9 @@ export class Country implements BaseItem {
 
 	/**
 	 * Get the indexes location of the country.
-	 * @returns {[number, number]} The indexes location of the country.
+	 * @returns {countryLoc} The indexes location of the country.
 	 */
-	public get location(): [number, number] {
+	public get location(): countryLoc {
 		return this._location;
 	}
 
@@ -91,25 +79,14 @@ export class Country implements BaseItem {
 	 * Get the location of the country owning this country.
 	 * @returns {number[]} The location of the owner.
 	 */
-	public get owner(): [number, number] | null {
+	public get owner(): countryLoc | null {
 		return this._owner;
 	}
 
 	/**
-	 * Get the accepted names of the country.
-	 * @returns {string[]} The accepted names of the country.
-	 */
-	public get acceptedNames(): string[] {
-		return this._acceptedNames || [];
-	}
-
-	/**
 	 * Get the locations of territories belonging to the country.
-	 * @returns {[number, number][]} The locations of territories belonging to the country.
+	 * @returns {countryLoc[]} The locations of territories belonging to the country.
 	 */
-	public get territories(): [number, number][] {
-		return this._territories || [];
-	}
 
 	private _state: string;
 
@@ -119,28 +96,6 @@ export class Country implements BaseItem {
 
 	public set state(state: string) {
 		this._state = state;
-	}
-
-	private _found: boolean;
-
-	/**
-	 * Get the found status of the country.
-	 * @returns {boolean} True if the country is found, otherwise false.
-	 */
-	public get found(): boolean {
-		return this._found;
-	}
-
-	/**
-	 * Set the found status of the country.
-	 * @param {boolean} isFound - The found status to set.
-	 */
-	public set found(isFound: boolean) {
-		this._found = isFound;
-	}
-
-	public get type(): string {
-		return this._type;
 	}
 
 	private _visible: boolean;
@@ -162,14 +117,6 @@ export class Country implements BaseItem {
 		return this._object;
 	}
 
-	/**
-	 * Get the name of the country.
-	 * @returns {string} The name of the country.
-	 */
-	public get name(): string {
-		return this._name;
-	}
-
 	public get owned(): boolean {
 		return this._owned;
 	}
@@ -182,11 +129,11 @@ export class Country implements BaseItem {
 		return this._flagMaterial;
 	}
 
-	public get currency(): string | null {
-		return this._currency;
-	}
-
 	public get capital(): string | null {
 		return this._capital;
+	}
+
+	public isInRegion(region: number): boolean {
+		return region === 7 || region === this.location[0];
 	}
 }

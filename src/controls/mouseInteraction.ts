@@ -4,7 +4,13 @@ import { getIntersect } from "../utils/utilities";
 import { Country } from "../country/Country";
 import { getWorld } from "../scene/sceneManager";
 import { isPlaying } from "./playingState";
+import { ERROR, GLOBE, WATER } from "../utils/constants";
 
+/**
+ * Handles mouse hover events over the 3D model.
+ * Determines if the mouse is over a valid country and updates the country name display.
+ * @param {MouseEvent} event - The mouse event containing position data.
+ */
 export function mouseHover(event: MouseEvent): void {
 	const canvas: HTMLCanvasElement = document.getElementById(
 		"modelCanvas"
@@ -27,6 +33,10 @@ export function mouseHover(event: MouseEvent): void {
 	}
 }
 
+/**
+ * Updates the displayed country name in the UI.
+ * @param {string} countryName - The name of the country to display.
+ */
 export function updateCountryName(countryName: string): void {
 	const countryNameElement: HTMLDivElement = document.getElementById(
 		"country-name-container"
@@ -36,17 +46,26 @@ export function updateCountryName(countryName: string): void {
 	countryNameElement.textContent = countryName;
 }
 
+/**
+ * Determines if an intersected object is a valid country object.
+ * @param {Object3D} intersectedObject - The object intersected by the mouse ray.
+ * @returns {[boolean, string]} A tuple containing validity (true/false) and the country's name.
+ */
 export function isValidObject(intersectedObject: Object3D): [boolean, string] {
 	const objName: string = intersectedObject.name;
-	if (objName === "water" || objName === "") return [false, ""];
+	if ([WATER, GLOBE, ""].includes(objName)) {
+		return [false, ""];
+	}
 
 	const countryObj: Object3D | null = intersectedObject.parent;
 	if (!countryObj) {
 		return [false, ""];
 	}
 
-	const country: Country = getWorld().getCountryByObject(countryObj);
+	const country: Country = getWorld().getCountryByObject(
+		countryObj
+	) as Country;
 	const validity: boolean =
-		country.found || (!isPlaying() && country.state === "error");
+		country.found || (!isPlaying() && country.state === ERROR);
 	return [validity, country.name];
 }

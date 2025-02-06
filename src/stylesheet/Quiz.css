@@ -154,19 +154,19 @@
 }
 
 /* Hint Answer Container */
-.cell.found {
+.cell.FOUND {
     color: #66ff66;
 }
 
-.cell.error {
+.cell.ERROR {
     color: #ff6666;
 }
 
-img.cell.unavailable {
+img.cell.UNAVAILABLE {
     visibility: hidden;
 }
 
-.cell.unavailable {
+.cell.UNAVAILABLE {
     color: rgba(0, 0, 0, 0);
     user-select: none;
 }

@@ -4,6 +4,7 @@ import "../stylesheet/style.css";
 import { useTranslation } from "react-i18next";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { formatGameName, formatTime } from "../utils/utilities";
+import { useMenu } from "../App";
 
 export interface UserBest extends Highscore {
 	username: string;
@@ -18,6 +19,7 @@ export interface Highscore {
 const Highscores = (): JSX.Element => {
 	const navigate: NavigateFunction = useNavigate();
 	const { t } = useTranslation();
+	const { setHoveredButton } = useMenu();
 
 	const [title, setTitle] = useState<string>(""); // Initialize title as a state
 	const [error, setError] = useState<string>("");

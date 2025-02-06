@@ -14,8 +14,16 @@ import {
 } from "three";
 import { getWorld } from "../scene/sceneManager";
 import { Country } from "../country/Country";
-import { CountryAttribute, World } from "../country/World";
+import { World } from "../country/World";
+import { AttributeStructure } from "../country/AttributeStructure";
+import { countryLoc } from "./types";
+import { FOUND } from "./constants";
 
+/**
+ * Processes a string by normalizing and removing diacritics, punctuation, spaces, and text within parentheses.
+ * @param {string} name - The string to process.
+ * @returns {string} The processed string.
+ */
 export function processText(name: string): string {
 	name = name
 		.toLowerCase()
@@ -27,6 +35,12 @@ export function processText(name: string): string {
 	return name;
 }
 
+/**
+ * Returns the intersections of a raycast with objects in the scene.
+ * @param {number} mouseX - The X coordinate of the mouse.
+ * @param {number} mouseY - The Y coordinate of the mouse.
+ * @returns {Intersection[]} An array of intersections.
+ */
 export function getIntersect(mouseX: number, mouseY: number): Intersection[] {
 	const raycaster = new Raycaster();
 	const mouseVector = new Vector2(mouseX, mouseY);
@@ -35,10 +49,20 @@ export function getIntersect(mouseX: number, mouseY: number): Intersection[] {
 	return raycaster.intersectObjects(getScene().children, true);
 }
 
+/**
+ * Checks if an object is a mesh.
+ * @param {any} obj - The object to check.
+ * @returns {boolean} True if the object is a mesh, otherwise false.
+ */
 export function isMesh(obj: any): obj is Mesh {
 	return obj && obj instanceof Mesh;
 }
 
+/**
+ * Changes the visibility of multiple HTML elements.
+ * @param {HTMLElement[]} elementArray - The array of HTML elements.
+ * @param {"hidden" | "visible"} visibility - The visibility state to apply.
+ */
 export function changeElementsVisibility(
 	elementArray: HTMLElement[],
 	visibility: "hidden" | "visible"
@@ -57,6 +81,11 @@ export function changeElementsVisibility(
 	});
 }
 
+/**
+ * Calculates the center of a 3D object.
+ * @param {Object3D} obj - The 3D object.
+ * @returns {Vector3} The center position of the object.
+ */
 export function getObjCenter(obj: Object3D): Vector3 {
 	const objBox: Box3 = new Box3().setFromObject(obj);
 	const objCenter: Vector3 = new Vector3();
@@ -64,6 +93,11 @@ export function getObjCenter(obj: Object3D): Vector3 {
 	return objCenter;
 }
 
+/**
+ * Calculates the combined center of multiple 3D objects.
+ * @param {Object3D[]} objects - The array of 3D objects.
+ * @returns {Vector3} The combined center position of the objects.
+ */
 export function getCombinedCenter(objects: Object3D[]): Vector3 {
 	const combinedBox: Box3 = new Box3();
 
@@ -86,37 +120,53 @@ export function getCombinedCenter(objects: Object3D[]): Vector3 {
 	return combinedCenter;
 }
 
+/**
+ * Generates a gradient color in HSL format based on a percentage.
+ * @param {number} percentage - The percentage (0-100).
+ * @returns {string} The HSL color string.
+ */
 export function getGradientColor(percentage: number): string {
 	let hue: number = (percentage / 100) * 120;
 	return `hsl(${hue}, 100%, 50%)`;
 }
 
+/**
+ * Updates the state of countries associated with a CountryAttribute.
+ * @param {AttributeStructure} ca - The CountryAttribute to modify.
+ * @param {string} state - The state to apply.
+ * @param {number} region - The region to filter by.
+ */
 export function changeCountryOfCountryAttribute(
-	ca: CountryAttribute,
+	ca: AttributeStructure,
 	state: string,
 	region: number
 ): void {
 	const world: World = getWorld();
-	ca.locations.forEach((index: number): void => {
-		const country: Country = world.countryArray[index];
-		if (region !== 7 && country.location[0] !== region) {
+	ca.territories.forEach((loc: countryLoc): void => {
+		const index = world.getRealIndex(loc);
+		const country: Country = world.countries.get(index) as Country;
+		if (!country.isInRegion(region)) {
 			return;
 		}
 		country.state = state;
 		if (!country.visible) {
-			world.setCountryVisibility(index, true);
+			country.visible = true;
 		}
 		world.triggerCountryAnimation(index, ca.type, state, false);
 	});
+	if (state === FOUND) {
+		ca.found = true;
+	}
 }
 
-// Function to apply gradient color to a material
-export function makeMaterialWithGradient(percentage: number): Material {
-	// Get the color in HSL and convert it to a THREE.js color
+/**
+ * Creates a material with a gradient color based on a percentage.
+ * @param {number} percentage - The percentage (0-100).
+ * @returns {Material} The generated material.
+ */ export function makeMaterialWithGradient(percentage: number): Material {
 	const colorString: string = getGradientColor(percentage);
 	const color = new Color(colorString);
 
-	// Create a material and set the color
 	return new MeshStandardMaterial({
 		color: color,
 		polygonOffset: true,
@@ -125,34 +175,50 @@ export function makeMaterialWithGradient(percentage: number): Material {
 	});
 }
 
-export function correctContinent(
-	continentIndex: number,
-	country: Country
-): boolean {
-	if (continentIndex !== -1) {
-		return continentIndex === country.location[0];
-	}
-	return true;
-}
-
-export function getCenterCA(continentIndex: number): Vector3 {
+/**
+ * Retrieves the center position of a CountryAttribute's 3D object.
+ * @param {number} region - The continent index.
+ * @returns {Vector3} The center position.
+ */
+export function getCenterCA(region: number): Vector3 {
 	const world: World = getWorld();
-	const currItem: CountryAttribute = world.sequentialRandomArray[
+	const currItem: [number, any] = getNthItem(
+		world.sequentialRandomMap,
 		world.sequentialRandomIndex
-	] as CountryAttribute;
-	const locations: number[] = currItem.locations;
+	) as [number, any];
+	const locations: countryLoc[] = currItem[1].territories;
 	let firstCountryOfCAInCI: Country;
 	let objCenter: Vector3 = new Vector3();
-	locations.forEach((index: number): void => {
-		const country: Country = world.countryArray[index];
-		if (!correctContinent(continentIndex, country)) return;
-		if (firstCountryOfCAInCI) return;
+	locations.forEach((loc: countryLoc): void => {
+		const index: number = world.getRealIndex(loc);
+		const country: Country = world.countries.get(index) as Country;
+		if (!country.isInRegion(region) || country.owned) {
+			console.log(
+				"This country is not part of the region or is owned: ",
+				country
+			);
+			return;
+		}
+		if (firstCountryOfCAInCI) {
+			console.log(
+				"A country for the CA has already been chosen: ",
+				firstCountryOfCAInCI
+			);
+			return;
+		}
 		firstCountryOfCAInCI = country;
 		objCenter = getObjCenter(firstCountryOfCAInCI.object);
 	});
+	console.log("Object center: ", objCenter);
+	console.log("currItem: ", currItem);
 	return objCenter;
 }
 
+/**
+ * Formats a time string (HHMMSS) into a human-readable format.
+ * @param {string} time - The time string to format.
+ * @returns {string} The formatted time.
+ */
 export function formatTime(time: string): string {
 	let hoursStr: string, minutesStr: string, secondsStr: string;
 	const hours: number = Number(time.slice(0, 2));
@@ -182,6 +248,11 @@ export function formatTime(time: string): string {
 	return hoursStr + minutesStr + secondsStr;
 }
 
+/**
+ * Formats a game name string into a human-readable format.
+ * @param {string} gameName - The game name string to format.
+ * @returns {string} The formatted game name.
+ */
 export function formatGameName(gameName: string): string {
 	console.log("Game name: ", gameName);
 	const [region, normal, hard, gameType] = gameName.split("-");
@@ -195,4 +266,39 @@ export function formatGameName(gameName: string): string {
 	return (
 		regionStr + " | " + normalStr + " | " + hardStr + " | " + gameTypeStr
 	);
+}
+
+export function getIndexInMap<K, V>(
+	map: Map<K, V>,
+	condition: (value: V, key: K) => boolean
+): number {
+	let index: number = 0;
+	for (const [key, value] of Array.from(map.entries())) {
+		if (condition(value, key)) {
+			return index;
+		}
+		index++;
+	}
+	return -1; // Return -1 if not found
+}
+
+export function getNthItem<K, V>(
+	map: Map<K, V>,
+	n: number
+): [K, V] | undefined {
+	const entries: [K, V][] = Array.from(map.entries());
+	return n >= 0 && n < entries.length ? entries[n] : undefined;
+}
+
+export function deleteNthItem<K, V>(map: Map<K, V>, n: number): void {
+	let [index]: [K, V] = getNthItem(map, n) as [K, V];
+	map.delete(index);
+}
+
+export function hasValue<K, V>(
+	map: Map<K, V>,
+	valueCheck: (value: V) => boolean
+): number {
+	let valueArray: V[] = Array.from(map.values());
+	return valueArray.findIndex(valueCheck);
 }

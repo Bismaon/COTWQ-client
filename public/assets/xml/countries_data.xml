@@ -1471,9 +1471,6 @@
             <territory>
                 0,53
             </territory>
-            <territory>
-                0,53
-            </territory>
         </territories>
         <ownedLocation/>
         <acceptedNames>
@@ -6370,7 +6367,6 @@
             <svg>
                 ua.svg
             </svg>
-
         </flag>
         <currency>
             UAH

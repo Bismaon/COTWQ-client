@@ -3,12 +3,14 @@ import "../stylesheet/style.css";
 import React from "react";
 import { changeLanguageForCountry } from "../scene/sceneManager";
 import { useTranslation } from "react-i18next";
+import { useMenu } from "../App";
 
 const Settings: React.FC = () => {
 	const navigate: NavigateFunction = useNavigate();
 	console.debug("Rendering Settings.tsx");
 
 	const { t, i18n } = useTranslation();
+	const { setHoveredButton } = useMenu();
 
 	function handleSaveSettings(): void {
 		// language
