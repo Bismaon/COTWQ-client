@@ -1,10 +1,10 @@
 
-# Countries of the World Quizzes
+# Countries of the World Quizzes Frontend
 ## Description
 This is a React-based web application. It includes a structured frontend with essential React components, and static assets. The project is only designed by me. It is a small scale project and not made for scalability.  I have been working on this project for a while now and have always aimed to make the code readable and structured, however I am aware there are some improvements possible, and would gladly take them. :)
 
 Across the app you will be able to play various quiz ranging from countries name to their language,
-capital, flag, etc. You can create an account and login to keep track of your times, these times are also accessible via the Highscores button. The app is also available in french however lots of translation are wrong or not updated.
+capital, flag, etc. You can normally login and keep track of your scores however this side of the project cannot connect. The app is also available in french however lots of translation are wrong or not updated.
 ## Installation
 To set up the project locally, follow these steps:
 
